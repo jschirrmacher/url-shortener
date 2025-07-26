@@ -22,7 +22,7 @@ class CsvService {
       await fs.mkdir(this.dataDir, { recursive: true })
     }
 
-    // URLs CSV: shortCode,originalUrl,createdAt,createdBy
+    // URLs CSV: shortCode,originalUrl,createdAt,createdBy,title
     if (!await this.fileExists(this.urlsFile)) {
       const urlsWriter = createObjectCsvWriter({
         path: this.urlsFile,
@@ -30,7 +30,8 @@ class CsvService {
           { id: 'shortCode', title: 'shortCode' },
           { id: 'originalUrl', title: 'originalUrl' },
           { id: 'createdAt', title: 'createdAt' },
-          { id: 'createdBy', title: 'createdBy' }
+          { id: 'createdBy', title: 'createdBy' },
+          { id: 'title', title: 'title' }
         ]
       })
       await urlsWriter.writeRecords([])
@@ -64,7 +65,7 @@ class CsvService {
     }
   }
 
-  async saveUrl(shortCode, originalUrl, createdBy = 'anonymous') {
+  async saveUrl(shortCode, originalUrl, createdBy = 'anonymous', title = '') {
     await this.ensureInitialized()
     
     const urlsWriter = createObjectCsvWriter({
@@ -73,7 +74,8 @@ class CsvService {
         { id: 'shortCode', title: 'shortCode' },
         { id: 'originalUrl', title: 'originalUrl' },
         { id: 'createdAt', title: 'createdAt' },
-        { id: 'createdBy', title: 'createdBy' }
+        { id: 'createdBy', title: 'createdBy' },
+        { id: 'title', title: 'title' }
       ],
       append: true
     })
@@ -82,7 +84,8 @@ class CsvService {
       shortCode,
       originalUrl,
       createdAt: new Date().toISOString(),
-      createdBy
+      createdBy,
+      title: title || ''
     }
 
     await urlsWriter.writeRecords([record])
@@ -153,7 +156,7 @@ class CsvService {
     return 'website'
   }
 
-  async updateUrl(shortCode, newOriginalUrl) {
+  async updateUrl(shortCode, newOriginalUrl, newTitle = null) {
     await this.ensureInitialized()
     
     // Lese alle URLs
@@ -176,6 +179,11 @@ class CsvService {
     // Aktualisiere den Eintrag
     allUrls[urlIndex].originalUrl = newOriginalUrl
     allUrls[urlIndex].updatedAt = new Date().toISOString()
+    
+    // Aktualisiere Titel nur wenn explizit angegeben
+    if (newTitle !== null) {
+      allUrls[urlIndex].title = newTitle
+    }
 
     // Schreibe alle URLs zurück
     const urlsWriter = createObjectCsvWriter({
@@ -185,6 +193,7 @@ class CsvService {
         { id: 'originalUrl', title: 'originalUrl' },
         { id: 'createdAt', title: 'createdAt' },
         { id: 'createdBy', title: 'createdBy' },
+        { id: 'title', title: 'title' },
         { id: 'updatedAt', title: 'updatedAt' }
       ]
     })
@@ -192,6 +201,30 @@ class CsvService {
     await urlsWriter.writeRecords(allUrls)
     
     return allUrls[urlIndex]
+  }
+
+  async getAllUrls() {
+    await this.ensureInitialized()
+    
+    return new Promise((resolve, reject) => {
+      const results = []
+      
+      createReadStream(this.urlsFile)
+        .pipe(csv())
+        .on('data', (data) => {
+          // Filtere leere Einträge (CSV-Header oder ungültige Daten)
+          if (data.shortCode && 
+              data.shortCode.trim() !== '' && 
+              data.shortCode !== 'shortCode' && // Filtere CSV-Header
+              data.originalUrl && 
+              data.originalUrl.trim() !== '' &&
+              data.originalUrl !== 'originalUrl') { // Filtere CSV-Header
+            results.push(data)
+          }
+        })
+        .on('end', () => resolve(results))
+        .on('error', reject)
+    })
   }
 
   async getClickStats(shortCode) {

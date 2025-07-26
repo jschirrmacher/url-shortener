@@ -6,7 +6,7 @@ class UrlService {
     this.shortCodeLength = 6 // 6 Zeichen = ~56 Milliarden mögliche Kombinationen
   }
 
-  async createShortUrl(originalUrl, customCode) {
+  async createShortUrl(originalUrl, customCode, title) {
     // Validiere URL
     if (!this.isValidUrl(originalUrl)) {
       throw createError({
@@ -34,8 +34,8 @@ class UrlService {
       } while (await csvService.getUrl(shortCode))
     }
 
-    // Speichere URL
-    const urlRecord = await csvService.saveUrl(shortCode, originalUrl)
+    // Speichere URL mit Titel
+    const urlRecord = await csvService.saveUrl(shortCode, originalUrl, 'anonymous', title)
     
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
     
@@ -43,7 +43,8 @@ class UrlService {
       shortCode,
       originalUrl,
       shortUrl: `${baseUrl}/${shortCode}`,
-      createdAt: urlRecord.createdAt
+      createdAt: urlRecord.createdAt,
+      title: urlRecord.title
     }
   }
 
@@ -59,6 +60,33 @@ class UrlService {
     const referrer = headers['referer'] || ''
 
     await csvService.saveClick(shortCode, ip, userAgent, referrer)
+  }
+
+  async getAllUrls() {
+    const urls = await csvService.getAllUrls()
+    
+    // Erweitere jede URL um Klick-Statistiken
+    const urlsWithStats = await Promise.all(
+      urls
+        .filter(url => url.shortCode && url.originalUrl) // Filtere ungültige Einträge
+        .map(async (url) => {
+          const stats = await csvService.getClickStats(url.shortCode)
+          const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
+          
+          return {
+            shortCode: url.shortCode,
+            originalUrl: url.originalUrl,
+            shortUrl: `${baseUrl}/${url.shortCode}`,
+            createdAt: url.createdAt,
+            updatedAt: url.updatedAt || null,
+            title: url.title || '',
+            totalClicks: stats.totalClicks
+          }
+        })
+    )
+
+    // Sortiere nach Erstellungsdatum (neueste zuerst)
+    return urlsWithStats.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
   }
 
   async getUrlStats(shortCode) {
@@ -77,7 +105,7 @@ class UrlService {
     }
   }
 
-  async updateUrl(shortCode, newOriginalUrl) {
+  async updateUrl(shortCode, newOriginalUrl, newTitle = null) {
     // Validiere neue URL
     if (!this.isValidUrl(newOriginalUrl)) {
       const error = new Error('Ungültige URL')
@@ -94,7 +122,7 @@ class UrlService {
     }
 
     // Update URL in CSV
-    const updatedRecord = await csvService.updateUrl(shortCode, newOriginalUrl)
+    const updatedRecord = await csvService.updateUrl(shortCode, newOriginalUrl, newTitle)
     
     const baseUrl = process.env.BASE_URL || 'http://localhost:3000'
     
@@ -103,7 +131,8 @@ class UrlService {
       originalUrl: newOriginalUrl,
       shortUrl: `${baseUrl}/${shortCode}`,
       updatedAt: updatedRecord.updatedAt,
-      previousUrl: existingUrl.originalUrl
+      previousUrl: existingUrl.originalUrl,
+      title: updatedRecord.title
     }
   }
 
