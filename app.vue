@@ -1,10 +1,4 @@
-<template>
-  <div class="min-h-screen bg-gray-100">
-    <NuxtPage />
-  </div>
-</template>
-
-<script setup>
+<script setup lang="ts">
 // Global Meta
 useHead({
   titleTemplate: '%s | URL-Shortener',
@@ -14,3 +8,13 @@ useHead({
   ]
 })
 </script>
+
+<template>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
+</template>
+
+<style>
+/* Global Styles falls nötig */
+</style>
