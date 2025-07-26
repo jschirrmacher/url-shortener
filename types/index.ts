@@ -1,6 +1,15 @@
-export interface UrlRecord {
+// Gemeinsame TypeScript-Typen für URL-Shortener
+
+export interface User {
+  username: string
+  role: 'admin' | 'user'
+  createdAt: string
+}
+
+export type UrlRecord ={
   shortCode: string
   originalUrl: string
+  title?: string
   createdAt: string
   createdBy: string
 }
@@ -11,34 +20,57 @@ export interface ClickRecord {
   ip: string
   userAgent: string
   referrer: string
-  sourceType: SourceType
+  sourceType: string
 }
 
-export type SourceType = 'website' | 'email_or_direct' | 'qr_code'
-
-export interface UrlStats {
-  shortCode: string
-  originalUrl: string
-  createdAt: string
+export interface UrlStats extends UrlRecord {
   totalClicks: number
-  sourceTypes: Record<SourceType, number>
+  uniqueClicks: number
+  sourceTypes: Record<string, number>
   dailyClicks: Record<string, number>
   referrers: Record<string, number>
+  recentClicks: Array<{
+    timestamp: string
+    sourceType: string
+    referrer: string
+  }>
 }
 
-export interface CreateUrlRequest {
+export interface UpdateUrlRequest {
   originalUrl: string
-  customCode?: string
+  title?: string
 }
 
-export interface CreateUrlResponse {
+export interface UpdateUrlResponse {
   shortCode: string
   originalUrl: string
+  title?: string
+  updatedAt: string
+  previousUrl: string
   shortUrl: string
-  createdAt: string
 }
 
 export interface ApiError {
-  message: string
   statusCode: number
+  statusMessage: string
+  data?: {
+    message?: string
+  }
+  message?: string
+}
+
+export interface AuthUser {
+  username: string
+  userId: string
+  iat: number
+  exp: number
+}
+
+export interface Click {
+  shortCode: string
+  timestamp: string
+  ip: string
+  userAgent: string
+  referrer: string
+  sourceType: 'website' | 'email' | 'qr' | 'direct'
 }
