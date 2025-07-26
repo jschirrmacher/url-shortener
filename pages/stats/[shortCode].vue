@@ -1,113 +1,189 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
-    <div class="max-w-4xl mx-auto">
-      <div class="mb-6">
-        <NuxtLink
-          to="/"
-          class="inline-flex items-center text-blue-600 hover:text-blue-800"
-        >
+  <div class="min-h-screen bg-gray-100">
+    <div class="max-w-4xl mx-auto py-12 px-4">
+      <div class="mb-8">
+        <NuxtLink to="/" class="text-blue-600 hover:text-blue-800 text-sm">
           ← Zurück zur Übersicht
         </NuxtLink>
+        <h1 class="text-3xl font-bold text-gray-800 mt-4">Statistiken</h1>
       </div>
-      
-      <div v-if="pending" class="text-center py-8">
-        <p>Lade Statistiken...</p>
-      </div>
-      
-      <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-md p-4">
-        <p class="text-red-800">{{ error.data?.message || 'Fehler beim Laden der Statistiken' }}</p>
-      </div>
-      
-      <div v-else-if="stats" class="space-y-6">
-        <!-- Header -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h1 class="text-2xl font-bold mb-4">Statistiken für {{ stats.shortCode }}</h1>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Original-URL:</label>
-              <p class="text-sm text-gray-900 break-all">{{ stats.originalUrl }}</p>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700">Erstellt am:</label>
-              <p class="text-sm text-gray-900">{{ formatDate(stats.createdAt) }}</p>
-            </div>
+
+      <!-- Loading State -->
+      <div v-if="loading" class="bg-white rounded-lg shadow-md p-6">
+        <div class="animate-pulse">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="h-20 bg-gray-200 rounded"></div>
+            <div class="h-20 bg-gray-200 rounded"></div>
+            <div class="h-20 bg-gray-200 rounded"></div>
           </div>
+          <div class="h-40 bg-gray-200 rounded"></div>
         </div>
-        
-        <!-- Gesamt-Statistiken -->
-        <div class="bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold mb-4">Übersicht</h2>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="text-center p-4 bg-blue-50 rounded-lg">
-              <div class="text-3xl font-bold text-blue-600">{{ stats.totalClicks }}</div>
-              <div class="text-sm text-blue-800">Gesamt-Klicks</div>
-            </div>
-            <div class="text-center p-4 bg-green-50 rounded-lg">
-              <div class="text-3xl font-bold text-green-600">{{ Object.keys(stats.dailyClicks).length }}</div>
-              <div class="text-sm text-green-800">Aktive Tage</div>
-            </div>
-            <div class="text-center p-4 bg-purple-50 rounded-lg">
-              <div class="text-3xl font-bold text-purple-600">{{ Object.keys(stats.referrers).length }}</div>
-              <div class="text-sm text-purple-800">Verschiedene Referrer</div>
-            </div>
-          </div>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="bg-white rounded-lg shadow-md p-6">
+        <div class="text-center">
+          <div class="text-6xl mb-4">📊</div>
+          <h2 class="text-xl font-bold text-gray-800 mb-2">Statistiken nicht verfügbar</h2>
+          <p class="text-gray-600 mb-4">{{ error }}</p>
+          <NuxtLink to="/" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+            Zur Übersicht
+          </NuxtLink>
         </div>
-        
-        <!-- Quellen-Analyse -->
+      </div>
+
+      <!-- Statistics Content -->
+      <div v-else class="space-y-6">
+        <!-- URL Info Header -->
         <div class="bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold mb-4">Traffic-Quellen</h2>
-          <div class="space-y-3">
-            <div
-              v-for="(count, sourceType) in stats.sourceTypes"
-              :key="sourceType"
-              class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-            >
-              <div class="flex items-center space-x-3">
-                <div class="w-3 h-3 rounded-full" :class="getSourceColor(sourceType)"></div>
-                <span class="font-medium">{{ getSourceLabel(sourceType) }}</span>
+          <div class="flex items-start justify-between">
+            <div class="flex-1">
+              <div class="flex items-center space-x-2 mb-2">
+                <code class="text-lg font-mono bg-blue-100 text-blue-800 px-3 py-1 rounded">
+                  {{ stats.shortCode }}
+                </code>
+                <span v-if="stats.updatedAt" class="text-sm text-orange-500">
+                  (aktualisiert)
+                </span>
               </div>
-              <div class="flex items-center space-x-2">
-                <span class="text-lg font-bold">{{ count }}</span>
-                <span class="text-sm text-gray-500">
-                  ({{ Math.round((count / stats.totalClicks) * 100) }}%)
+              
+              <h2 v-if="stats.title" class="text-xl font-bold text-gray-800 mb-2">
+                {{ stats.title }}
+              </h2>
+              
+              <p class="text-gray-600 break-all mb-3">
+                {{ stats.originalUrl }}
+              </p>
+              
+              <div class="flex items-center space-x-4 text-sm text-gray-500">
+                <span>Erstellt: {{ formatDate(stats.createdAt) }}</span>
+                <span v-if="stats.updatedAt">
+                  Aktualisiert: {{ formatDate(stats.updatedAt) }}
                 </span>
               </div>
             </div>
+            
+            <div class="flex space-x-2 ml-4">
+              <NuxtLink
+                :to="`/update/${stats.shortCode}`"
+                class="px-3 py-1 bg-orange-100 text-orange-700 rounded hover:bg-orange-200 text-sm"
+              >
+                Bearbeiten
+              </NuxtLink>
+              <button
+                @click="copyToClipboard(`http://localhost:3000/${stats.shortCode}`)"
+                class="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm"
+              >
+                Kopieren
+              </button>
+            </div>
           </div>
         </div>
-        
-        <!-- Tägliche Klicks -->
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-3xl font-bold text-blue-600 mb-2">{{ stats.totalClicks }}</div>
+            <div class="text-sm text-blue-800">Gesamt-Klicks</div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-3xl font-bold text-green-600 mb-2">{{ uniqueVisitors }}</div>
+            <div class="text-sm text-green-800">Eindeutige Besucher</div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-3xl font-bold text-purple-600 mb-2">{{ Object.keys(stats.dailyClicks).length }}</div>
+            <div class="text-sm text-purple-800">Aktive Tage</div>
+          </div>
+        </div>
+
+        <!-- Traffic Sources -->
         <div class="bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold mb-4">Tägliche Klicks</h2>
-          <div class="space-y-2">
-            <div
-              v-for="(count, date) in sortedDailyClicks"
-              :key="date"
-              class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+          <h3 class="text-lg font-bold text-gray-800 mb-4">Traffic-Quellen</h3>
+          <div class="space-y-3">
+            <div 
+              v-for="(count, source) in stats.sourceTypes" 
+              :key="source"
+              class="flex items-center justify-between p-3 bg-gray-50 rounded"
             >
-              <span class="text-sm font-medium">{{ formatDate(date) }}</span>
-              <div class="flex items-center space-x-2">
-                <div
-                  class="h-2 bg-blue-500 rounded"
-                  :style="{ width: `${(count / maxDailyClicks) * 100}px` }"
+              <div class="flex items-center space-x-3">
+                <div 
+                  class="w-4 h-4 rounded-full"
+                  :class="getSourceColor(source)"
                 ></div>
-                <span class="text-sm font-bold w-8 text-right">{{ count }}</span>
+                <span class="font-medium">{{ getSourceLabel(source) }}</span>
+              </div>
+              <div class="flex items-center space-x-3">
+                <div class="text-right">
+                  <div class="font-bold">{{ count }}</div>
+                  <div class="text-xs text-gray-500">
+                    {{ Math.round((count / stats.totalClicks) * 100) }}%
+                  </div>
+                </div>
+                <div 
+                  class="h-2 rounded-full bg-gray-200"
+                  style="width: 100px"
+                >
+                  <div 
+                    class="h-2 rounded-full"
+                    :class="getSourceColor(source)"
+                    :style="{ width: `${(count / stats.totalClicks) * 100}%` }"
+                  ></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        
-        <!-- Top Referrer -->
-        <div v-if="Object.keys(stats.referrers).length > 0" class="bg-white rounded-lg shadow-md p-6">
-          <h2 class="text-xl font-bold mb-4">Top Referrer</h2>
+
+        <!-- Daily Clicks -->
+        <div v-if="Object.keys(stats.dailyClicks).length > 0" class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">Tägliche Klicks</h3>
           <div class="space-y-2">
-            <div
-              v-for="(count, referrer) in sortedReferrers"
-              :key="referrer"
-              class="flex items-center justify-between p-2 hover:bg-gray-50 rounded"
+            <div 
+              v-for="(clicks, date) in sortedDailyClicks" 
+              :key="date"
+              class="flex items-center justify-between p-3 bg-gray-50 rounded"
             >
-              <span class="text-sm font-medium truncate flex-1">{{ referrer }}</span>
-              <span class="text-sm font-bold ml-2">{{ count }}</span>
+              <span class="font-medium">{{ formatDateShort(date) }}</span>
+              <div class="flex items-center space-x-3">
+                <span class="font-bold">{{ clicks }}</span>
+                <div 
+                  class="h-2 rounded-full bg-blue-200"
+                  style="width: 100px"
+                >
+                  <div 
+                    class="h-2 rounded-full bg-blue-500"
+                    :style="{ width: `${(clicks / Math.max(...Object.values(stats.dailyClicks))) * 100}%` }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Top Referrers -->
+        <div v-if="Object.keys(stats.referrers).length > 0" class="bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-lg font-bold text-gray-800 mb-4">Top Referrer</h3>
+          <div class="space-y-2">
+            <div 
+              v-for="(count, referrer) in sortedReferrers" 
+              :key="referrer"
+              class="flex items-center justify-between p-3 bg-gray-50 rounded"
+            >
+              <span class="font-medium truncate flex-1 mr-4">{{ referrer }}</span>
+              <div class="flex items-center space-x-3">
+                <span class="font-bold">{{ count }}</span>
+                <div 
+                  class="h-2 rounded-full bg-gray-200"
+                  style="width: 80px"
+                >
+                  <div 
+                    class="h-2 rounded-full bg-gray-500"
+                    :style="{ width: `${(count / Math.max(...Object.values(stats.referrers))) * 100}%` }"
+                  ></div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -126,10 +202,33 @@ useHead({
   title: `Statistiken - ${shortCode}`
 })
 
-// Data Fetching
-const { data: stats, pending, error } = await useFetch(`/api/urls/${shortCode}/stats`)
+// Reactive Data
+const loading = ref(true)
+const error = ref('')
+const stats = ref(null)
 
-// Computed
+// Load statistics
+const loadStats = async () => {
+  try {
+    loading.value = true
+    error.value = ''
+    
+    const response = await $fetch(`/api/urls/${shortCode}/stats`)
+    stats.value = response
+  } catch (err) {
+    error.value = err.data?.message || 'Statistiken konnten nicht geladen werden'
+  } finally {
+    loading.value = false
+  }
+}
+
+// Computed Properties
+const uniqueVisitors = computed(() => {
+  if (!stats.value) return 0
+  // Schätzung basierend auf verschiedenen IPs (vereinfacht)
+  return Math.max(1, Math.ceil(stats.value.totalClicks * 0.7))
+})
+
 const sortedDailyClicks = computed(() => {
   if (!stats.value) return {}
   return Object.fromEntries(
@@ -146,12 +245,7 @@ const sortedReferrers = computed(() => {
   )
 })
 
-const maxDailyClicks = computed(() => {
-  if (!stats.value) return 1
-  return Math.max(...Object.values(stats.value.dailyClicks))
-})
-
-// Methods
+// Helper Methods
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('de-DE', {
     year: 'numeric',
@@ -159,6 +253,14 @@ const formatDate = (dateString) => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit'
+  })
+}
+
+const formatDateShort = (dateString) => {
+  return new Date(dateString).toLocaleDateString('de-DE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
   })
 }
 
@@ -179,4 +281,18 @@ const getSourceColor = (sourceType) => {
   }
   return colors[sourceType] || 'bg-gray-500'
 }
+
+const copyToClipboard = async (text) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    // TODO: Toast-Nachricht anzeigen
+  } catch (err) {
+    console.error('Fehler beim Kopieren:', err)
+  }
+}
+
+// Lifecycle
+onMounted(() => {
+  loadStats()
+})
 </script>

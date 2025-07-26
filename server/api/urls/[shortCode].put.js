@@ -19,7 +19,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await urlService.updateUrl(shortCode, body.originalUrl)
+    const result = await urlService.updateUrl(shortCode, body.originalUrl, body.title)
     
     return result
   } catch (error) {

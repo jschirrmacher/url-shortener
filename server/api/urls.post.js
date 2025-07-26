@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const result = await urlService.createShortUrl(body.originalUrl, body.customCode)
+    const result = await urlService.createShortUrl(body.originalUrl, body.customCode, body.title)
     
     return result
   } catch (error) {
