@@ -28,6 +28,13 @@ export default defineNuxtConfig({
       'composables/**',
       'utils/**',
       'types/**'
+    ],
+    // Explizit definePageMeta importieren
+    presets: [
+      {
+        from: '#app',
+        imports: ['definePageMeta']
+      }
     ]
   }
 })
