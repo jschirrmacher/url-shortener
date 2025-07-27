@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
-    "bcryptjs": "3.0.2",
     "csv-parser": "^3.0.0",
     "csv-writer": "^1.6.0",
     "jsonwebtoken": "9.0.2",

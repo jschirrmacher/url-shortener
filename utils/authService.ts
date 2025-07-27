@@ -1,7 +1,11 @@
 import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+import { promisify } from 'util'
 import csvService from './csvService'
 import type { User, AuthUser } from '~/types/index'
+
+// Promisify crypto.scrypt für async/await
+const scrypt = promisify(crypto.scrypt)
 
 interface CreateUserData {
   username: string
@@ -20,6 +24,27 @@ class AuthService {
   private readonly jwtSecret: string = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production'
   private readonly jwtExpiresIn: string = process.env.JWT_EXPIRES_IN || '7d'
   private readonly usersFile: string = './data/users.csv'
+  private readonly saltLength = 32
+  private readonly keyLength = 64
+
+  // Hash password mit crypto.scrypt
+  private async hashPassword(password: string): Promise<string> {
+    const salt = crypto.randomBytes(this.saltLength)
+    const derivedKey = await scrypt(password, salt, this.keyLength) as Buffer
+    return `${salt.toString('hex')}:${derivedKey.toString('hex')}`
+  }
+
+  // Verify password mit crypto.scrypt
+  private async verifyPassword(password: string, hashedPassword: string): Promise<boolean> {
+    const [saltHex, keyHex] = hashedPassword.split(':')
+    if (!saltHex || !keyHex) {
+      return false
+    }
+    const salt = Buffer.from(saltHex, 'hex')
+    const key = Buffer.from(keyHex, 'hex')
+    const derivedKey = await scrypt(password, salt, this.keyLength) as Buffer
+    return crypto.timingSafeEqual(key, derivedKey)
+  }
 
   async createUser(userData: CreateUserData): Promise<User> {
     const { username, password, role = 'user' } = userData
@@ -31,7 +56,7 @@ class AuthService {
     }
 
     // Hash Passwort
-    const hashedPassword = await bcrypt.hash(password, 12)
+    const hashedPassword = await this.hashPassword(password)
 
     const newUser: User = {
       username,
@@ -64,7 +89,7 @@ class AuthService {
         return { success: false, message: 'Ungültige Anmeldedaten' }
       }
 
-      const isValidPassword = await bcrypt.compare(password, userRecord.password as string)
+      const isValidPassword = await this.verifyPassword(password, userRecord.password as string)
       if (!isValidPassword) {
         return { success: false, message: 'Ungültige Anmeldedaten' }
       }
@@ -152,14 +177,14 @@ class AuthService {
     }
 
     const user = users[userIndex]
-    const isValidPassword = await bcrypt.compare(currentPassword, user.password as string)
+    const isValidPassword = await this.verifyPassword(currentPassword, user.password as string)
     
     if (!isValidPassword) {
       throw new Error('Aktuelles Passwort ist falsch')
     }
 
     // Hash neues Passwort
-    const hashedNewPassword = await bcrypt.hash(newPassword, 12)
+    const hashedNewPassword = await this.hashPassword(newPassword)
     users[userIndex].password = hashedNewPassword
 
     await csvService.writeCsv(this.usersFile, users, [
