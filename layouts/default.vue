@@ -13,13 +13,13 @@ const { user } = useAuth()
             <NuxtLink to="/" class="text-xl font-bold text-gray-800 hover:text-orange-600">
               🔗 URL-Shortener
             </NuxtLink>
-            
+
             <!-- Navigation Links (nur für eingeloggte Benutzer) -->
             <ClientOnly>
               <nav v-if="user" class="hidden md:flex space-x-4">
-                <NuxtLink 
+                <NuxtLink
                   v-if="user.role === 'admin'"
-                  to="/admin" 
+                  to="/admin"
                   class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium"
                   active-class="text-orange-600 bg-orange-50"
                 >
@@ -28,14 +28,14 @@ const { user } = useAuth()
               </nav>
             </ClientOnly>
           </div>
-          
+
           <!-- Right side content -->
           <div>
             <!-- User Menu und Login Button nur client-side -->
             <ClientOnly>
               <!-- User Menu (für eingeloggte Benutzer) -->
               <UserMenu v-if="user" />
-              
+
               <!-- Login Button (für nicht-eingeloggte Benutzer) -->
               <NuxtLink
                 v-else
@@ -44,7 +44,7 @@ const { user } = useAuth()
               >
                 Anmelden
               </NuxtLink>
-              
+
               <!-- Fallback während Hydration -->
               <template #fallback>
                 <div class="px-4 py-2 bg-gray-200 text-gray-500 rounded-md animate-pulse">

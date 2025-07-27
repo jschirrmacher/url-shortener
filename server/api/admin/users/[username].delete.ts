@@ -10,14 +10,14 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
   try {
     // Prüfe Admin-Berechtigung
     const admin = await requireAdmin(event)
-    
+
     // Hole Username aus URL-Parameter
     const username = getRouterParam(event, 'username')
-    
+
     if (!username) {
       throw createError({
         statusCode: 400,
-        message: 'Benutzername ist erforderlich'
+        message: 'Benutzername ist erforderlich',
       })
     }
 
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
     if (username === admin.username) {
       throw createError({
         statusCode: 400,
-        message: 'Sie können sich nicht selbst löschen'
+        message: 'Sie können sich nicht selbst löschen',
       })
     }
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
     if (!existingUser) {
       throw createError({
         statusCode: 404,
-        message: 'Benutzer nicht gefunden'
+        message: 'Benutzer nicht gefunden',
       })
     }
 
@@ -43,17 +43,18 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
 
     return {
       success: true,
-      message: `Benutzer "${username}" wurde erfolgreich gelöscht`
+      message: `Benutzer "${username}" wurde erfolgreich gelöscht`,
     }
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
-    
-    const errorMessage = error instanceof Error ? error.message : 'Benutzer konnte nicht gelöscht werden'
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'Benutzer konnte nicht gelöscht werden'
     throw createError({
       statusCode: 500,
-      message: errorMessage
+      message: errorMessage,
     })
   }
 })

@@ -18,15 +18,18 @@ Ein moderner URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit 
 - **Styling**: Tailwind CSS via @nuxt/ui
 - **Datenspeicher**: CSV-Dateien
 - **Node.js**: Version 22+
+- **Code-Formatierung**: Prettier
 
 ## Analytics-Features
 
 ### Quellenidentifikation (ohne UTM-Parameter)
+
 - **Website-Traffic**: Erkennung über Referrer-Header
 - **E-Mail/Direktaufruf**: Kein Referrer + Desktop User-Agent
 - **QR-Code**: Kein Referrer + Mobile User-Agent
 
 ### Tracking-Daten
+
 - Klick-Zählung pro URL
 - Tägliche Statistiken
 - Top-Referrer-Analyse
@@ -41,6 +44,12 @@ npm install
 
 # Entwicklungsserver starten
 npm run dev
+
+# Code formatieren (vor Commit!)
+npm run format
+
+# Formatierung prüfen
+npm run format:check
 
 # Für Produktion bauen
 npm run build
@@ -70,21 +79,30 @@ npm run build
 ## CSV-Datenstruktur
 
 ### urls.csv
+
 ```csv
 shortCode,originalUrl,createdAt,createdBy
 abc123,https://example.com,2024-01-01T12:00:00.000Z,anonymous
 ```
 
 ### clicks.csv
+
 ```csv
 shortCode,timestamp,ip,userAgent,referrer,sourceType
 abc123,2024-01-01T12:00:00.000Z,192.168.1.1,Mozilla/5.0...,https://google.com,website
 ```
 
+## 📖 Dokumentation
+
+- **[Development Guidelines](DEVELOPMENT.md)** - Code-Stil, Prettier, Architektur-Entscheidungen
+- **[Admin Guide](ADMIN_GUIDE.md)** - Benutzer-Management und Administration
+
 ## API-Endpunkte
 
 ### POST /api/urls
+
 Erstellt eine neue Kurz-URL
+
 ```json
 {
   "originalUrl": "https://example.com",
@@ -93,17 +111,21 @@ Erstellt eine neue Kurz-URL
 ```
 
 ### GET /api/urls
+
 Listet alle erstellten URLs mit Klick-Statistiken
 
 ### GET /api/urls/[shortCode]/stats
+
 Detaillierte Statistiken für eine spezifische URL
 
 ### GET /api/[shortCode]
+
 Weiterleitung zur Original-URL (mit Tracking)
 
 ## Entwicklung
 
 Das Projekt folgt den Entwicklungsrichtlinien in `.amazonq/rules/`:
+
 - TypeScript strict mode
 - Vue 3 Composition API
 - Nuxt3 Auto-Imports

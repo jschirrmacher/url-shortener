@@ -21,7 +21,7 @@ interface ApiError {
 export const useAuth = () => {
   // Globaler State mit useState (Nuxt3)
   const user = useState<User | null>('auth.user', () => null)
-  
+
   const isAuthenticated = computed((): boolean => !!user.value)
   const isAdmin = computed((): boolean => user.value?.role === 'admin')
 
@@ -41,13 +41,13 @@ export const useAuth = () => {
   const login = async (username: string, password: string): Promise<LoginResponse> => {
     const response = await $fetch<LoginResponse>('/api/auth/login', {
       method: 'POST',
-      body: { username, password }
+      body: { username, password },
     })
-    
+
     if (response.success) {
       user.value = response.user
     }
-    
+
     return response
   }
 
@@ -55,7 +55,7 @@ export const useAuth = () => {
   const logout = async (): Promise<void> => {
     try {
       await $fetch('/api/auth/logout', {
-        method: 'POST'
+        method: 'POST',
       })
     } finally {
       user.value = null
@@ -80,6 +80,6 @@ export const useAuth = () => {
     login,
     logout,
     fetchUser,
-    initAuth
+    initAuth,
   }
 }

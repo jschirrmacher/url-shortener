@@ -6,7 +6,7 @@ export interface User {
   createdAt: string
 }
 
-export type UrlRecord ={
+export type UrlRecord = {
   shortCode: string
   originalUrl: string
   title?: string

@@ -17,7 +17,7 @@ const shortCode = route.params.shortCode as string
 
 // Meta
 useHead({
-  title: `URL bearbeiten - ${shortCode}`
+  title: `URL bearbeiten - ${shortCode}`,
 })
 
 // Reactive Data
@@ -36,7 +36,7 @@ const loadUrlData = async (): Promise<void> => {
   try {
     loading.value = true
     error.value = ''
-    
+
     const response = await $fetch<UrlStats>(`/api/urls/${shortCode}/stats`)
     urlData.value = response
     newUrl.value = response.originalUrl // Pre-fill with current URL
@@ -63,14 +63,15 @@ const updateUrl = async (): Promise<void> => {
     const response = await $fetch<UpdateUrlResponse>(`/api/urls/${shortCode}`, {
       method: 'PUT',
       body: {
-        originalUrl: newUrl.value.trim()
-      }
+        originalUrl: newUrl.value.trim(),
+      },
     })
-    
+
     updateResult.value = response
   } catch (err: unknown) {
     const apiError = err as ApiError
-    updateError.value = apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Aktualisieren der URL'
+    updateError.value =
+      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Aktualisieren der URL'
   } finally {
     updateLoading.value = false
   }
@@ -83,7 +84,7 @@ const formatDate = (dateString: string): string => {
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 
@@ -119,13 +120,15 @@ onMounted(async (): Promise<void> => {
       <!-- Current URL Info -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Aktuelle URL-Informationen</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Short Code</label>
-            <p class="text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded">{{ urlData.shortCode }}</p>
+            <p class="text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded">
+              {{ urlData.shortCode }}
+            </p>
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Erstellt am</label>
             <p class="text-gray-900">{{ formatDate(urlData.createdAt) }}</p>
@@ -134,7 +137,9 @@ onMounted(async (): Promise<void> => {
 
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">Aktuelle URL</label>
-          <p class="text-gray-900 break-all bg-gray-50 px-3 py-2 rounded">{{ urlData.originalUrl }}</p>
+          <p class="text-gray-900 break-all bg-gray-50 px-3 py-2 rounded">
+            {{ urlData.originalUrl }}
+          </p>
         </div>
 
         <div class="mt-4">
@@ -146,7 +151,7 @@ onMounted(async (): Promise<void> => {
       <!-- Update Form -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">URL aktualisieren</h2>
-        
+
         <form @submit.prevent="updateUrl" class="space-y-4">
           <div>
             <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-2">
@@ -159,7 +164,7 @@ onMounted(async (): Promise<void> => {
               required
               placeholder="https://example.com"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
+            />
           </div>
 
           <button
@@ -172,12 +177,18 @@ onMounted(async (): Promise<void> => {
         </form>
 
         <!-- Update Success -->
-        <div v-if="updateResult" class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+        <div
+          v-if="updateResult"
+          class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"
+        >
           ✅ {{ updateResult.message }}
         </div>
 
         <!-- Update Error -->
-        <div v-if="updateError" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div
+          v-if="updateError"
+          class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
+        >
           ❌ {{ updateError }}
         </div>
       </div>

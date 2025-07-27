@@ -17,7 +17,7 @@ const shortCode = route.params.shortCode as string
 
 // Meta
 useHead({
-  title: `Statistiken - ${shortCode}`
+  title: `Statistiken - ${shortCode}`,
 })
 
 // Reactive Data
@@ -30,12 +30,13 @@ const loadStats = async (): Promise<void> => {
   try {
     loading.value = true
     error.value = ''
-    
+
     const response = await $fetch<UrlStats>(`/api/urls/${shortCode}/stats`)
     stats.value = response
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    error.value = apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der Statistiken'
+    error.value =
+      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der Statistiken'
   } finally {
     loading.value = false
   }
@@ -48,17 +49,22 @@ const formatDate = (dateString: string): string => {
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 
 const getSourceTypeLabel = (sourceType: string): string => {
   switch (sourceType) {
-    case 'website': return '🌐 Website'
-    case 'email': return '📧 E-Mail'
-    case 'qr': return '📱 QR-Code'
-    case 'direct': return '🔗 Direkt'
-    default: return '❓ Unbekannt'
+    case 'website':
+      return '🌐 Website'
+    case 'email':
+      return '📧 E-Mail'
+    case 'qr':
+      return '📱 QR-Code'
+    case 'direct':
+      return '🔗 Direkt'
+    default:
+      return '❓ Unbekannt'
   }
 }
 
@@ -104,13 +110,15 @@ onMounted(async (): Promise<void> => {
       <!-- URL Info Card -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">URL-Informationen</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Short Code</label>
             <div class="flex items-center space-x-2">
-              <p class="text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded">{{ stats.shortCode }}</p>
-              <button 
+              <p class="text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded">
+                {{ stats.shortCode }}
+              </p>
+              <button
                 @click="copyToClipboard(`http://localhost:3000/${stats.shortCode}`)"
                 class="px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
               >
@@ -118,7 +126,7 @@ onMounted(async (): Promise<void> => {
               </button>
             </div>
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Erstellt am</label>
             <p class="text-gray-900">{{ formatDate(stats.createdAt) }}</p>
@@ -127,7 +135,9 @@ onMounted(async (): Promise<void> => {
 
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">Original-URL</label>
-          <p class="text-gray-900 break-all bg-gray-50 px-3 py-2 rounded">{{ stats.originalUrl }}</p>
+          <p class="text-gray-900 break-all bg-gray-50 px-3 py-2 rounded">
+            {{ stats.originalUrl }}
+          </p>
         </div>
 
         <div v-if="stats.title" class="mt-4">
@@ -139,15 +149,19 @@ onMounted(async (): Promise<void> => {
       <!-- Click Statistics -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Klick-Statistiken</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div class="bg-blue-50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-blue-600">{{ stats.totalClicks }}</div>
+            <div class="text-2xl font-bold text-blue-600">
+              {{ stats.totalClicks }}
+            </div>
             <div class="text-sm text-blue-800">Gesamt-Klicks</div>
           </div>
-          
+
           <div class="bg-green-50 rounded-lg p-4 text-center">
-            <div class="text-2xl font-bold text-green-600">{{ stats.uniqueClicks }}</div>
+            <div class="text-2xl font-bold text-green-600">
+              {{ stats.uniqueClicks }}
+            </div>
             <div class="text-sm text-green-800">Einzigartige Besucher</div>
           </div>
         </div>
@@ -156,8 +170,8 @@ onMounted(async (): Promise<void> => {
         <div v-if="stats.sourceTypes && Object.keys(stats.sourceTypes).length > 0">
           <h3 class="text-lg font-semibold text-gray-800 mb-3">Traffic-Quellen</h3>
           <div class="space-y-2">
-            <div 
-              v-for="(count, sourceType) in stats.sourceTypes" 
+            <div
+              v-for="(count, sourceType) in stats.sourceTypes"
               :key="sourceType"
               class="flex items-center justify-between bg-gray-50 px-3 py-2 rounded"
             >
@@ -169,26 +183,39 @@ onMounted(async (): Promise<void> => {
       </div>
 
       <!-- Recent Clicks -->
-      <div v-if="stats.recentClicks && stats.recentClicks.length > 0" class="bg-white rounded-lg shadow-md p-6">
+      <div
+        v-if="stats.recentClicks && stats.recentClicks.length > 0"
+        class="bg-white rounded-lg shadow-md p-6"
+      >
         <h2 class="text-xl font-bold text-gray-800 mb-4">Letzte Klicks</h2>
-        
+
         <div class="overflow-x-auto">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Zeitpunkt
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Quelle
                 </th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
                   Referrer
                 </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <tr v-for="(click, index) in stats.recentClicks" :key="index" class="hover:bg-gray-50">
+              <tr
+                v-for="(click, index) in stats.recentClicks"
+                :key="index"
+                class="hover:bg-gray-50"
+              >
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                   {{ formatDate(click.timestamp) }}
                 </td>

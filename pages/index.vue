@@ -3,7 +3,7 @@ import type { UrlRecord } from '~/types/index'
 
 // Meta
 useHead({
-  title: 'URL Shortener - Dashboard'
+  title: 'URL Shortener - Dashboard',
 })
 
 // Auth Check
@@ -15,7 +15,7 @@ onMounted(async (): Promise<void> => {
     await navigateTo('/login')
     return
   }
-  
+
   // Lade URLs nach erfolgreicher Auth
   await loadUrls()
 })
@@ -47,22 +47,23 @@ const createShortUrl = async (): Promise<void> => {
       body: {
         originalUrl: originalUrl.value.trim(),
         customCode: customCode.value.trim() || undefined,
-        title: title.value.trim() || undefined
-      }
+        title: title.value.trim() || undefined,
+      },
     })
 
     success.value = `Short-URL erstellt: ${response.shortUrl}`
-    
+
     // Reset form
     originalUrl.value = ''
     customCode.value = ''
     title.value = ''
-    
+
     // Reload URLs
     await loadUrls()
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    error.value = apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Erstellen der Short-URL'
+    error.value =
+      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Erstellen der Short-URL'
   } finally {
     loading.value = false
   }
@@ -88,7 +89,7 @@ const formatDate = (dateString: string): string => {
     month: 'short',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 
@@ -114,7 +115,7 @@ const copyToClipboard = async (text: string): Promise<void> => {
     <!-- URL Creation Form -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-8">
       <h2 class="text-xl font-bold text-gray-800 mb-4">Neue Short-URL erstellen</h2>
-      
+
       <form @submit.prevent="createShortUrl" class="space-y-4">
         <div>
           <label for="originalUrl" class="block text-sm font-medium text-gray-700 mb-2">
@@ -127,7 +128,7 @@ const copyToClipboard = async (text: string): Promise<void> => {
             required
             placeholder="https://example.com"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-          >
+          />
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -141,9 +142,9 @@ const copyToClipboard = async (text: string): Promise<void> => {
               type="text"
               placeholder="mein-code"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
+            />
           </div>
-          
+
           <div>
             <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
               Titel (optional)
@@ -154,7 +155,7 @@ const copyToClipboard = async (text: string): Promise<void> => {
               type="text"
               placeholder="Beschreibung der URL"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
+            />
           </div>
         </div>
 
@@ -168,7 +169,10 @@ const copyToClipboard = async (text: string): Promise<void> => {
       </form>
 
       <!-- Success Message -->
-      <div v-if="success" class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+      <div
+        v-if="success"
+        class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"
+      >
         ✅ {{ success }}
       </div>
 
@@ -181,7 +185,7 @@ const copyToClipboard = async (text: string): Promise<void> => {
     <!-- URLs List -->
     <div class="bg-white rounded-lg shadow-md p-6">
       <h2 class="text-xl font-bold text-gray-800 mb-4">Meine URLs</h2>
-      
+
       <!-- Loading State -->
       <div v-if="urlsLoading" class="text-center py-8">
         <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto"></div>
@@ -193,19 +197,29 @@ const copyToClipboard = async (text: string): Promise<void> => {
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Short-URL
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Original-URL
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Klicks
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Erstellt
               </th>
-              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Aktionen
               </th>
             </tr>
@@ -214,7 +228,10 @@ const copyToClipboard = async (text: string): Promise<void> => {
             <tr v-for="url in urls" :key="url.shortCode" class="hover:bg-gray-50">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-blue-600">
-                  <button @click="copyToClipboard(`http://localhost:3000/${url.shortCode}`)" class="hover:underline">
+                  <button
+                    @click="copyToClipboard(`http://localhost:3000/${url.shortCode}`)"
+                    class="hover:underline"
+                  >
                     {{ url.shortCode }}
                   </button>
                 </div>
@@ -231,10 +248,7 @@ const copyToClipboard = async (text: string): Promise<void> => {
                 {{ formatDate(url.createdAt) }}
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                <NuxtLink
-                  :to="`/stats/${url.shortCode}`"
-                  class="text-blue-600 hover:text-blue-900"
-                >
+                <NuxtLink :to="`/stats/${url.shortCode}`" class="text-blue-600 hover:text-blue-900">
                   📊 Stats
                 </NuxtLink>
                 <NuxtLink

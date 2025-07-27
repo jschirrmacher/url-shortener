@@ -13,10 +13,10 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => 
 
   // Prüfe Auth Status über Composable
   const { user, initAuth } = useAuth()
-  
+
   try {
     await initAuth()
-    
+
     if (!user.value) {
       return navigateTo('/login')
     }

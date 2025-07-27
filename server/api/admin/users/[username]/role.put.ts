@@ -16,30 +16,27 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
   try {
     // Prüfe Admin-Berechtigung
     const admin = await requireAdmin(event)
-    
+
     // Hole Username aus URL-Parameter
     const username = getRouterParam(event, 'username')
-    
+
     if (!username) {
       throw createError({
         statusCode: 400,
-        message: 'Benutzername ist erforderlich'
+        message: 'Benutzername ist erforderlich',
       })
     }
 
     // Validiere Request Body
-    const body = validateRequestBody<UpdateRoleRequest>(
-      await readBody(event), 
-      ['role']
-    )
-    
+    const body = validateRequestBody<UpdateRoleRequest>(await readBody(event), ['role'])
+
     const { role } = body
 
     // Validiere Rolle
     if (!['admin', 'user'].includes(role)) {
       throw createError({
         statusCode: 400,
-        message: 'Ungültige Rolle. Erlaubt: admin, user'
+        message: 'Ungültige Rolle. Erlaubt: admin, user',
       })
     }
 
@@ -48,11 +45,11 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
       // Prüfe ob es andere Admins gibt
       const allUsers = await authService.getAllUsers()
       const adminCount = allUsers.filter(u => u.role === 'admin').length
-      
+
       if (adminCount <= 1) {
         throw createError({
           statusCode: 400,
-          message: 'Sie können sich nicht selbst degradieren, da Sie der einzige Admin sind'
+          message: 'Sie können sich nicht selbst degradieren, da Sie der einzige Admin sind',
         })
       }
     }
@@ -62,7 +59,7 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
     if (!existingUser) {
       throw createError({
         statusCode: 404,
-        message: 'Benutzer nicht gefunden'
+        message: 'Benutzer nicht gefunden',
       })
     }
 
@@ -73,17 +70,18 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
       success: true,
       message: `Rolle von "${username}" wurde erfolgreich zu "${role}" geändert`,
       username,
-      newRole: role
+      newRole: role,
     }
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
-    
-    const errorMessage = error instanceof Error ? error.message : 'Rolle konnte nicht geändert werden'
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'Rolle konnte nicht geändert werden'
     throw createError({
       statusCode: 500,
-      message: errorMessage
+      message: errorMessage,
     })
   }
 })
