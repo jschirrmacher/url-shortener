@@ -18,34 +18,34 @@ export default defineEventHandler(async (event): Promise<CreateUserResponse> => 
   try {
     // Prüfe Admin-Berechtigung
     await requireAdmin(event)
-    
+
     // Validiere Request Body
-    const body = validateRequestBody<CreateUserRequest>(
-      await readBody(event), 
-      ['username', 'password']
-    )
-    
+    const body = validateRequestBody<CreateUserRequest>(await readBody(event), [
+      'username',
+      'password',
+    ])
+
     const { username, password, role = 'user' } = body
 
     // Validiere Eingaben
     if (username.length < 3) {
       throw createError({
         statusCode: 400,
-        message: 'Benutzername muss mindestens 3 Zeichen lang sein'
+        message: 'Benutzername muss mindestens 3 Zeichen lang sein',
       })
     }
 
     if (password.length < 6) {
       throw createError({
         statusCode: 400,
-        message: 'Passwort muss mindestens 6 Zeichen lang sein'
+        message: 'Passwort muss mindestens 6 Zeichen lang sein',
       })
     }
 
     if (!['admin', 'user'].includes(role)) {
       throw createError({
         statusCode: 400,
-        message: 'Ungültige Rolle'
+        message: 'Ungültige Rolle',
       })
     }
 
@@ -53,23 +53,24 @@ export default defineEventHandler(async (event): Promise<CreateUserResponse> => 
     const user = await authService.createUser({
       username,
       password,
-      role
+      role,
     })
 
     return {
       success: true,
       user,
-      message: `Benutzer "${username}" erfolgreich erstellt`
+      message: `Benutzer "${username}" erfolgreich erstellt`,
     }
   } catch (error: unknown) {
     if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
-    
-    const errorMessage = error instanceof Error ? error.message : 'Benutzer konnte nicht erstellt werden'
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'Benutzer konnte nicht erstellt werden'
     throw createError({
       statusCode: 500,
-      message: errorMessage
+      message: errorMessage,
     })
   }
 })

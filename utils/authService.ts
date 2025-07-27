@@ -21,7 +21,8 @@ interface LoginResult {
 }
 
 class AuthService {
-  private readonly jwtSecret: string = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production'
+  private readonly jwtSecret: string =
+    process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-in-production'
   private readonly jwtExpiresIn: string = process.env.JWT_EXPIRES_IN || '7d'
   private readonly usersFile: string = './data/users.csv'
   private readonly saltLength = 32
@@ -30,7 +31,7 @@ class AuthService {
   // Hash password mit crypto.scrypt
   private async hashPassword(password: string): Promise<string> {
     const salt = crypto.randomBytes(this.saltLength)
-    const derivedKey = await scrypt(password, salt, this.keyLength) as Buffer
+    const derivedKey = (await scrypt(password, salt, this.keyLength)) as Buffer
     return `${salt.toString('hex')}:${derivedKey.toString('hex')}`
   }
 
@@ -42,7 +43,7 @@ class AuthService {
     }
     const salt = Buffer.from(saltHex, 'hex')
     const key = Buffer.from(keyHex, 'hex')
-    const derivedKey = await scrypt(password, salt, this.keyLength) as Buffer
+    const derivedKey = (await scrypt(password, salt, this.keyLength)) as Buffer
     return crypto.timingSafeEqual(key, derivedKey)
   }
 
@@ -61,7 +62,7 @@ class AuthService {
     const newUser: User = {
       username,
       role,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
     }
 
     // Speichere in CSV (mit gehashtem Passwort)
@@ -70,11 +71,15 @@ class AuthService {
       password: hashedPassword,
       role,
       createdAt: newUser.createdAt,
-      active: 'true'
+      active: 'true',
     }
 
     await csvService.appendToCsv(this.usersFile, csvData, [
-      'username', 'password', 'role', 'createdAt', 'active'
+      'username',
+      'password',
+      'role',
+      'createdAt',
+      'active',
     ])
 
     return newUser
@@ -97,7 +102,7 @@ class AuthService {
       const user: User = {
         username: userRecord.username as string,
         role: userRecord.role as 'admin' | 'user',
-        createdAt: userRecord.createdAt as string
+        createdAt: userRecord.createdAt as string,
       }
 
       const token = this.generateToken(user)
@@ -105,7 +110,7 @@ class AuthService {
       return {
         success: true,
         user,
-        token
+        token,
       }
     } catch (error: unknown) {
       console.error('Authentication error:', error)
@@ -118,7 +123,7 @@ class AuthService {
       username: user.username,
       userId: user.username, // Verwende username als userId
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (24 * 60 * 60) // 24 Stunden
+      exp: Math.floor(Date.now() / 1000) + 24 * 60 * 60, // 24 Stunden
     }
 
     return jwt.sign(payload, this.jwtSecret)
@@ -144,7 +149,7 @@ class AuthService {
       return {
         username: userRecord.username as string,
         role: userRecord.role as 'admin' | 'user',
-        createdAt: userRecord.createdAt as string
+        createdAt: userRecord.createdAt as string,
       }
     } catch (error: unknown) {
       console.error('Get user error:', error)
@@ -160,7 +165,7 @@ class AuthService {
         .map((u: any) => ({
           username: u.username as string,
           role: u.role as 'admin' | 'user',
-          createdAt: u.createdAt as string
+          createdAt: u.createdAt as string,
         }))
     } catch (error: unknown) {
       console.error('Get all users error:', error)
@@ -168,7 +173,11 @@ class AuthService {
     }
   }
 
-  async changePassword(username: string, currentPassword: string, newPassword: string): Promise<void> {
+  async changePassword(
+    username: string,
+    currentPassword: string,
+    newPassword: string
+  ): Promise<void> {
     const users = await csvService.readCsv(this.usersFile)
     const userIndex = users.findIndex((u: any) => u.username === username && u.active === 'true')
 
@@ -178,7 +187,7 @@ class AuthService {
 
     const user = users[userIndex]
     const isValidPassword = await this.verifyPassword(currentPassword, user.password as string)
-    
+
     if (!isValidPassword) {
       throw new Error('Aktuelles Passwort ist falsch')
     }
@@ -188,7 +197,11 @@ class AuthService {
     users[userIndex].password = hashedNewPassword
 
     await csvService.writeCsv(this.usersFile, users, [
-      'username', 'password', 'role', 'createdAt', 'active'
+      'username',
+      'password',
+      'role',
+      'createdAt',
+      'active',
     ])
   }
 
@@ -203,7 +216,11 @@ class AuthService {
     users[userIndex].role = newRole
 
     await csvService.writeCsv(this.usersFile, users, [
-      'username', 'password', 'role', 'createdAt', 'active'
+      'username',
+      'password',
+      'role',
+      'createdAt',
+      'active',
     ])
   }
 
@@ -218,7 +235,11 @@ class AuthService {
     users[userIndex].active = 'false'
 
     await csvService.writeCsv(this.usersFile, users, [
-      'username', 'password', 'role', 'createdAt', 'active'
+      'username',
+      'password',
+      'role',
+      'createdAt',
+      'active',
     ])
   }
 
@@ -233,7 +254,11 @@ class AuthService {
     users[userIndex].active = 'true'
 
     await csvService.writeCsv(this.usersFile, users, [
-      'username', 'password', 'role', 'createdAt', 'active'
+      'username',
+      'password',
+      'role',
+      'createdAt',
+      'active',
     ])
   }
 }

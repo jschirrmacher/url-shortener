@@ -1,157 +1,163 @@
 <script setup lang="ts">
-import type { User } from "~/types/index";
+import type { User } from '~/types/index'
 
 // Page Meta
 definePageMeta({
-  middleware: "auth",
-});
+  middleware: 'auth',
+})
 
 // Meta
 useHead({
-  title: "Administration - URL Shortener",
-});
+  title: 'Administration - URL Shortener',
+})
 
 // Middleware
 definePageMeta({
-  middleware: "admin",
-});
+  middleware: 'admin',
+})
 
 // Auth Check
-const { user, initAuth } = useAuth();
+const { user, initAuth } = useAuth()
 
 onMounted(async (): Promise<void> => {
-  await initAuth();
-  if (!user.value || user.value.role !== "admin") {
+  await initAuth()
+  if (!user.value || user.value.role !== 'admin') {
     throw createError({
       statusCode: 403,
-      message: "Admin-Berechtigung erforderlich",
-    });
+      message: 'Admin-Berechtigung erforderlich',
+    })
   }
 
   // Lade Benutzer nach erfolgreicher Auth
-  await loadUsers();
-});
+  await loadUsers()
+})
 
 // Reactive Data
-const users = ref<User[]>([]);
-const usersLoading = ref<boolean>(true);
-const usersError = ref<string>("");
+const users = ref<User[]>([])
+const usersLoading = ref<boolean>(true)
+const usersError = ref<string>('')
 
 // New User Form
-const newUsername = ref<string>("");
-const newPassword = ref<string>("");
-const newRole = ref<"admin" | "user">("user");
-const createLoading = ref<boolean>(false);
-const createUserError = ref<string>("");
-const createSuccess = ref<string>("");
+const newUsername = ref<string>('')
+const newPassword = ref<string>('')
+const newRole = ref<'admin' | 'user'>('user')
+const createLoading = ref<boolean>(false)
+const createUserError = ref<string>('')
+const createSuccess = ref<string>('')
 
 // Load Users
 const loadUsers = async (): Promise<void> => {
   try {
-    usersLoading.value = true;
-    usersError.value = "";
+    usersLoading.value = true
+    usersError.value = ''
 
-    const response = await $fetch<User[]>("/api/admin/users");
-    users.value = response;
+    const response = await $fetch<User[]>('/api/admin/users')
+    users.value = response
   } catch (err: unknown) {
-    const apiError = err as { data?: { message?: string }; message?: string };
-    usersError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der Benutzer";
+    const apiError = err as { data?: { message?: string }; message?: string }
+    usersError.value =
+      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der Benutzer'
   } finally {
-    usersLoading.value = false;
+    usersLoading.value = false
   }
-};
+}
 
 // Create User
 const createUser = async (): Promise<void> => {
   if (!newUsername.value.trim() || !newPassword.value.trim()) {
-    createUserError.value = "Bitte füllen Sie alle Felder aus";
-    return;
+    createUserError.value = 'Bitte füllen Sie alle Felder aus'
+    return
   }
 
   if (newPassword.value.length < 6) {
-    createUserError.value = "Passwort muss mindestens 6 Zeichen lang sein";
-    return;
+    createUserError.value = 'Passwort muss mindestens 6 Zeichen lang sein'
+    return
   }
 
-  createLoading.value = true;
-  createUserError.value = "";
-  createSuccess.value = "";
+  createLoading.value = true
+  createUserError.value = ''
+  createSuccess.value = ''
 
   try {
-    await $fetch("/api/admin/users", {
-      method: "POST",
+    await $fetch('/api/admin/users', {
+      method: 'POST',
       body: {
         username: newUsername.value.trim(),
         password: newPassword.value,
         role: newRole.value,
       },
-    });
+    })
 
-    createSuccess.value = `Benutzer "${newUsername.value}" erfolgreich erstellt`;
+    createSuccess.value = `Benutzer "${newUsername.value}" erfolgreich erstellt`
 
     // Reset form
-    newUsername.value = "";
-    newPassword.value = "";
-    newRole.value = "user";
+    newUsername.value = ''
+    newPassword.value = ''
+    newRole.value = 'user'
 
     // Reload users
-    await loadUsers();
+    await loadUsers()
   } catch (err: unknown) {
-    const apiError = err as { data?: { message?: string }; message?: string };
-    createUserError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Erstellen des Benutzers";
+    const apiError = err as { data?: { message?: string }; message?: string }
+    createUserError.value =
+      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Erstellen des Benutzers'
   } finally {
-    createLoading.value = false;
+    createLoading.value = false
   }
-};
+}
 
 // Update User Role
-const updateUserRole = async (username: string, newRole: "admin" | "user"): Promise<void> => {
+const updateUserRole = async (username: string, newRole: 'admin' | 'user'): Promise<void> => {
   try {
     await $fetch(`/api/admin/users/${username}/role`, {
-      method: "PUT",
+      method: 'PUT',
       body: { role: newRole },
-    });
+    })
 
     // Update local state
-    const userIndex = users.value.findIndex((u) => u.username === username);
+    const userIndex = users.value.findIndex(u => u.username === username)
     if (userIndex !== -1) {
-      users.value[userIndex].role = newRole;
+      users.value[userIndex].role = newRole
     }
   } catch (err: unknown) {
-    const apiError = err as { data?: { message?: string }; message?: string };
-    alert(`Fehler beim Ändern der Rolle: ${apiError?.data?.message ?? apiError?.message ?? "Unbekannter Fehler"}`);
+    const apiError = err as { data?: { message?: string }; message?: string }
+    alert(
+      `Fehler beim Ändern der Rolle: ${apiError?.data?.message ?? apiError?.message ?? 'Unbekannter Fehler'}`
+    )
   }
-};
+}
 
 // Delete User
 const deleteUser = async (username: string): Promise<void> => {
   if (!confirm(`Sind Sie sicher, dass Sie den Benutzer "${username}" löschen möchten?`)) {
-    return;
+    return
   }
 
   try {
     await $fetch(`/api/admin/users/${username}`, {
-      method: "DELETE",
-    });
+      method: 'DELETE',
+    })
 
     // Remove from local state
-    users.value = users.value.filter((u) => u.username !== username);
+    users.value = users.value.filter(u => u.username !== username)
   } catch (err: unknown) {
-    const apiError = err as { data?: { message?: string }; message?: string };
-    alert(`Fehler beim Löschen: ${apiError?.data?.message ?? apiError?.message ?? "Unbekannter Fehler"}`);
+    const apiError = err as { data?: { message?: string }; message?: string }
+    alert(
+      `Fehler beim Löschen: ${apiError?.data?.message ?? apiError?.message ?? 'Unbekannter Fehler'}`
+    )
   }
-};
+}
 
 // Helper Methods
 const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString("de-DE", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-};
+  return new Date(dateString).toLocaleDateString('de-DE', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
 </script>
 
 <template>
@@ -170,7 +176,9 @@ const formatDate = (dateString: string): string => {
         <form @submit.prevent="createUser" class="space-y-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label for="username" class="block text-sm font-medium text-gray-700 mb-2"> Benutzername * </label>
+              <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
+                Benutzername *
+              </label>
               <input
                 id="username"
                 v-model="newUsername"
@@ -182,7 +190,9 @@ const formatDate = (dateString: string): string => {
             </div>
 
             <div>
-              <label for="password" class="block text-sm font-medium text-gray-700 mb-2"> Passwort * </label>
+              <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                Passwort *
+              </label>
               <input
                 id="password"
                 v-model="newPassword"
@@ -212,17 +222,23 @@ const formatDate = (dateString: string): string => {
             :disabled="createLoading"
             class="w-full px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50"
           >
-            {{ createLoading ? "Wird erstellt..." : "Benutzer erstellen" }}
+            {{ createLoading ? 'Wird erstellt...' : 'Benutzer erstellen' }}
           </button>
         </form>
 
         <!-- Create Success -->
-        <div v-if="createSuccess" class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+        <div
+          v-if="createSuccess"
+          class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"
+        >
           ✅ {{ createSuccess }}
         </div>
 
         <!-- Create Error -->
-        <div v-if="createUserError" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div
+          v-if="createUserError"
+          class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
+        >
           ❌ {{ createUserError }}
         </div>
       </div>
@@ -238,7 +254,10 @@ const formatDate = (dateString: string): string => {
         </div>
 
         <!-- Error State -->
-        <div v-else-if="usersError" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+        <div
+          v-else-if="usersError"
+          class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded"
+        >
           {{ usersError }}
         </div>
 
@@ -247,23 +266,45 @@ const formatDate = (dateString: string): string => {
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Benutzer</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rolle</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erstellt</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aktionen</th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Benutzer
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Rolle
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Erstellt
+                </th>
+                <th
+                  class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Aktionen
+                </th>
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="userItem in users" :key="userItem.username" class="hover:bg-gray-50">
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ userItem.username }}</div>
+                  <div class="text-sm font-medium text-gray-900">
+                    {{ userItem.username }}
+                  </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
-                    :class="userItem.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'"
+                    :class="
+                      userItem.role === 'admin'
+                        ? 'bg-red-100 text-red-800'
+                        : 'bg-blue-100 text-blue-800'
+                    "
                     class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
                   >
-                    {{ userItem.role === "admin" ? "Administrator" : "Benutzer" }}
+                    {{ userItem.role === 'admin' ? 'Administrator' : 'Benutzer' }}
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -273,10 +314,15 @@ const formatDate = (dateString: string): string => {
                   <!-- Role Change -->
                   <button
                     v-if="userItem.username !== user?.username"
-                    @click="updateUserRole(userItem.username, userItem.role === 'admin' ? 'user' : 'admin')"
+                    @click="
+                      updateUserRole(
+                        userItem.username,
+                        userItem.role === 'admin' ? 'user' : 'admin'
+                      )
+                    "
                     class="text-blue-600 hover:text-blue-900"
                   >
-                    {{ userItem.role === "admin" ? "👤 Zu Benutzer" : "👑 Zu Admin" }}
+                    {{ userItem.role === 'admin' ? '👤 Zu Benutzer' : '👑 Zu Admin' }}
                   </button>
 
                   <!-- Delete -->

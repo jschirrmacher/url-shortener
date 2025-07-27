@@ -27,7 +27,7 @@ const handleLogout = async (): Promise<void> => {
 
 // Close dropdown when clicking outside
 onMounted(() => {
-  document.addEventListener('click', (event) => {
+  document.addEventListener('click', event => {
     const target = event.target as HTMLElement
     if (!target.closest('.user-menu')) {
       closeDropdown()
@@ -44,24 +44,31 @@ onMounted(() => {
       class="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
     >
       <!-- User Avatar -->
-      <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+      <div
+        class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold"
+      >
         {{ user.username.charAt(0).toUpperCase() }}
       </div>
-      
+
       <!-- User Info -->
       <div class="flex flex-col items-start">
         <span class="font-medium text-gray-900">{{ user.username }}</span>
       </div>
-      
+
       <!-- Dropdown Arrow -->
-      <svg 
-        class="w-4 h-4 transition-transform duration-200" 
-        :class="{ 'rotate-180': isOpen }" 
-        fill="none" 
-        stroke="currentColor" 
+      <svg
+        class="w-4 h-4 transition-transform duration-200"
+        :class="{ 'rotate-180': isOpen }"
+        fill="none"
+        stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M19 9l-7 7-7-7"
+        ></path>
       </svg>
     </button>
 

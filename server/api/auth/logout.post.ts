@@ -12,13 +12,13 @@ export default defineEventHandler(async (event): Promise<LogoutResponse> => {
 
     return {
       success: true,
-      message: 'Erfolgreich abgemeldet'
+      message: 'Erfolgreich abgemeldet',
     }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Logout fehlgeschlagen'
     throw createError({
       statusCode: 500,
-      message: errorMessage
+      message: errorMessage,
     })
   }
 })

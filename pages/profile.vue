@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // Meta
 useHead({
-  title: 'Profil - URL Shortener'
+  title: 'Profil - URL Shortener',
 })
 
 // Middleware
 definePageMeta({
-  middleware: 'auth'
+  middleware: 'auth',
 })
 
 // Auth
@@ -59,12 +59,12 @@ const changePassword = async (): Promise<void> => {
       method: 'POST',
       body: {
         currentPassword: currentPassword.value,
-        newPassword: newPassword.value
-      }
+        newPassword: newPassword.value,
+      },
     })
 
     success.value = 'Passwort erfolgreich geändert!'
-    
+
     // Reset form
     currentPassword.value = ''
     newPassword.value = ''
@@ -84,7 +84,7 @@ const formatDate = (dateString: string): string => {
     month: 'long',
     day: 'numeric',
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
   })
 }
 </script>
@@ -101,17 +101,19 @@ const formatDate = (dateString: string): string => {
       <!-- User Info Card -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Benutzer-Informationen</h2>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Benutzername</label>
             <p class="text-gray-900 font-medium">{{ user.username }}</p>
           </div>
-          
+
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Rolle</label>
-            <span 
-              :class="user.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'"
+            <span
+              :class="
+                user.role === 'admin' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'
+              "
               class="px-2 py-1 text-xs font-semibold rounded-full"
             >
               {{ user.role === 'admin' ? 'Administrator' : 'Benutzer' }}
@@ -128,7 +130,7 @@ const formatDate = (dateString: string): string => {
       <!-- Change Password Card -->
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">Passwort ändern</h2>
-        
+
         <form @submit.prevent="changePassword" class="space-y-4">
           <div>
             <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-2">
@@ -141,7 +143,7 @@ const formatDate = (dateString: string): string => {
               required
               placeholder="Ihr aktuelles Passwort"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
+            />
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -156,9 +158,9 @@ const formatDate = (dateString: string): string => {
                 required
                 placeholder="Mindestens 6 Zeichen"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
+              />
             </div>
-            
+
             <div>
               <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-2">
                 Passwort bestätigen *
@@ -170,7 +172,7 @@ const formatDate = (dateString: string): string => {
                 required
                 placeholder="Neues Passwort wiederholen"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-              >
+              />
             </div>
           </div>
 
@@ -184,7 +186,10 @@ const formatDate = (dateString: string): string => {
         </form>
 
         <!-- Success Message -->
-        <div v-if="success" class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+        <div
+          v-if="success"
+          class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"
+        >
           ✅ {{ success }}
         </div>
 

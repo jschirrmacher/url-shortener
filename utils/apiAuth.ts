@@ -11,33 +11,33 @@ interface AuthResult {
  */
 export async function authenticateRequest(event: any): Promise<AuthResult> {
   const token = getCookie(event, 'auth-token')
-  
+
   if (!token) {
     throw createError({
       statusCode: 401,
-      message: 'Authentifizierung erforderlich'
+      message: 'Authentifizierung erforderlich',
     })
   }
 
   try {
     const decoded: AuthUser = authService.verifyToken(token)
     const user = await authService.getUser(decoded.username)
-    
+
     if (!user) {
       throw createError({
         statusCode: 401,
-        message: 'Ungültiger Benutzer'
+        message: 'Ungültiger Benutzer',
       })
     }
 
     return {
       user,
-      isAdmin: user.role === 'admin'
+      isAdmin: user.role === 'admin',
     }
   } catch (error: unknown) {
     throw createError({
       statusCode: 401,
-      message: 'Ungültiger Token'
+      message: 'Ungültiger Token',
     })
   }
 }
@@ -47,11 +47,11 @@ export async function authenticateRequest(event: any): Promise<AuthResult> {
  */
 export async function requireAdmin(event: any): Promise<User> {
   const { user, isAdmin } = await authenticateRequest(event)
-  
+
   if (!isAdmin) {
     throw createError({
       statusCode: 403,
-      message: 'Admin-Berechtigung erforderlich'
+      message: 'Admin-Berechtigung erforderlich',
     })
   }
 
@@ -63,11 +63,11 @@ export async function requireAdmin(event: any): Promise<User> {
  */
 export async function requireOwnershipOrAdmin(event: any, resourceOwner: string): Promise<User> {
   const { user, isAdmin } = await authenticateRequest(event)
-  
+
   if (!isAdmin && user.username !== resourceOwner) {
     throw createError({
       statusCode: 403,
-      message: 'Keine Berechtigung für diese Ressource'
+      message: 'Keine Berechtigung für diese Ressource',
     })
   }
 
@@ -81,15 +81,15 @@ export function getClientIP(event: any): string {
   const forwarded = getHeader(event, 'x-forwarded-for')
   const realIP = getHeader(event, 'x-real-ip')
   const remoteAddress = event.node.req.socket?.remoteAddress
-  
+
   if (typeof forwarded === 'string') {
     return forwarded.split(',')[0].trim()
   }
-  
+
   if (typeof realIP === 'string') {
     return realIP
   }
-  
+
   return remoteAddress ?? 'unknown'
 }
 
@@ -116,7 +116,7 @@ export function setAuthCookie(event: any, token: string): void {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 60 * 60 * 24 * 7, // 7 Tage
-    path: '/'
+    path: '/',
   })
 }
 
@@ -128,7 +128,7 @@ export function clearAuthCookie(event: any): void {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
-    path: '/'
+    path: '/',
   })
 }
 
@@ -139,7 +139,7 @@ export function validateRequestBody<T>(body: any, requiredFields: (keyof T)[]): 
   if (!body || typeof body !== 'object') {
     throw createError({
       statusCode: 400,
-      message: 'Request-Body ist erforderlich'
+      message: 'Request-Body ist erforderlich',
     })
   }
 
@@ -147,7 +147,7 @@ export function validateRequestBody<T>(body: any, requiredFields: (keyof T)[]): 
     if (!(field in body) || body[field] === null || body[field] === undefined) {
       throw createError({
         statusCode: 400,
-        message: `Feld '${String(field)}' ist erforderlich`
+        message: `Feld '${String(field)}' ist erforderlich`,
       })
     }
   }
@@ -172,7 +172,7 @@ export function validateUrl(url: string): boolean {
  */
 export function sanitizeForCsv(value: string): string {
   if (!value) return ''
-  
+
   // Escape Anführungszeichen und Kommas
   return value.replace(/"/g, '""').replace(/\r?\n/g, ' ')
 }
@@ -182,19 +182,23 @@ export function sanitizeForCsv(value: string): string {
  */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
 
-export function checkRateLimit(identifier: string, maxRequests: number = 10, windowMs: number = 60000): boolean {
+export function checkRateLimit(
+  identifier: string,
+  maxRequests: number = 10,
+  windowMs: number = 60000
+): boolean {
   const now = Date.now()
   const record = rateLimitMap.get(identifier)
-  
+
   if (!record || now > record.resetTime) {
     rateLimitMap.set(identifier, { count: 1, resetTime: now + windowMs })
     return true
   }
-  
+
   if (record.count >= maxRequests) {
     return false
   }
-  
+
   record.count++
   return true
 }
@@ -211,5 +215,5 @@ export default {
   validateRequestBody,
   validateUrl,
   sanitizeForCsv,
-  checkRateLimit
+  checkRateLimit,
 }

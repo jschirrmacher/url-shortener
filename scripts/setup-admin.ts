@@ -12,7 +12,9 @@ async function setupAdmin(): Promise<SetupResult> {
     // SICHERHEITSCHECK: Nur in Entwicklung ausführen
     if (process.env.NODE_ENV === 'production') {
       console.log('❌ Setup-Script ist in der Produktion deaktiviert!')
-      console.log('   Erstellen Sie den Admin-Benutzer manuell oder über sichere Deployment-Prozesse.')
+      console.log(
+        '   Erstellen Sie den Admin-Benutzer manuell oder über sichere Deployment-Prozesse.'
+      )
       process.exit(1)
     }
 
@@ -27,11 +29,11 @@ async function setupAdmin(): Promise<SetupResult> {
       console.log(`   Benutzername: ${existingAdmin.username}`)
       console.log(`   Erstellt am: ${new Date(existingAdmin.createdAt).toLocaleString('de-DE')}`)
       console.log('\n✅ Setup bereits abgeschlossen!')
-      
+
       return {
         success: true,
         message: 'Admin-Benutzer existiert bereits',
-        user: existingAdmin
+        user: existingAdmin,
       }
     }
 
@@ -39,7 +41,7 @@ async function setupAdmin(): Promise<SetupResult> {
     const adminData = {
       username: 'admin',
       password: 'admin123', // WARNUNG: In Produktion ändern!
-      role: 'admin' as const
+      role: 'admin' as const,
     }
 
     console.log('👤 Erstelle Admin-Benutzer...')
@@ -61,15 +63,15 @@ async function setupAdmin(): Promise<SetupResult> {
     return {
       success: true,
       message: 'Admin-Benutzer erfolgreich erstellt',
-      user: adminUser
+      user: adminUser,
     }
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : 'Unbekannter Fehler'
     console.error('❌ Fehler beim Setup:', errorMessage)
-    
+
     return {
       success: false,
-      message: errorMessage
+      message: errorMessage,
     }
   }
 }
@@ -77,7 +79,7 @@ async function setupAdmin(): Promise<SetupResult> {
 // Script ausführen wenn direkt aufgerufen
 if (import.meta.url === `file://${process.argv[1]}`) {
   setupAdmin()
-    .then((result) => {
+    .then(result => {
       if (!result.success) {
         process.exit(1)
       }

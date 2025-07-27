@@ -1,12 +1,12 @@
 <script setup lang="ts">
 // Meta
 useHead({
-  title: 'Login - URL Shortener'
+  title: 'Login - URL Shortener',
 })
 
 // Kein Layout für Login-Seite
 definePageMeta({
-  layout: false
+  layout: false,
 })
 
 // Auth
@@ -37,7 +37,7 @@ const login = async (): Promise<void> => {
 
   try {
     const result = await authLogin(username.value.trim(), password.value)
-    
+
     if (result.success) {
       await navigateTo('/')
     } else {
@@ -74,7 +74,7 @@ const login = async (): Promise<void> => {
               autocomplete="username"
               placeholder="Ihr Benutzername"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
+            />
           </div>
 
           <div>
@@ -89,7 +89,7 @@ const login = async (): Promise<void> => {
               autocomplete="current-password"
               placeholder="Ihr Passwort"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            >
+            />
           </div>
 
           <button
