@@ -63,6 +63,7 @@ class AuthService {
       username,
       role,
       createdAt: new Date().toISOString(),
+      active: true,
     }
 
     // Speichere in CSV (mit gehashtem Passwort)
@@ -103,6 +104,7 @@ class AuthService {
         username: userRecord.username as string,
         role: userRecord.role as 'admin' | 'user',
         createdAt: userRecord.createdAt as string,
+        active: userRecord.active === 'true' || userRecord.active === true,
       }
 
       const token = this.generateToken(user)
@@ -150,6 +152,7 @@ class AuthService {
         username: userRecord.username as string,
         role: userRecord.role as 'admin' | 'user',
         createdAt: userRecord.createdAt as string,
+        active: userRecord.active === 'true' || userRecord.active === true,
       }
     } catch (error: unknown) {
       console.error('Get user error:', error)
@@ -160,13 +163,12 @@ class AuthService {
   async getAllUsers(): Promise<User[]> {
     try {
       const users = await csvService.readCsv(this.usersFile)
-      return users
-        .filter((u: any) => u.active === 'true')
-        .map((u: any) => ({
-          username: u.username as string,
-          role: u.role as 'admin' | 'user',
-          createdAt: u.createdAt as string,
-        }))
+      return users.map((u: any) => ({
+        username: u.username as string,
+        role: u.role as 'admin' | 'user',
+        createdAt: u.createdAt as string,
+        active: u.active === 'true' || u.active === true,
+      }))
     } catch (error: unknown) {
       console.error('Get all users error:', error)
       return []

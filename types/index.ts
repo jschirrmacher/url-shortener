@@ -4,6 +4,7 @@ export interface User {
   username: string
   role: 'admin' | 'user'
   createdAt: string
+  active: boolean
 }
 
 export type UrlRecord = {
@@ -12,6 +13,7 @@ export type UrlRecord = {
   title?: string
   createdAt: string
   createdBy: string
+  totalClicks?: number
 }
 
 export interface ClickRecord {
@@ -48,6 +50,7 @@ export interface UpdateUrlResponse {
   updatedAt: string
   previousUrl: string
   shortUrl: string
+  message?: string
 }
 
 export interface ApiError {
