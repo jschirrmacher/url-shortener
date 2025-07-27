@@ -170,7 +170,7 @@ class CsvService {
     }
 
     // Update URL record
-    urls[urlIndex] = { ...urls[urlIndex], ...updates } as CsvRecord
+    urls[urlIndex] = { ...urls[urlIndex], ...updates }
 
     // Schreibe alle URLs zurück
     await this.writeCsv(this.urlsFile, urls, [
