@@ -1,33 +1,19 @@
 <script setup lang="ts">
 import type { UrlStats } from '~/types/index'
 
-// Auth Check
-const { user, initAuth } = useAuth()
-
-onMounted(async (): Promise<void> => {
-  await initAuth()
-  if (!user.value) {
-    await navigateTo('/login')
-    return
-  }
-
-  // Load stats after auth
-  await loadStats()
-})
-
-// Route Parameter
 const route = useRoute()
 const shortCode = route.params.shortCode as string
 
-// Meta
-useHead({
-  title: `Statistiken - ${shortCode}`,
-})
+const { user } = useAuthPageStandard(`Statistiken - ${shortCode}`)
 
-// Reactive Data
 const loading = ref<boolean>(true)
 const error = ref<string>('')
 const stats = ref<UrlStats | null>(null)
+
+onMounted(async (): Promise<void> => {
+  // Load stats after auth
+  await loadStats()
+})
 
 // Load Stats
 const loadStats = async (): Promise<void> => {

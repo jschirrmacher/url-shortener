@@ -175,6 +175,58 @@ curl -b cookies.txt /api/protected ...
 - **Label-basierte IDs** - Vorhersagbare und konsistente IDs
 - **Namenskonflikte vermeiden** - Keine Überschreibung von Vue/Nuxt Composables
 
+### Seiten-Meta Code-Style
+
+- **useAuthPage Composable** - Zentrale Auth-Logik für alle Seiten
+- **Automatische Meta-Verwaltung** - useHead und definePageMeta integriert
+- **DRY-Prinzip** - Keine Duplikation von Auth-Logik
+
+```typescript
+// ✅ Korrekt - Zentrale Auth-Funktion
+<script setup lang="ts">
+import type { MyType } from '~/types/index'
+
+const route = useRoute()
+const param = route.params.param as string
+
+// Alles in einer Zeile: useHead, definePageMeta, Auth-Prüfung
+const { user } = useAuthPageStandard(`Meine Seite - ${param}`)
+
+// ... weitere Logik
+</script>
+
+// ❌ Problematisch - Manuelle Auth-Logik
+<script setup lang="ts">
+useHead({ title: 'Meine Seite' })
+definePageMeta({ middleware: 'auth' })
+
+const { user, initAuth } = useAuth()
+
+onMounted(async () => {
+  await initAuth()
+  if (!user.value) {
+    await navigateTo('/login')
+  }
+})
+</script>
+```
+
+**useAuthPage Varianten:**
+
+- `useAuthPageStandard(title)` - Standard Auth-Seiten
+- `useAuthPageAdmin(title)` - Admin-Seiten (auth + admin)
+- `usePublicPage(title)` - Öffentliche Seiten (layout: false)
+- `useAuthPage(options)` - Vollständige Konfiguration
+
+**Standard-Reihenfolge für Seiten:**
+
+1. Imports (types, etc.)
+2. Route-Parameter (falls benötigt)
+3. `useAuthPage*()` - Eine Zeile für alles
+4. `definePageMeta()` - Eine Zeile (falls benötigt)
+5. Composables und reactive Variablen
+6. Lifecycle-Hooks und Funktionen
+
 ### Nuxt3-spezifische Richtlinien
 
 - **definePageMeta** - Nur einmal pro Seite verwenden

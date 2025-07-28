@@ -1,36 +1,17 @@
 <script setup lang="ts">
 import type { User } from '~/types/index'
 
-// Page Meta & Middleware
-definePageMeta({
-  middleware: ['auth', 'admin'],
-})
-
-// Meta
-useHead({
-  title: 'Administration - URL Shortener',
-})
-
-// Auth Check
-const { user, initAuth } = useAuth()
-
-onMounted(async (): Promise<void> => {
-  await initAuth()
-  if (!user.value || user.value.role !== 'admin') {
-    throw createError({
-      statusCode: 403,
-      message: 'Admin-Berechtigung erforderlich',
-    })
-  }
-
-  // Lade Benutzer nach erfolgreicher Auth
-  await loadUsers()
-})
+const { user } = useAuthPageAdmin('Administration - URL Shortener')
 
 // Reactive Data
 const users = ref<User[]>([])
 const usersLoading = ref<boolean>(true)
 const usersError = ref<string>('')
+
+onMounted(async (): Promise<void> => {
+  // Lade Benutzer nach erfolgreicher Auth
+  await loadUsers()
+})
 
 // Load Users
 const loadUsers = async (): Promise<void> => {

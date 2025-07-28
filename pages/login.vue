@@ -1,15 +1,6 @@
 <script setup lang="ts">
-// Meta
-useHead({
-  title: 'Login - URL Shortener',
-})
+usePublicPage('Login - URL Shortener')
 
-// Kein Layout für Login-Seite
-definePageMeta({
-  layout: false,
-})
-
-// Auth
 const { login: authLogin, user } = useAuth()
 
 // Redirect wenn bereits angemeldet
