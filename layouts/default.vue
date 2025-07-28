@@ -13,20 +13,6 @@ const { user } = useAuth()
             <NuxtLink to="/" class="text-xl font-bold text-gray-800 hover:text-orange-600">
               🔗 URL-Shortener
             </NuxtLink>
-
-            <!-- Navigation Links (nur für eingeloggte Benutzer) -->
-            <ClientOnly>
-              <nav v-if="user" class="hidden md:flex space-x-4">
-                <NuxtLink
-                  v-if="user.role === 'admin'"
-                  to="/admin"
-                  class="text-gray-600 hover:text-gray-800 px-3 py-2 rounded-md text-sm font-medium"
-                  active-class="text-orange-600 bg-orange-50"
-                >
-                  Administration
-                </NuxtLink>
-              </nav>
-            </ClientOnly>
           </div>
 
           <!-- Right side content -->
