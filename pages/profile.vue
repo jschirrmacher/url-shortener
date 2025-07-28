@@ -1,23 +1,5 @@
 <script setup lang="ts">
-// Meta
-useHead({
-  title: 'Profil - URL Shortener',
-})
-
-// Middleware
-definePageMeta({
-  middleware: 'auth',
-})
-
-// Auth
-const { user, initAuth } = useAuth()
-
-onMounted(async (): Promise<void> => {
-  await initAuth()
-  if (!user.value) {
-    await navigateTo('/login')
-  }
-})
+const { user } = useAuthPageStandard('Profil - URL Shortener')
 </script>
 
 <template>

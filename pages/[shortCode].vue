@@ -1,19 +1,9 @@
 <script setup lang="ts">
-// Route Parameter
 const route = useRoute()
 const shortCode = route.params.shortCode as string
 
-// Meta
-useHead({
-  title: `Redirect - ${shortCode}`,
-})
+usePublicPage(`Redirect - ${shortCode}`)
 
-// Kein Layout für Redirect-Seite
-definePageMeta({
-  layout: false,
-})
-
-// Redirect Logic
 const { pending, error } = await useLazyFetch(`/api/redirect/${shortCode}`, {
   server: false,
   onResponse({ response }) {

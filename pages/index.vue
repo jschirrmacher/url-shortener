@@ -1,21 +1,9 @@
 <script setup lang="ts">
 import type { UrlRecord } from '~/types/index'
 
-// Meta
-useHead({
-  title: 'URL Shortener - Dashboard',
-})
-
-// Auth Check
-const { user, initAuth } = useAuth()
+const { user } = useAuthPageStandard('URL Shortener - Dashboard')
 
 onMounted(async (): Promise<void> => {
-  await initAuth()
-  if (!user.value) {
-    await navigateTo('/login')
-    return
-  }
-
   // Lade URLs nach erfolgreicher Auth
   await loadUrls()
 })

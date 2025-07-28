@@ -1,24 +1,10 @@
 <script setup lang="ts">
 import type { UrlStats, UpdateUrlResponse, ApiError } from '~/types/index'
 
-// Auth Check
-const { user, initAuth } = useAuth()
-
-onMounted(async (): Promise<void> => {
-  await initAuth()
-  if (!user.value) {
-    await navigateTo('/login')
-  }
-})
-
-// Route Parameter
 const route = useRoute()
 const shortCode = route.params.shortCode as string
 
-// Meta
-useHead({
-  title: `URL bearbeiten - ${shortCode}`,
-})
+const { user } = useAuthPageStandard(`URL bearbeiten - ${shortCode}`)
 
 // Reactive Data
 const loading = ref<boolean>(true)
