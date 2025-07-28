@@ -25,13 +25,6 @@ export default defineNuxtConfig({
   // Auto-Import Konfiguration
   imports: {
     dirs: ['composables/**', 'utils/**', 'types/**'],
-    // Explizit definePageMeta importieren
-    presets: [
-      {
-        from: '#app',
-        imports: ['definePageMeta'],
-      },
-    ],
   },
 
   // Komponenten Auto-Import
