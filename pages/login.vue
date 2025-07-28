@@ -1,7 +1,5 @@
 <script setup lang="ts">
-usePublicPage('Login - URL Shortener')
-
-const { login: authLogin, user } = useAuth()
+const { login: authLogin, user } = usePublicPage('Login - URL Shortener')
 
 // Redirect wenn bereits angemeldet
 onMounted(async (): Promise<void> => {

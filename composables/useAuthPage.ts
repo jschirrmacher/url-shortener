@@ -1,9 +1,11 @@
 // Zentrale Auth-Logik für Seiten
 
+type Role = 'admin' | 'user'
+
 interface AuthPageOptions {
   title: string
-  requireAdmin?: boolean
-  layout?: boolean | string
+  requireRole?: Role
+  public?: boolean
 }
 
 /**
@@ -15,47 +17,36 @@ export function useAuthPage(options: AuthPageOptions) {
   useHead({ title: options.title })
 
   // Set page meta based on requirements
-  if (options.layout === false) {
+  if (options.public) {
     // Public pages (login, redirect)
     definePageMeta({ layout: false })
-  } else if (options.requireAdmin) {
-    // Admin pages
-    definePageMeta({ middleware: ['auth', 'admin'] })
   } else {
-    // Regular auth pages
+    // All protected pages only need auth middleware
     definePageMeta({ middleware: 'auth' })
   }
 
   // Get auth composable
-  const { user, initAuth } = useAuth()
+  const auth = useAuth()
 
   // Auth initialization and redirect logic
   onMounted(async (): Promise<void> => {
-    // Skip auth check for public pages
-    if (options.layout === false) {
-      return
-    }
+    if (!options.public) {
+      await auth.initAuth()
 
-    await initAuth()
-
-    if (!user.value) {
-      await navigateTo('/login')
-      return
-    }
-
-    // Check admin requirement
-    if (options.requireAdmin && user.value.role !== 'admin') {
-      throw createError({
-        statusCode: 403,
-        statusMessage: 'Admin-Berechtigung erforderlich',
-      })
+      if (!auth.user.value) {
+        await navigateTo('/login')
+        return
+      }
+      if (options.requireRole && auth.user.value.role !== options.requireRole) {
+        throw createError({
+          statusCode: 403,
+          statusMessage: 'Admin-Berechtigung erforderlich',
+        })
+      }
     }
   })
 
-  return {
-    user,
-    initAuth,
-  }
+  return auth
 }
 
 /**
@@ -69,12 +60,12 @@ export function useAuthPageStandard(title: string) {
  * Shorthand für Admin-Seiten
  */
 export function useAuthPageAdmin(title: string) {
-  return useAuthPage({ title, requireAdmin: true })
+  return useAuthPage({ title, requireRole: 'admin' })
 }
 
 /**
  * Shorthand für öffentliche Seiten
  */
 export function usePublicPage(title: string) {
-  return useAuthPage({ title, layout: false })
+  return useAuthPage({ title, public: true })
 }

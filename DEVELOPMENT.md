@@ -229,8 +229,29 @@ onMounted(async () => {
 
 ### Nuxt3-spezifische Richtlinien
 
-- **definePageMeta** - Nur einmal pro Seite verwenden
-- **Middleware-Array** - Mehrere Middleware in einem definePageMeta
+- **useAuthPage Composable** - Zentrale Auth-Logik ersetzt Middleware
+- **Nur auth.ts Middleware** - Admin-Prüfung in useAuthPage integriert
+- **Client-side Admin-Check** - Flexiblere Fehlerbehandlung
+
+```typescript
+// ✅ Korrekt - useAuthPage übernimmt alles
+const { user } = useAuthPageAdmin('Admin-Seite')
+
+// ❌ Nicht mehr nötig - Middleware redundant
+definePageMeta({
+  middleware: ['auth', 'admin'], // admin middleware entfernt
+})
+```
+
+**Middleware-Struktur:**
+
+- `middleware/auth.ts` - Basis-Authentifizierung
+- ~~`middleware/admin.ts`~~ - **Entfernt** (redundant zu useAuthPage)
+
+**Admin-Schutz erfolgt auf zwei Ebenen:**
+
+- **Frontend**: useAuthPage mit requireAdmin (client-side)
+- **Backend**: requireAdmin() in API-Endpunkten (server-side)
 - **Auto-Imports** - Keine expliziten Imports für Nuxt-Composables
 
 ```typescript
