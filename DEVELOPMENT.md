@@ -168,6 +168,34 @@ curl -b cookies.txt /api/protected ...
 ./scripts/test-helper.sh cleanup
 ```
 
+### SSR & Hydration Best Practices
+
+- **Konsistente IDs** - Keine zufälligen IDs in SSR-Komponenten
+- **useFieldId Composable** - Für SSR-sichere ID-Generierung
+- **Label-basierte IDs** - Vorhersagbare und konsistente IDs
+- **Namenskonflikte vermeiden** - Keine Überschreibung von Vue/Nuxt Composables
+
+### Nuxt3-spezifische Richtlinien
+
+- **definePageMeta** - Nur einmal pro Seite verwenden
+- **Middleware-Array** - Mehrere Middleware in einem definePageMeta
+- **Auto-Imports** - Keine expliziten Imports für Nuxt-Composables
+
+```typescript
+// ✅ Korrekt - Ein definePageMeta mit mehreren Middleware
+definePageMeta({
+  middleware: ['auth', 'admin'],
+})
+
+// ❌ Problematisch - Mehrere definePageMeta-Aufrufe
+definePageMeta({
+  middleware: 'auth',
+})
+definePageMeta({
+  middleware: 'admin',
+})
+```
+
 ### Naming Conventions
 
 - **Spezifische Namen** - `createUserError` statt `createError`

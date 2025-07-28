@@ -102,6 +102,32 @@ test_url_api() {
     fi
 }
 
+# Funktion: Test SSR-Konsistenz
+test_ssr_consistency() {
+    echo "🔄 Teste SSR-Konsistenz..."
+    local temp_cookies=$(mktemp)
+    
+    # Login
+    curl -s -c "$temp_cookies" -X POST "$BASE_URL/api/auth/login" \
+        -H "Content-Type: application/json" \
+        -d "{\"username\":\"$ADMIN_USER\",\"password\":\"$ADMIN_PASS\"}" > /dev/null
+    
+    # Teste mehrere Requests auf konsistente IDs
+    local first_request=$(curl -s -b "$temp_cookies" "$BASE_URL/" | grep -o 'field-[a-z-]*' | head -1)
+    local second_request=$(curl -s -b "$temp_cookies" "$BASE_URL/" | grep -o 'field-[a-z-]*' | head -1)
+    
+    # Cookie löschen
+    rm -f "$temp_cookies"
+    
+    if [ "$first_request" = "$second_request" ] && [ -n "$first_request" ]; then
+        echo "✅ SSR-Konsistenz gewährleistet ($first_request)"
+        return 0
+    else
+        echo "❌ SSR-Inkonsistenz erkannt ($first_request != $second_request)"
+        return 1
+    fi
+}
+
 # Funktion: Vollständiger Test
 run_all_tests() {
     echo "🧪 Starte vollständige Tests..."
@@ -113,6 +139,7 @@ run_all_tests() {
     test_dashboard || ((failed++))
     test_admin_api || ((failed++))
     test_url_api || ((failed++))
+    test_ssr_consistency || ((failed++))
     
     echo "================================"
     if [ $failed -eq 0 ]; then
@@ -146,6 +173,9 @@ main() {
             ;;
         "urls")
             test_url_api
+            ;;
+        "ssr")
+            test_ssr_consistency
             ;;
         "cleanup")
             cleanup

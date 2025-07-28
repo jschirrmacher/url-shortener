@@ -1,19 +1,14 @@
 <script setup lang="ts">
 import type { User } from '~/types/index'
 
-// Page Meta
+// Page Meta & Middleware
 definePageMeta({
-  middleware: 'auth',
+  middleware: ['auth', 'admin'],
 })
 
 // Meta
 useHead({
   title: 'Administration - URL Shortener',
-})
-
-// Middleware
-definePageMeta({
-  middleware: 'admin',
 })
 
 // Auth Check
