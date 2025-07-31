@@ -1,6 +1,6 @@
 // Zentrale Auth-Logik für Seiten
 
-type Role = 'admin' | 'user'
+type Role = "admin" | "user"
 
 interface AuthPageOptions {
   title: string
@@ -22,7 +22,7 @@ export function useAuthPage(options: AuthPageOptions) {
     definePageMeta({ layout: false })
   } else {
     // All protected pages only need auth middleware
-    definePageMeta({ middleware: 'auth' })
+    definePageMeta({ middleware: "auth" })
   }
 
   // Get auth composable
@@ -34,13 +34,13 @@ export function useAuthPage(options: AuthPageOptions) {
       await auth.initAuth()
 
       if (!auth.user.value) {
-        await navigateTo('/login')
+        await navigateTo("/login")
         return
       }
       if (options.requireRole && auth.user.value.role !== options.requireRole) {
         throw createError({
           statusCode: 403,
-          statusMessage: 'Admin-Berechtigung erforderlich',
+          statusMessage: "Admin-Berechtigung erforderlich",
         })
       }
     }
@@ -60,7 +60,7 @@ export function useAuthPageStandard(title: string) {
  * Shorthand für Admin-Seiten
  */
 export function useAuthPageAdmin(title: string) {
-  return useAuthPage({ title, requireRole: 'admin' })
+  return useAuthPage({ title, requireRole: "admin" })
 }
 
 /**

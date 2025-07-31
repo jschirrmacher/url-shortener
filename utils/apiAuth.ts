@@ -1,5 +1,5 @@
-import authService from './authService'
-import type { User, AuthUser } from '~/types/index'
+import authService from "./authService"
+import type { User, AuthUser } from "~/types/index"
 
 interface AuthResult {
   user: User
@@ -10,12 +10,12 @@ interface AuthResult {
  * Authentifiziert einen API-Request über Cookie-Token
  */
 export async function authenticateRequest(event: any): Promise<AuthResult> {
-  const token = getCookie(event, 'auth-token')
+  const token = getCookie(event, "auth-token")
 
   if (!token) {
     throw createError({
       statusCode: 401,
-      message: 'Authentifizierung erforderlich',
+      message: "Authentifizierung erforderlich",
     })
   }
 
@@ -26,18 +26,18 @@ export async function authenticateRequest(event: any): Promise<AuthResult> {
     if (!user) {
       throw createError({
         statusCode: 401,
-        message: 'Ungültiger Benutzer',
+        message: "Ungültiger Benutzer",
       })
     }
 
     return {
       user,
-      isAdmin: user.role === 'admin',
+      isAdmin: user.role === "admin",
     }
   } catch (error: unknown) {
     throw createError({
       statusCode: 401,
-      message: 'Ungültiger Token',
+      message: "Ungültiger Token",
     })
   }
 }
@@ -51,7 +51,7 @@ export async function requireAdmin(event: any): Promise<User> {
   if (!isAdmin) {
     throw createError({
       statusCode: 403,
-      message: 'Admin-Berechtigung erforderlich',
+      message: "Admin-Berechtigung erforderlich",
     })
   }
 
@@ -67,7 +67,7 @@ export async function requireOwnershipOrAdmin(event: any, resourceOwner: string)
   if (!isAdmin && user.username !== resourceOwner) {
     throw createError({
       statusCode: 403,
-      message: 'Keine Berechtigung für diese Ressource',
+      message: "Keine Berechtigung für diese Ressource",
     })
   }
 
@@ -78,45 +78,45 @@ export async function requireOwnershipOrAdmin(event: any, resourceOwner: string)
  * Extrahiert Client-IP aus Request
  */
 export function getClientIP(event: any): string {
-  const forwarded = getHeader(event, 'x-forwarded-for')
-  const realIP = getHeader(event, 'x-real-ip')
+  const forwarded = getHeader(event, "x-forwarded-for")
+  const realIP = getHeader(event, "x-real-ip")
   const remoteAddress = event.node.req.socket?.remoteAddress
 
-  if (typeof forwarded === 'string') {
-    return forwarded.split(',')[0].trim()
+  if (typeof forwarded === "string") {
+    return forwarded.split(",")[0].trim()
   }
 
-  if (typeof realIP === 'string') {
+  if (typeof realIP === "string") {
     return realIP
   }
 
-  return remoteAddress ?? 'unknown'
+  return remoteAddress ?? "unknown"
 }
 
 /**
  * Extrahiert User-Agent aus Request
  */
 export function getUserAgent(event: any): string {
-  return getHeader(event, 'user-agent') ?? 'unknown'
+  return getHeader(event, "user-agent") ?? "unknown"
 }
 
 /**
  * Extrahiert Referrer aus Request
  */
 export function getReferrer(event: any): string {
-  return getHeader(event, 'referer') ?? ''
+  return getHeader(event, "referer") ?? ""
 }
 
 /**
  * Setzt Auth-Cookie mit sicheren Einstellungen
  */
 export function setAuthCookie(event: any, token: string): void {
-  setCookie(event, 'auth-token', token, {
+  setCookie(event, "auth-token", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
     maxAge: 60 * 60 * 24 * 7, // 7 Tage
-    path: '/',
+    path: "/",
   })
 }
 
@@ -124,11 +124,11 @@ export function setAuthCookie(event: any, token: string): void {
  * Löscht Auth-Cookie
  */
 export function clearAuthCookie(event: any): void {
-  deleteCookie(event, 'auth-token', {
+  deleteCookie(event, "auth-token", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
   })
 }
 
@@ -136,10 +136,10 @@ export function clearAuthCookie(event: any): void {
  * Validiert Request-Body gegen Schema
  */
 export function validateRequestBody<T>(body: any, requiredFields: (keyof T)[]): T {
-  if (!body || typeof body !== 'object') {
+  if (!body || typeof body !== "object") {
     throw createError({
       statusCode: 400,
-      message: 'Request-Body ist erforderlich',
+      message: "Request-Body ist erforderlich",
     })
   }
 
@@ -171,10 +171,10 @@ export function validateUrl(url: string): boolean {
  * Sanitize String für CSV-Speicherung
  */
 export function sanitizeForCsv(value: string): string {
-  if (!value) return ''
+  if (!value) return ""
 
   // Escape Anführungszeichen und Kommas
-  return value.replace(/"/g, '""').replace(/\r?\n/g, ' ')
+  return value.replace(/"/g, '""').replace(/\r?\n/g, " ")
 }
 
 /**
@@ -182,11 +182,7 @@ export function sanitizeForCsv(value: string): string {
  */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
 
-export function checkRateLimit(
-  identifier: string,
-  maxRequests: number = 10,
-  windowMs: number = 60000
-): boolean {
+export function checkRateLimit(identifier: string, maxRequests: number = 10, windowMs: number = 60000): boolean {
   const now = Date.now()
   const record = rateLimitMap.get(identifier)
 

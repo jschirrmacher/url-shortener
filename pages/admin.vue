@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { User } from '~/types/index'
+import type { User } from "~/types/index"
 
-const { user } = useAuthPageAdmin('Administration - URL Shortener')
+const { user } = useAuthPageAdmin("Administration - URL Shortener")
 
 // Reactive Data
 const users = ref<User[]>([])
 const usersLoading = ref<boolean>(true)
-const usersError = ref<string>('')
+const usersError = ref<string>("")
 
 onMounted(async (): Promise<void> => {
   // Lade Benutzer nach erfolgreicher Auth
@@ -17,14 +17,13 @@ onMounted(async (): Promise<void> => {
 const loadUsers = async (): Promise<void> => {
   try {
     usersLoading.value = true
-    usersError.value = ''
+    usersError.value = ""
 
-    const response = await $fetch<User[]>('/api/admin/users')
+    const response = await $fetch<User[]>("/api/admin/users")
     users.value = response
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    usersError.value =
-      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der Benutzer'
+    usersError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der Benutzer"
   } finally {
     usersLoading.value = false
   }
@@ -36,21 +35,21 @@ const handleUserCreated = (newUser: User): void => {
 }
 
 const handleUserDeleted = (username: string): void => {
-  const userIndex = users.value.findIndex(u => u.username === username)
+  const userIndex = users.value.findIndex((u) => u.username === username)
   if (userIndex !== -1) {
     users.value[userIndex].active = false
   }
 }
 
 const handleUserReactivated = (username: string): void => {
-  const userIndex = users.value.findIndex(u => u.username === username)
+  const userIndex = users.value.findIndex((u) => u.username === username)
   if (userIndex !== -1) {
     users.value[userIndex].active = true
   }
 }
 
-const handleRoleChanged = (username: string, newRole: 'admin' | 'user'): void => {
-  const userIndex = users.value.findIndex(u => u.username === username)
+const handleRoleChanged = (username: string, newRole: "admin" | "user"): void => {
+  const userIndex = users.value.findIndex((u) => u.username === username)
   if (userIndex !== -1) {
     users.value[userIndex].role = newRole
   }

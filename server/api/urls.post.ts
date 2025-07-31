@@ -1,11 +1,5 @@
-import urlService from '~/utils/urlService'
-import {
-  authenticateRequest,
-  validateRequestBody,
-  validateUrl,
-  checkRateLimit,
-  getClientIP,
-} from '~/utils/apiAuth'
+import urlService from "~/utils/urlService"
+import { authenticateRequest, validateRequestBody, validateUrl, checkRateLimit, getClientIP } from "~/utils/apiAuth"
 
 interface CreateUrlRequest {
   originalUrl: string
@@ -30,12 +24,12 @@ export default defineEventHandler(async (event): Promise<CreateUrlResponse> => {
       // 20 URLs pro Stunde
       throw createError({
         statusCode: 429,
-        message: 'Zu viele URL-Erstellungen. Bitte warten Sie eine Stunde.',
+        message: "Zu viele URL-Erstellungen. Bitte warten Sie eine Stunde.",
       })
     }
 
     // Validiere Request Body
-    const body = validateRequestBody<CreateUrlRequest>(await readBody(event), ['originalUrl'])
+    const body = validateRequestBody<CreateUrlRequest>(await readBody(event), ["originalUrl"])
 
     const { originalUrl, customCode, title } = body
 
@@ -43,7 +37,7 @@ export default defineEventHandler(async (event): Promise<CreateUrlResponse> => {
     if (!validateUrl(originalUrl)) {
       throw createError({
         statusCode: 400,
-        message: 'Ungültige URL',
+        message: "Ungültige URL",
       })
     }
 
@@ -52,15 +46,14 @@ export default defineEventHandler(async (event): Promise<CreateUrlResponse> => {
       if (!/^[a-zA-Z0-9_-]+$/.test(customCode)) {
         throw createError({
           statusCode: 400,
-          message:
-            'Custom Code darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten',
+          message: "Custom Code darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten",
         })
       }
 
       if (customCode.length < 3 || customCode.length > 20) {
         throw createError({
           statusCode: 400,
-          message: 'Custom Code muss zwischen 3 und 20 Zeichen lang sein',
+          message: "Custom Code muss zwischen 3 und 20 Zeichen lang sein",
         })
       }
     }
@@ -75,11 +68,11 @@ export default defineEventHandler(async (event): Promise<CreateUrlResponse> => {
 
     return result
   } catch (error: unknown) {
-    if (error && typeof error === 'object' && 'statusCode' in error) {
+    if (error && typeof error === "object" && "statusCode" in error) {
       throw error
     }
 
-    const errorMessage = error instanceof Error ? error.message : 'URL konnte nicht erstellt werden'
+    const errorMessage = error instanceof Error ? error.message : "URL konnte nicht erstellt werden"
     throw createError({
       statusCode: 500,
       message: errorMessage,

@@ -2,11 +2,11 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   // Compatibility Date
-  compatibilityDate: '2025-07-26',
+  compatibilityDate: "2025-07-26",
 
   // CSS Framework - verwende Tailwind CSS direkt
-  css: ['~/assets/css/main.css'],
-  modules: ['@nuxtjs/tailwindcss'],
+  css: ["~/assets/css/main.css"],
+  modules: ["@nuxtjs/tailwindcss"],
 
   // Server-side Rendering
   ssr: true,
@@ -14,23 +14,23 @@ export default defineNuxtConfig({
   // Runtime Config für Umgebungsvariablen
   runtimeConfig: {
     // Private keys (nur server-side verfügbar)
-    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+    baseUrl: process.env.BASE_URL || "http://localhost:3000",
 
     // Public keys (client-side verfügbar)
     public: {
-      baseUrl: process.env.BASE_URL || 'http://localhost:3000',
+      baseUrl: process.env.BASE_URL || "http://localhost:3000",
     },
   },
 
   // Auto-Import Konfiguration
   imports: {
-    dirs: ['composables/**', 'utils/**', 'types/**'],
+    dirs: ["composables/**", "utils/**", "types/**"],
   },
 
   // Komponenten Auto-Import
   components: [
     {
-      path: '~/components',
+      path: "~/components",
       pathPrefix: false,
     },
   ],

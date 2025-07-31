@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UrlStats } from '~/types/index'
+import type { UrlStats } from "~/types/index"
 
 // Props
 interface Props {
@@ -10,12 +10,12 @@ const props = defineProps<Props>()
 
 // Helper Methods
 const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
@@ -24,11 +24,11 @@ const copyToClipboard = async (text: string): Promise<void> => {
     await navigator.clipboard.writeText(text)
   } catch {
     // Fallback for older browsers
-    const textArea = document.createElement('textarea')
+    const textArea = document.createElement("textarea")
     textArea.value = text
     document.body.appendChild(textArea)
     textArea.select()
-    document.execCommand('copy')
+    document.execCommand("copy")
     document.body.removeChild(textArea)
   }
 }
@@ -43,12 +43,10 @@ const getShortUrl = (shortCode: string): string => {
   <div class="space-y-6">
     <!-- URL Info Card -->
     <div class="bg-white rounded-lg shadow-md p-6">
-      <div
-        class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0"
-      >
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div class="flex-1 min-w-0">
           <h2 class="text-2xl font-bold text-gray-800 mb-2">
-            {{ stats.title || 'Unbenannte URL' }}
+            {{ stats.title || "Unbenannte URL" }}
           </h2>
 
           <div class="space-y-2">
@@ -79,12 +77,7 @@ const getShortUrl = (shortCode: string): string => {
                 class="text-blue-600 hover:text-blue-800 transition-colors break-all"
               >
                 {{ stats.originalUrl }}
-                <svg
-                  class="inline h-3 w-3 ml-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg class="inline h-3 w-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
                     stroke-linejoin="round"
@@ -110,10 +103,7 @@ const getShortUrl = (shortCode: string): string => {
           >
             Bearbeiten
           </NuxtLink>
-          <NuxtLink
-            to="/"
-            class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-          >
+          <NuxtLink to="/" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
             Zurück
           </NuxtLink>
         </div>
@@ -126,19 +116,9 @@ const getShortUrl = (shortCode: string): string => {
 
       <StatsCard title="Unique Visitors" :value="stats.uniqueClicks" icon="users" color="green" />
 
-      <StatsCard
-        title="Traffic-Quellen"
-        :value="Object.keys(stats.sourceTypes).length"
-        icon="globe"
-        color="orange"
-      />
+      <StatsCard title="Traffic-Quellen" :value="Object.keys(stats.sourceTypes).length" icon="globe" color="orange" />
 
-      <StatsCard
-        title="Referrer"
-        :value="Object.keys(stats.referrers).length"
-        icon="eye"
-        color="purple"
-      />
+      <StatsCard title="Referrer" :value="Object.keys(stats.referrers).length" icon="eye" color="purple" />
     </div>
   </div>
 </template>

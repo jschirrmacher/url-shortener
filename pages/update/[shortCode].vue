@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UrlStats, UpdateUrlResponse, ApiError } from '~/types/index'
+import type { UrlStats, UpdateUrlResponse, ApiError } from "~/types/index"
 
 const route = useRoute()
 const shortCode = route.params.shortCode as string
@@ -8,27 +8,27 @@ const { user } = useAuthPageStandard(`URL bearbeiten - ${shortCode}`)
 
 // Reactive Data
 const loading = ref<boolean>(true)
-const error = ref<string>('')
+const error = ref<string>("")
 const urlData = ref<UrlStats | null>(null)
 
 // Update Form
-const newUrl = ref<string>('')
+const newUrl = ref<string>("")
 const updateLoading = ref<boolean>(false)
-const updateError = ref<string>('')
+const updateError = ref<string>("")
 const updateResult = ref<UpdateUrlResponse | null>(null)
 
 // Load URL Data
 const loadUrlData = async (): Promise<void> => {
   try {
     loading.value = true
-    error.value = ''
+    error.value = ""
 
     const response = await $fetch<UrlStats>(`/api/urls/${shortCode}/stats`)
     urlData.value = response
     newUrl.value = response.originalUrl // Pre-fill with current URL
   } catch (err: unknown) {
     const apiError = err as ApiError
-    error.value = apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der URL-Daten'
+    error.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der URL-Daten"
   } finally {
     loading.value = false
   }
@@ -37,17 +37,17 @@ const loadUrlData = async (): Promise<void> => {
 // Update URL
 const updateUrl = async (): Promise<void> => {
   if (!newUrl.value.trim()) {
-    updateError.value = 'Bitte geben Sie eine URL ein'
+    updateError.value = "Bitte geben Sie eine URL ein"
     return
   }
 
   updateLoading.value = true
-  updateError.value = ''
+  updateError.value = ""
   updateResult.value = null
 
   try {
     const response = await $fetch<UpdateUrlResponse>(`/api/urls/${shortCode}`, {
-      method: 'PUT',
+      method: "PUT",
       body: {
         originalUrl: newUrl.value.trim(),
       },
@@ -56,8 +56,7 @@ const updateUrl = async (): Promise<void> => {
     updateResult.value = response
   } catch (err: unknown) {
     const apiError = err as ApiError
-    updateError.value =
-      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Aktualisieren der URL'
+    updateError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Aktualisieren der URL"
   } finally {
     updateLoading.value = false
   }
@@ -65,12 +64,12 @@ const updateUrl = async (): Promise<void> => {
 
 // Helper Methods
 const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
@@ -84,9 +83,7 @@ onMounted(async (): Promise<void> => {
   <div class="max-w-4xl mx-auto py-12 px-4">
     <!-- Page Header -->
     <div class="mb-8">
-      <NuxtLink to="/" class="text-blue-600 hover:text-blue-800 text-sm">
-        ← Zurück zur Übersicht
-      </NuxtLink>
+      <NuxtLink to="/" class="text-blue-600 hover:text-blue-800 text-sm"> ← Zurück zur Übersicht </NuxtLink>
       <h1 class="text-3xl font-bold text-gray-800 mt-4">URL bearbeiten</h1>
     </div>
 
@@ -140,9 +137,7 @@ onMounted(async (): Promise<void> => {
 
         <form @submit.prevent="updateUrl" class="space-y-4">
           <div>
-            <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-2">
-              Neue URL *
-            </label>
+            <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-2"> Neue URL * </label>
             <input
               id="newUrl"
               v-model="newUrl"
@@ -158,23 +153,17 @@ onMounted(async (): Promise<void> => {
             :disabled="updateLoading || !newUrl"
             class="w-full px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50"
           >
-            {{ updateLoading ? 'Wird aktualisiert...' : 'URL aktualisieren' }}
+            {{ updateLoading ? "Wird aktualisiert..." : "URL aktualisieren" }}
           </button>
         </form>
 
         <!-- Update Success -->
-        <div
-          v-if="updateResult"
-          class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"
-        >
+        <div v-if="updateResult" class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
           ✅ {{ updateResult.message }}
         </div>
 
         <!-- Update Error -->
-        <div
-          v-if="updateError"
-          class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
-        >
+        <div v-if="updateError" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
           ❌ {{ updateError }}
         </div>
       </div>

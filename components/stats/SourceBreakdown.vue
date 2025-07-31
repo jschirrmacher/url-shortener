@@ -10,29 +10,29 @@ const props = defineProps<Props>()
 // Helper Methods
 const getSourceIcon = (source: string): string => {
   switch (source) {
-    case 'website':
-      return '🌐'
-    case 'email':
-      return '📧'
-    case 'qr':
-      return '📱'
-    case 'direct':
-      return '🔗'
+    case "website":
+      return "🌐"
+    case "email":
+      return "📧"
+    case "qr":
+      return "📱"
+    case "direct":
+      return "🔗"
     default:
-      return '❓'
+      return "❓"
   }
 }
 
 const getSourceLabel = (source: string): string => {
   switch (source) {
-    case 'website':
-      return 'Website'
-    case 'email':
-      return 'E-Mail'
-    case 'qr':
-      return 'QR-Code'
-    case 'direct':
-      return 'Direkt'
+    case "website":
+      return "Website"
+    case "email":
+      return "E-Mail"
+    case "qr":
+      return "QR-Code"
+    case "direct":
+      return "Direkt"
     default:
       return source
   }
@@ -100,7 +100,7 @@ const totalReferrerClicks = computed(() => getTotalClicks(props.referrers))
         >
           <div class="flex-1 min-w-0">
             <div class="font-medium text-gray-700 truncate">
-              {{ referrer === 'direct' ? 'Direkter Zugriff' : referrer }}
+              {{ referrer === "direct" ? "Direkter Zugriff" : referrer }}
             </div>
             <div v-if="referrer !== 'direct'" class="text-sm text-gray-500 truncate">
               {{ referrer }}
@@ -108,9 +108,7 @@ const totalReferrerClicks = computed(() => getTotalClicks(props.referrers))
           </div>
           <div class="text-right ml-4">
             <div class="font-semibold text-gray-800">{{ count }}</div>
-            <div class="text-sm text-gray-500">
-              {{ getPercentage(count, totalReferrerClicks) }}%
-            </div>
+            <div class="text-sm text-gray-500">{{ getPercentage(count, totalReferrerClicks) }}%</div>
           </div>
         </div>
       </div>

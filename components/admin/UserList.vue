@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { User } from '~/types/index'
+import type { User } from "~/types/index"
 
 // Props & Emits
 interface Props {
@@ -9,27 +9,27 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'refresh'): void
-  (e: 'userDeleted', username: string): void
-  (e: 'userReactivated', username: string): void
-  (e: 'roleChanged', username: string, newRole: 'admin' | 'user'): void
+  (e: "refresh"): void
+  (e: "userDeleted", username: string): void
+  (e: "userReactivated", username: string): void
+  (e: "roleChanged", username: string, newRole: "admin" | "user"): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  error: '',
+  error: "",
 })
 
 const emit = defineEmits<Emits>()
 
 // Helper Methods
 const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
@@ -39,39 +39,39 @@ const deleteUser = async (username: string): Promise<void> => {
 
   try {
     await $fetch(`/api/admin/users/${username}`, {
-      method: 'DELETE',
+      method: "DELETE",
     })
-    emit('userDeleted', username)
+    emit("userDeleted", username)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    alert(apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Löschen des Benutzers')
+    alert(apiError?.data?.message ?? apiError?.message ?? "Fehler beim Löschen des Benutzers")
   }
 }
 
 const reactivateUser = async (username: string): Promise<void> => {
   try {
     await $fetch(`/api/admin/users/${username}/reactivate`, {
-      method: 'POST',
+      method: "POST",
     })
-    emit('userReactivated', username)
+    emit("userReactivated", username)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    alert(apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Reaktivieren des Benutzers')
+    alert(apiError?.data?.message ?? apiError?.message ?? "Fehler beim Reaktivieren des Benutzers")
   }
 }
 
-const changeRole = async (username: string, newRole: 'admin' | 'user'): Promise<void> => {
+const changeRole = async (username: string, newRole: "admin" | "user"): Promise<void> => {
   if (!confirm(`Rolle von "${username}" zu "${newRole}" ändern?`)) return
 
   try {
     await $fetch(`/api/admin/users/${username}/role`, {
-      method: 'PUT',
+      method: "PUT",
       body: { role: newRole },
     })
-    emit('roleChanged', username, newRole)
+    emit("roleChanged", username, newRole)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    alert(apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Ändern der Rolle')
+    alert(apiError?.data?.message ?? apiError?.message ?? "Fehler beim Ändern der Rolle")
   }
 }
 </script>
@@ -85,20 +85,16 @@ const changeRole = async (username: string, newRole: 'admin' | 'user'): Promise<
         :disabled="loading"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
       >
-        {{ loading ? 'Lädt...' : 'Aktualisieren' }}
+        {{ loading ? "Lädt..." : "Aktualisieren" }}
       </button>
     </div>
 
     <!-- Error Message -->
-    <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-      ❌ {{ error }}
-    </div>
+    <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">❌ {{ error }}</div>
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <div
-        class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"
-      ></div>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
       <p class="mt-2 text-gray-600">Lade Benutzer...</p>
     </div>
 
@@ -107,31 +103,11 @@ const changeRole = async (username: string, newRole: 'admin' | 'user'): Promise<
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Benutzer
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Rolle
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Status
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Erstellt
-            </th>
-            <th
-              class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Aktionen
-            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Benutzer</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rolle</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erstellt</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aktionen</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -142,12 +118,7 @@ const changeRole = async (username: string, newRole: 'admin' | 'user'): Promise<
             <td class="px-6 py-4 whitespace-nowrap">
               <select
                 :value="user.role"
-                @change="
-                  changeRole(
-                    user.username,
-                    ($event.target as HTMLSelectElement).value as 'admin' | 'user'
-                  )
-                "
+                @change="changeRole(user.username, ($event.target as HTMLSelectElement).value as 'admin' | 'user')"
                 class="text-sm border border-gray-300 rounded px-2 py-1"
               >
                 <option value="user">Benutzer</option>
@@ -161,7 +132,7 @@ const changeRole = async (username: string, newRole: 'admin' | 'user'): Promise<
                   user.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
                 ]"
               >
-                {{ user.active ? 'Aktiv' : 'Deaktiviert' }}
+                {{ user.active ? "Aktiv" : "Deaktiviert" }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

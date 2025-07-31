@@ -1,6 +1,6 @@
-import { nanoid } from 'nanoid'
-import csvService from './csvService'
-import type { UrlRecord, UrlStats, UpdateUrlResponse, Click, ClickRecord } from '~/types/index'
+import { nanoid } from "nanoid"
+import csvService from "./csvService"
+import type { UrlRecord, UrlStats, UpdateUrlResponse, Click, ClickRecord } from "~/types/index"
 
 // Import CsvRecord interface from csvService
 interface CsvRecord {
@@ -34,14 +34,14 @@ interface ReferrerStats {
 }
 
 class UrlService {
-  private readonly baseUrl: string = process.env.BASE_URL || 'http://localhost:3000'
+  private readonly baseUrl: string = process.env.BASE_URL || "http://localhost:3000"
 
   async createShortUrl(data: CreateUrlData): Promise<CreateUrlResult> {
     const { originalUrl, customCode, title, createdBy } = data
 
     // Validiere URL
     if (!this.isValidUrl(originalUrl)) {
-      throw new Error('Ungültige URL')
+      throw new Error("Ungültige URL")
     }
 
     // Generiere oder verwende Custom Code
@@ -50,7 +50,7 @@ class UrlService {
       // Prüfe ob Custom Code bereits existiert
       const existingUrl = await this.getUrlByShortCode(customCode)
       if (existingUrl) {
-        throw new Error('Custom Code bereits vergeben')
+        throw new Error("Custom Code bereits vergeben")
       }
       shortCode = customCode
     } else {
@@ -79,7 +79,7 @@ class UrlService {
 
   async getUrlByShortCode(shortCode: string): Promise<UrlRecord | null> {
     const urls = await csvService.getUrls()
-    const url = urls.find(u => u.shortCode === shortCode)
+    const url = urls.find((u) => u.shortCode === shortCode)
 
     if (!url) {
       return null
@@ -97,8 +97,8 @@ class UrlService {
   async getUserUrls(username: string): Promise<UrlRecord[]> {
     const urls = await csvService.getUrls()
     return urls
-      .filter(url => url.createdBy === username)
-      .map(url => ({
+      .filter((url) => url.createdBy === username)
+      .map((url) => ({
         shortCode: url.shortCode as string,
         originalUrl: url.originalUrl as string,
         title: url.title as string | undefined,
@@ -114,7 +114,7 @@ class UrlService {
       ip: string
       userAgent: string
       referrer: string
-    }
+    },
   ): Promise<void> {
     const sourceType = this.determineSourceType(clickData.referrer, clickData.userAgent)
 
@@ -159,19 +159,15 @@ class UrlService {
     }
   }
 
-  async updateUrl(
-    shortCode: string,
-    originalUrl: string,
-    title?: string
-  ): Promise<UpdateUrlResponse> {
+  async updateUrl(shortCode: string, originalUrl: string, title?: string): Promise<UpdateUrlResponse> {
     const existingUrl = await this.getUrlByShortCode(shortCode)
     if (!existingUrl) {
-      throw new Error('URL nicht gefunden')
+      throw new Error("URL nicht gefunden")
     }
 
     // Validiere neue URL
     if (!this.isValidUrl(originalUrl)) {
-      throw new Error('Ungültige URL')
+      throw new Error("Ungültige URL")
     }
 
     const previousUrl = existingUrl.originalUrl
@@ -208,7 +204,7 @@ class UrlService {
       attempts++
 
       if (attempts > maxAttempts) {
-        throw new Error('Fehler beim Generieren eines eindeutigen Codes')
+        throw new Error("Fehler beim Generieren eines eindeutigen Codes")
       }
     } while (await this.getUrlByShortCode(shortCode))
 
@@ -224,45 +220,34 @@ class UrlService {
     }
   }
 
-  private determineSourceType(
-    referrer: string,
-    userAgent: string
-  ): 'website' | 'email' | 'qr' | 'direct' {
+  private determineSourceType(referrer: string, userAgent: string): "website" | "email" | "qr" | "direct" {
     // Kein Referrer = Direkt oder E-Mail/QR
-    if (!referrer || referrer === '') {
+    if (!referrer || referrer === "") {
       // Mobile User-Agent deutet auf QR-Code hin
       if (this.isMobileUserAgent(userAgent)) {
-        return 'qr'
+        return "qr"
       }
       // Desktop ohne Referrer = E-Mail oder direkter Aufruf
-      return 'email'
+      return "email"
     }
 
     // Mit Referrer = Website-Traffic
-    return 'website'
+    return "website"
   }
 
   private isMobileUserAgent(userAgent: string): boolean {
-    const mobileKeywords = [
-      'Mobile',
-      'Android',
-      'iPhone',
-      'iPad',
-      'iPod',
-      'BlackBerry',
-      'Windows Phone',
-    ]
-    return mobileKeywords.some(keyword => userAgent.includes(keyword))
+    const mobileKeywords = ["Mobile", "Android", "iPhone", "iPad", "iPod", "BlackBerry", "Windows Phone"]
+    return mobileKeywords.some((keyword) => userAgent.includes(keyword))
   }
 
   private calculateUniqueClicks(clicks: ClickRecord[]): number {
-    const uniqueIps = new Set(clicks.map(click => click.ip))
+    const uniqueIps = new Set(clicks.map((click) => click.ip))
     return uniqueIps.size
   }
 
   private getRecentClicks(
     clicks: ClickRecord[],
-    limit: number = 10
+    limit: number = 10,
   ): Array<{
     timestamp: string
     sourceType: string
@@ -271,17 +256,17 @@ class UrlService {
     return clicks
       .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
       .slice(0, limit)
-      .map(click => ({
+      .map((click) => ({
         timestamp: click.timestamp,
         sourceType: click.sourceType,
-        referrer: click.referrer || 'Direkt',
+        referrer: click.referrer || "Direkt",
       }))
   }
 
   private calculateSourceTypeStats(clicks: any[]): SourceTypeStats {
     const stats: SourceTypeStats = {}
 
-    clicks.forEach(click => {
+    clicks.forEach((click) => {
       const sourceType = click.sourceType as string
       stats[sourceType] = (stats[sourceType] ?? 0) + 1
     })
@@ -292,8 +277,8 @@ class UrlService {
   private calculateDailyClickStats(clicks: any[]): DailyClickStats {
     const stats: DailyClickStats = {}
 
-    clicks.forEach(click => {
-      const date = new Date(click.timestamp as string).toISOString().split('T')[0]
+    clicks.forEach((click) => {
+      const date = new Date(click.timestamp as string).toISOString().split("T")[0]
       stats[date] = (stats[date] ?? 0) + 1
     })
 
@@ -303,8 +288,8 @@ class UrlService {
   private calculateReferrerStats(clicks: any[]): ReferrerStats {
     const stats: ReferrerStats = {}
 
-    clicks.forEach(click => {
-      const referrer = (click.referrer as string) || 'Direct'
+    clicks.forEach((click) => {
+      const referrer = (click.referrer as string) || "Direct"
       stats[referrer] = (stats[referrer] ?? 0) + 1
     })
 

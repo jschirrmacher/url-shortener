@@ -1,23 +1,23 @@
 <script setup lang="ts">
 // Props & Emits
 interface Emits {
-  (e: 'urlCreated', data: { shortCode: string; shortUrl: string }): void
+  (e: "urlCreated", data: { shortCode: string; shortUrl: string }): void
 }
 
 const emit = defineEmits<Emits>()
 
 // Form Data
-const originalUrl = ref<string>('')
-const customCode = ref<string>('')
-const title = ref<string>('')
+const originalUrl = ref<string>("")
+const customCode = ref<string>("")
+const title = ref<string>("")
 const loading = ref<boolean>(false)
-const error = ref<string>('')
-const success = ref<string>('')
+const error = ref<string>("")
+const success = ref<string>("")
 
 // Form Validation
 const validateForm = (): boolean => {
   if (!originalUrl.value.trim()) {
-    error.value = 'Bitte geben Sie eine URL ein'
+    error.value = "Bitte geben Sie eine URL ein"
     return false
   }
 
@@ -25,7 +25,7 @@ const validateForm = (): boolean => {
   try {
     new URL(originalUrl.value.trim())
   } catch {
-    error.value = 'Bitte geben Sie eine gültige URL ein'
+    error.value = "Bitte geben Sie eine gültige URL ein"
     return false
   }
 
@@ -34,11 +34,11 @@ const validateForm = (): boolean => {
 
 // Reset Form
 const resetForm = (): void => {
-  originalUrl.value = ''
-  customCode.value = ''
-  title.value = ''
-  error.value = ''
-  success.value = ''
+  originalUrl.value = ""
+  customCode.value = ""
+  title.value = ""
+  error.value = ""
+  success.value = ""
 }
 
 // Create Short URL
@@ -46,12 +46,12 @@ const createShortUrl = async (): Promise<void> => {
   if (!validateForm()) return
 
   loading.value = true
-  error.value = ''
-  success.value = ''
+  error.value = ""
+  success.value = ""
 
   try {
-    const response = await $fetch<{ shortCode: string; shortUrl: string }>('/api/urls', {
-      method: 'POST',
+    const response = await $fetch<{ shortCode: string; shortUrl: string }>("/api/urls", {
+      method: "POST",
       body: {
         originalUrl: originalUrl.value.trim(),
         customCode: customCode.value.trim() || undefined,
@@ -60,7 +60,7 @@ const createShortUrl = async (): Promise<void> => {
     })
 
     success.value = `Kurz-URL erstellt: ${response.shortUrl}`
-    emit('urlCreated', response)
+    emit("urlCreated", response)
 
     // Reset form after successful creation
     setTimeout(() => {
@@ -68,7 +68,7 @@ const createShortUrl = async (): Promise<void> => {
     }, 2000)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    error.value = apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Erstellen der URL'
+    error.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Erstellen der URL"
   } finally {
     loading.value = false
   }
@@ -80,22 +80,22 @@ const copyToClipboard = async (text: string): Promise<void> => {
     await navigator.clipboard.writeText(text)
   } catch {
     // Fallback for older browsers
-    const textArea = document.createElement('textarea')
+    const textArea = document.createElement("textarea")
     textArea.value = text
     document.body.appendChild(textArea)
     textArea.select()
-    document.execCommand('copy')
+    document.execCommand("copy")
     document.body.removeChild(textArea)
   }
 }
 
 // Dismiss messages
 const dismissSuccess = (): void => {
-  success.value = ''
+  success.value = ""
 }
 
 const dismissError = (): void => {
-  error.value = ''
+  error.value = ""
 }
 </script>
 
@@ -131,27 +131,15 @@ const dismissError = (): void => {
         <FormButton type="button" variant="secondary" @click="resetForm"> Zurücksetzen </FormButton>
 
         <FormButton type="submit" variant="primary" :loading="loading" :disabled="loading">
-          {{ loading ? 'Erstelle...' : 'URL verkürzen' }}
+          {{ loading ? "Erstelle..." : "URL verkürzen" }}
         </FormButton>
       </div>
 
       <!-- Success Message -->
-      <AlertMessage
-        v-if="success"
-        type="success"
-        :message="success"
-        dismissible
-        @dismiss="dismissSuccess"
-      />
+      <AlertMessage v-if="success" type="success" :message="success" dismissible @dismiss="dismissSuccess" />
 
       <!-- Error Message -->
-      <AlertMessage
-        v-if="error"
-        type="error"
-        :message="error"
-        dismissible
-        @dismiss="dismissError"
-      />
+      <AlertMessage v-if="error" type="error" :message="error" dismissible @dismiss="dismissError" />
     </form>
   </div>
 </template>

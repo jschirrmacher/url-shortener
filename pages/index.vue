@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import type { UrlRecord } from '~/types/index'
+import type { UrlRecord } from "~/types/index"
 
-const { user } = useAuthPageStandard('URL Shortener - Dashboard')
+const { user } = useAuthPageStandard("URL Shortener - Dashboard")
 
 onMounted(async (): Promise<void> => {
   // Lade URLs nach erfolgreicher Auth
@@ -11,19 +11,19 @@ onMounted(async (): Promise<void> => {
 // Reactive Data
 const urls = ref<UrlRecord[]>([])
 const urlsLoading = ref<boolean>(true)
-const urlsError = ref<string>('')
+const urlsError = ref<string>("")
 
 // Load URLs
 const loadUrls = async (): Promise<void> => {
   try {
     urlsLoading.value = true
-    urlsError.value = ''
+    urlsError.value = ""
 
-    const response = await $fetch<UrlRecord[]>('/api/urls')
+    const response = await $fetch<UrlRecord[]>("/api/urls")
     urls.value = response
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    urlsError.value = apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der URLs'
+    urlsError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der URLs"
   } finally {
     urlsLoading.value = false
   }

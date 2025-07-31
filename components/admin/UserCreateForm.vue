@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { User } from '~/types/index'
+import type { User } from "~/types/index"
 
 // Props & Emits
 interface Props {
@@ -7,7 +7,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'userCreated', user: User): void
+  (e: "userCreated", user: User): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -17,22 +17,22 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<Emits>()
 
 // Form Data
-const newUsername = ref<string>('')
-const newPassword = ref<string>('')
-const newRole = ref<'admin' | 'user'>('user')
-const createUserError = ref<string>('')
-const createSuccess = ref<string>('')
+const newUsername = ref<string>("")
+const newPassword = ref<string>("")
+const newRole = ref<"admin" | "user">("user")
+const createUserError = ref<string>("")
+const createSuccess = ref<string>("")
 const createLoading = ref<boolean>(false)
 
 // Form Validation
 const validateForm = (): boolean => {
   if (!newUsername.value.trim() || !newPassword.value.trim()) {
-    createUserError.value = 'Bitte füllen Sie alle Felder aus'
+    createUserError.value = "Bitte füllen Sie alle Felder aus"
     return false
   }
 
   if (newPassword.value.length < 6) {
-    createUserError.value = 'Passwort muss mindestens 6 Zeichen lang sein'
+    createUserError.value = "Passwort muss mindestens 6 Zeichen lang sein"
     return false
   }
 
@@ -41,11 +41,11 @@ const validateForm = (): boolean => {
 
 // Reset Form
 const resetForm = (): void => {
-  newUsername.value = ''
-  newPassword.value = ''
-  newRole.value = 'user'
-  createUserError.value = ''
-  createSuccess.value = ''
+  newUsername.value = ""
+  newPassword.value = ""
+  newRole.value = "user"
+  createUserError.value = ""
+  createSuccess.value = ""
 }
 
 // Create User
@@ -53,31 +53,27 @@ const createUser = async (): Promise<void> => {
   if (!validateForm()) return
 
   createLoading.value = true
-  createUserError.value = ''
-  createSuccess.value = ''
+  createUserError.value = ""
+  createSuccess.value = ""
 
   try {
-    const response = await $fetch<{ success: boolean; user: User; message?: string }>(
-      '/api/admin/users',
-      {
-        method: 'POST',
-        body: {
-          username: newUsername.value.trim(),
-          password: newPassword.value,
-          role: newRole.value,
-        },
-      }
-    )
+    const response = await $fetch<{ success: boolean; user: User; message?: string }>("/api/admin/users", {
+      method: "POST",
+      body: {
+        username: newUsername.value.trim(),
+        password: newPassword.value,
+        role: newRole.value,
+      },
+    })
 
     if (response.success && response.user) {
       createSuccess.value = `Benutzer "${response.user.username}" erfolgreich erstellt`
-      emit('userCreated', response.user)
+      emit("userCreated", response.user)
       resetForm()
     }
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    createUserError.value =
-      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Erstellen des Benutzers'
+    createUserError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Erstellen des Benutzers"
   } finally {
     createLoading.value = false
   }
@@ -91,9 +87,7 @@ const createUser = async (): Promise<void> => {
     <form @submit.prevent="createUser" class="space-y-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-700 mb-2">
-            Benutzername *
-          </label>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-2"> Benutzername * </label>
           <input
             id="username"
             v-model="newUsername"
@@ -105,9 +99,7 @@ const createUser = async (): Promise<void> => {
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-            Passwort *
-          </label>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2"> Passwort * </label>
           <input
             id="password"
             v-model="newPassword"
@@ -144,23 +136,17 @@ const createUser = async (): Promise<void> => {
           :disabled="createLoading"
           class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors"
         >
-          {{ createLoading ? 'Erstelle...' : 'Benutzer erstellen' }}
+          {{ createLoading ? "Erstelle..." : "Benutzer erstellen" }}
         </button>
       </div>
 
       <!-- Success Message -->
-      <div
-        v-if="createSuccess"
-        class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded"
-      >
+      <div v-if="createSuccess" class="mt-4 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
         ✅ {{ createSuccess }}
       </div>
 
       <!-- Error Message -->
-      <div
-        v-if="createUserError"
-        class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded"
-      >
+      <div v-if="createUserError" class="mt-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
         ❌ {{ createUserError }}
       </div>
     </form>

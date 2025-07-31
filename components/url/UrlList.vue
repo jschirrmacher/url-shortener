@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UrlRecord } from '~/types/index'
+import type { UrlRecord } from "~/types/index"
 
 // Props & Emits
 interface Props {
@@ -9,25 +9,25 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'refresh'): void
-  (e: 'urlUpdated'): void
+  (e: "refresh"): void
+  (e: "urlUpdated"): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
   loading: false,
-  error: '',
+  error: "",
 })
 
 const emit = defineEmits<Emits>()
 
 // Helper Methods
 const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
@@ -36,11 +36,11 @@ const copyToClipboard = async (text: string): Promise<void> => {
     await navigator.clipboard.writeText(text)
   } catch {
     // Fallback for older browsers
-    const textArea = document.createElement('textarea')
+    const textArea = document.createElement("textarea")
     textArea.value = text
     document.body.appendChild(textArea)
     textArea.select()
-    document.execCommand('copy')
+    document.execCommand("copy")
     document.body.removeChild(textArea)
   }
 }
@@ -51,7 +51,7 @@ const getShortUrl = (shortCode: string): string => {
 }
 
 const truncateUrl = (url: string, maxLength: number = 50): string => {
-  return url.length > maxLength ? url.substring(0, maxLength) + '...' : url
+  return url.length > maxLength ? url.substring(0, maxLength) + "..." : url
 }
 </script>
 
@@ -64,20 +64,16 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
         :disabled="loading"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
       >
-        {{ loading ? 'Lädt...' : 'Aktualisieren' }}
+        {{ loading ? "Lädt..." : "Aktualisieren" }}
       </button>
     </div>
 
     <!-- Error Message -->
-    <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-      ❌ {{ error }}
-    </div>
+    <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">❌ {{ error }}</div>
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <div
-        class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"
-      ></div>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
       <p class="mt-2 text-gray-600">Lade URLs...</p>
     </div>
 
@@ -88,18 +84,14 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
         :key="url.shortCode"
         class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
       >
-        <div
-          class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0"
-        >
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
           <!-- URL Info -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center space-x-2 mb-2">
               <h3 class="text-lg font-medium text-gray-900 truncate">
-                {{ url.title || 'Unbenannte URL' }}
+                {{ url.title || "Unbenannte URL" }}
               </h3>
-              <span
-                class="inline-flex px-2 py-1 text-xs font-semibold bg-orange-100 text-orange-800 rounded-full"
-              >
+              <span class="inline-flex px-2 py-1 text-xs font-semibold bg-orange-100 text-orange-800 rounded-full">
                 {{ url.shortCode }}
               </span>
             </div>
@@ -134,12 +126,7 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
                   :title="url.originalUrl"
                 >
                   {{ truncateUrl(url.originalUrl) }}
-                  <svg
-                    class="inline h-3 w-3 ml-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg class="inline h-3 w-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       stroke-linecap="round"
                       stroke-linejoin="round"
@@ -178,12 +165,7 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
 
     <!-- Empty State -->
     <div v-else class="text-center py-12">
-      <svg
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"

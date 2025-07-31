@@ -1,6 +1,6 @@
-import urlService from '~/utils/urlService'
-import { authenticateRequest } from '~/utils/apiAuth'
-import type { UrlRecord } from '~/types/index'
+import urlService from "~/utils/urlService"
+import { authenticateRequest } from "~/utils/apiAuth"
+import type { UrlRecord } from "~/types/index"
 
 export default defineEventHandler(async (event): Promise<UrlRecord[]> => {
   try {
@@ -12,12 +12,11 @@ export default defineEventHandler(async (event): Promise<UrlRecord[]> => {
 
     return urls
   } catch (error: unknown) {
-    if (error && typeof error === 'object' && 'statusCode' in error) {
+    if (error && typeof error === "object" && "statusCode" in error) {
       throw error
     }
 
-    const errorMessage =
-      error instanceof Error ? error.message : 'URLs konnten nicht geladen werden'
+    const errorMessage = error instanceof Error ? error.message : "URLs konnten nicht geladen werden"
     throw createError({
       statusCode: 500,
       message: errorMessage,
