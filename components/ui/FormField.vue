@@ -3,7 +3,7 @@
 interface Props {
   label: string
   modelValue: string
-  type?: 'text' | 'url' | 'password' | 'email'
+  type?: "text" | "url" | "password" | "email"
   placeholder?: string
   required?: boolean
   disabled?: boolean
@@ -15,11 +15,11 @@ interface Props {
 
 // Emits
 interface Emits {
-  (e: 'update:modelValue', value: string): void
+  (e: "update:modelValue", value: string): void
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  type: 'text',
+  type: "text",
   required: false,
   disabled: false,
 })
@@ -31,19 +31,19 @@ const inputId =
   props.id ||
   `field-${props.label
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '-')
-    .replace(/-+/g, '-')}`
+    .replace(/[^a-z0-9]/g, "-")
+    .replace(/-+/g, "-")}`
 
 const inputClasses = computed(() => [
-  'w-full px-4 py-3 border rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent',
-  props.error ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white hover:border-gray-400',
-  props.disabled ? 'opacity-50 cursor-not-allowed' : '',
+  "w-full px-4 py-3 border rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent",
+  props.error ? "border-red-300 bg-red-50" : "border-gray-300 bg-white hover:border-gray-400",
+  props.disabled ? "opacity-50 cursor-not-allowed" : "",
 ])
 
 // Methods
 const updateValue = (event: Event): void => {
   const target = event.target as HTMLInputElement
-  emit('update:modelValue', target.value)
+  emit("update:modelValue", target.value)
 }
 </script>
 

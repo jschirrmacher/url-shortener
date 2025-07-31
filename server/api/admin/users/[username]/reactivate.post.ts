@@ -1,5 +1,5 @@
-import authService from '~/utils/authService'
-import { requireAdmin } from '~/utils/apiAuth'
+import authService from "~/utils/authService"
+import { requireAdmin } from "~/utils/apiAuth"
 
 interface ReactivateUserResponse {
   success: boolean
@@ -13,12 +13,12 @@ export default defineEventHandler(async (event): Promise<ReactivateUserResponse>
     await requireAdmin(event)
 
     // Hole Username aus URL-Parameter
-    const username = getRouterParam(event, 'username')
+    const username = getRouterParam(event, "username")
 
     if (!username) {
       throw createError({
         statusCode: 400,
-        message: 'Benutzername ist erforderlich',
+        message: "Benutzername ist erforderlich",
       })
     }
 
@@ -31,12 +31,11 @@ export default defineEventHandler(async (event): Promise<ReactivateUserResponse>
       username,
     }
   } catch (error: unknown) {
-    if (error && typeof error === 'object' && 'statusCode' in error) {
+    if (error && typeof error === "object" && "statusCode" in error) {
       throw error
     }
 
-    const errorMessage =
-      error instanceof Error ? error.message : 'Benutzer konnte nicht reaktiviert werden'
+    const errorMessage = error instanceof Error ? error.message : "Benutzer konnte nicht reaktiviert werden"
     throw createError({
       statusCode: 500,
       message: errorMessage,

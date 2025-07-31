@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { User } from '~/types/index'
+import type { User } from "~/types/index"
 
 // Props
 interface Props {
@@ -10,21 +10,21 @@ const props = defineProps<Props>()
 
 // Helper Methods
 const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
 const getRoleLabel = (role: string): string => {
-  return role === 'admin' ? 'Administrator' : 'Benutzer'
+  return role === "admin" ? "Administrator" : "Benutzer"
 }
 
 const getRoleBadgeColor = (role: string): string => {
-  return role === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'
+  return role === "admin" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
 }
 </script>
 
@@ -37,21 +37,12 @@ const getRoleBadgeColor = (role: string): string => {
       <div class="flex items-center space-x-4">
         <div class="h-16 w-16 bg-orange-100 rounded-full flex items-center justify-center">
           <svg class="h-8 w-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-              clip-rule="evenodd"
-            />
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
           </svg>
         </div>
         <div>
           <h3 class="text-lg font-semibold text-gray-900">{{ user.username }}</h3>
-          <span
-            :class="[
-              'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
-              getRoleBadgeColor(user.role),
-            ]"
-          >
+          <span :class="['inline-flex px-2 py-1 text-xs font-semibold rounded-full', getRoleBadgeColor(user.role)]">
             {{ getRoleLabel(user.role) }}
           </span>
         </div>
@@ -84,7 +75,7 @@ const getRoleBadgeColor = (role: string): string => {
                   user.active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800',
                 ]"
               >
-                {{ user.active ? 'Aktiv' : 'Deaktiviert' }}
+                {{ user.active ? "Aktiv" : "Deaktiviert" }}
               </span>
             </dd>
           </div>
@@ -131,9 +122,7 @@ const getRoleBadgeColor = (role: string): string => {
 
     <!-- Loading State -->
     <div v-else class="text-center py-8">
-      <div
-        class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"
-      ></div>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
       <p class="mt-2 text-gray-600">Lade Profil-Informationen...</p>
     </div>
   </div>

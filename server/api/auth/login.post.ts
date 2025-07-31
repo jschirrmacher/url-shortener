@@ -1,6 +1,6 @@
-import authService from '~/utils/authService'
-import { setAuthCookie, validateRequestBody, checkRateLimit, getClientIP } from '~/utils/apiAuth'
-import type { User } from '~/types/index'
+import authService from "~/utils/authService"
+import { setAuthCookie, validateRequestBody, checkRateLimit, getClientIP } from "~/utils/apiAuth"
+import type { User } from "~/types/index"
 
 interface LoginRequest {
   username: string
@@ -21,12 +21,12 @@ export default defineEventHandler(async (event): Promise<LoginResponse> => {
       // 20 Versuche in 5 Minuten
       throw createError({
         statusCode: 429,
-        message: 'Zu viele Login-Versuche. Bitte warten Sie 5 Minuten.',
+        message: "Zu viele Login-Versuche. Bitte warten Sie 5 Minuten.",
       })
     }
 
     // Validiere Request Body
-    const body = validateRequestBody<LoginRequest>(await readBody(event), ['username', 'password'])
+    const body = validateRequestBody<LoginRequest>(await readBody(event), ["username", "password"])
 
     const { username, password } = body
 
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event): Promise<LoginResponse> => {
     if (!result.success || !result.user || !result.token) {
       throw createError({
         statusCode: 401,
-        message: result.message ?? 'Ungültige Anmeldedaten',
+        message: result.message ?? "Ungültige Anmeldedaten",
       })
     }
 
@@ -48,11 +48,11 @@ export default defineEventHandler(async (event): Promise<LoginResponse> => {
       user: result.user,
     }
   } catch (error: unknown) {
-    if (error && typeof error === 'object' && 'statusCode' in error) {
+    if (error && typeof error === "object" && "statusCode" in error) {
       throw error
     }
 
-    const errorMessage = error instanceof Error ? error.message : 'Login fehlgeschlagen'
+    const errorMessage = error instanceof Error ? error.message : "Login fehlgeschlagen"
     throw createError({
       statusCode: 500,
       message: errorMessage,

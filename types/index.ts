@@ -2,7 +2,7 @@
 
 export interface User {
   username: string
-  role: 'admin' | 'user'
+  role: "admin" | "user"
   createdAt: string
   active: boolean
 }
@@ -75,5 +75,5 @@ export interface Click {
   ip: string
   userAgent: string
   referrer: string
-  sourceType: 'website' | 'email' | 'qr' | 'direct'
+  sourceType: "website" | "email" | "qr" | "direct"
 }

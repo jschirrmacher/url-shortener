@@ -8,7 +8,7 @@ export default defineNuxtPlugin(async () => {
       await initAuth()
     } catch (error) {
       // Fehler ignorieren - User ist nicht eingeloggt
-      console.debug('Auth init failed:', error)
+      console.debug("Auth init failed:", error)
     }
   }
 })

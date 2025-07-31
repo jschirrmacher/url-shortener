@@ -1,9 +1,9 @@
-import fs from 'fs/promises'
-import path from 'path'
-import { createObjectCsvWriter } from 'csv-writer'
-import csv from 'csv-parser'
-import { createReadStream } from 'fs'
-import type { ClickRecord, UrlRecord } from '~/types/index'
+import fs from "fs/promises"
+import path from "path"
+import { createObjectCsvWriter } from "csv-writer"
+import csv from "csv-parser"
+import { createReadStream } from "fs"
+import type { ClickRecord, UrlRecord } from "~/types/index"
 
 interface CsvRecord {
   [key: string]: string | number | boolean
@@ -22,10 +22,10 @@ class CsvService {
   private initialized: boolean = false
 
   constructor() {
-    this.dataDir = path.join(process.cwd(), 'data')
-    this.urlsFile = path.join(this.dataDir, 'urls.csv')
-    this.clicksFile = path.join(this.dataDir, 'clicks.csv')
-    this.statsFile = path.join(this.dataDir, 'daily_stats.csv')
+    this.dataDir = path.join(process.cwd(), "data")
+    this.urlsFile = path.join(this.dataDir, "urls.csv")
+    this.clicksFile = path.join(this.dataDir, "clicks.csv")
+    this.statsFile = path.join(this.dataDir, "daily_stats.csv")
   }
 
   async ensureInitialized(): Promise<void> {
@@ -38,24 +38,18 @@ class CsvService {
     }
 
     // Erstelle CSV-Dateien falls sie nicht existieren
-    await this.ensureFileExists(this.urlsFile, [
-      'shortCode',
-      'originalUrl',
-      'title',
-      'createdAt',
-      'createdBy',
-    ])
+    await this.ensureFileExists(this.urlsFile, ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
 
     await this.ensureFileExists(this.clicksFile, [
-      'shortCode',
-      'timestamp',
-      'ip',
-      'userAgent',
-      'referrer',
-      'sourceType',
+      "shortCode",
+      "timestamp",
+      "ip",
+      "userAgent",
+      "referrer",
+      "sourceType",
     ])
 
-    await this.ensureFileExists(this.statsFile, ['date', 'shortCode', 'clicks', 'uniqueIps'])
+    await this.ensureFileExists(this.statsFile, ["date", "shortCode", "clicks", "uniqueIps"])
 
     this.initialized = true
   }
@@ -65,8 +59,8 @@ class CsvService {
       await fs.access(filePath)
     } catch (error: unknown) {
       // Datei existiert nicht, erstelle sie mit Headers
-      const headerLine = headers.join(',') + '\n'
-      await fs.writeFile(filePath, headerLine, 'utf8')
+      const headerLine = headers.join(",") + "\n"
+      await fs.writeFile(filePath, headerLine, "utf8")
     }
   }
 
@@ -78,9 +72,9 @@ class CsvService {
 
       createReadStream(filePath)
         .pipe(csv())
-        .on('data', (data: T) => results.push(data))
-        .on('end', () => resolve(results))
-        .on('error', (error: Error) => reject(error))
+        .on("data", (data: T) => results.push(data))
+        .on("end", () => resolve(results))
+        .on("error", (error: Error) => reject(error))
     })
   }
 
@@ -89,7 +83,7 @@ class CsvService {
 
     const csvWriter = createObjectCsvWriter({
       path: filePath,
-      header: headers.map(h => ({ id: h, title: h })),
+      header: headers.map((h) => ({ id: h, title: h })),
     } as CsvWriterConfig)
 
     await csvWriter.writeRecords(data)
@@ -103,8 +97,8 @@ class CsvService {
       const stats = await fs.stat(filePath)
       if (stats.size === 0) {
         // Datei ist leer, schreibe Header
-        const headerLine = headers.join(',') + '\n'
-        await fs.writeFile(filePath, headerLine, 'utf8')
+        const headerLine = headers.join(",") + "\n"
+        await fs.writeFile(filePath, headerLine, "utf8")
       }
     } catch (error: unknown) {
       // Datei existiert nicht, erstelle sie
@@ -112,28 +106,22 @@ class CsvService {
     }
 
     // Erstelle CSV-Zeile aus Record
-    const values = headers.map(header => {
+    const values = headers.map((header) => {
       const value = record[header]
       // Escape Kommas und Anführungszeichen
-      if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
+      if (typeof value === "string" && (value.includes(",") || value.includes('"'))) {
         return `"${value.replace(/"/g, '""')}"`
       }
-      return String(value ?? '')
+      return String(value ?? "")
     })
 
-    const csvLine = values.join(',') + '\n'
-    await fs.appendFile(filePath, csvLine, 'utf8')
+    const csvLine = values.join(",") + "\n"
+    await fs.appendFile(filePath, csvLine, "utf8")
   }
 
   // Spezielle Methoden für URL-Shortener
   async saveUrl(urlData: CsvRecord): Promise<void> {
-    await this.appendToCsv(this.urlsFile, urlData, [
-      'shortCode',
-      'originalUrl',
-      'title',
-      'createdAt',
-      'createdBy',
-    ])
+    await this.appendToCsv(this.urlsFile, urlData, ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
   }
 
   async getUrls(): Promise<UrlRecord[]> {
@@ -142,12 +130,12 @@ class CsvService {
 
   async saveClick(clickData: CsvRecord): Promise<void> {
     await this.appendToCsv(this.clicksFile, clickData, [
-      'shortCode',
-      'timestamp',
-      'ip',
-      'userAgent',
-      'referrer',
-      'sourceType',
+      "shortCode",
+      "timestamp",
+      "ip",
+      "userAgent",
+      "referrer",
+      "sourceType",
     ])
   }
 
@@ -155,7 +143,7 @@ class CsvService {
     const allClicks = await this.readCsv<ClickRecord>(this.clicksFile)
 
     if (shortCode) {
-      return allClicks.filter(click => click.shortCode === shortCode)
+      return allClicks.filter((click) => click.shortCode === shortCode)
     }
 
     return allClicks
@@ -163,52 +151,40 @@ class CsvService {
 
   async updateUrl(shortCode: string, updates: Partial<CsvRecord>): Promise<void> {
     const urls = await this.getUrls()
-    const urlIndex = urls.findIndex(url => url.shortCode === shortCode)
+    const urlIndex = urls.findIndex((url) => url.shortCode === shortCode)
 
     if (urlIndex === -1) {
-      throw new Error('URL nicht gefunden')
+      throw new Error("URL nicht gefunden")
     }
 
     // Update URL record
     urls[urlIndex] = { ...urls[urlIndex], ...updates }
 
     // Schreibe alle URLs zurück
-    await this.writeCsv(this.urlsFile, urls, [
-      'shortCode',
-      'originalUrl',
-      'title',
-      'createdAt',
-      'createdBy',
-    ])
+    await this.writeCsv(this.urlsFile, urls, ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
   }
 
   async deleteUrl(shortCode: string): Promise<void> {
     const urls = await this.getUrls()
-    const filteredUrls = urls.filter(url => url.shortCode !== shortCode)
+    const filteredUrls = urls.filter((url) => url.shortCode !== shortCode)
 
     if (urls.length === filteredUrls.length) {
-      throw new Error('URL nicht gefunden')
+      throw new Error("URL nicht gefunden")
     }
 
-    await this.writeCsv(this.urlsFile, filteredUrls, [
-      'shortCode',
-      'originalUrl',
-      'title',
-      'createdAt',
-      'createdBy',
-    ])
+    await this.writeCsv(this.urlsFile, filteredUrls, ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
   }
 
   // Statistik-Methoden
   async saveDailyStat(statData: CsvRecord): Promise<void> {
-    await this.appendToCsv(this.statsFile, statData, ['date', 'shortCode', 'clicks', 'uniqueIps'])
+    await this.appendToCsv(this.statsFile, statData, ["date", "shortCode", "clicks", "uniqueIps"])
   }
 
   async getDailyStats(shortCode?: string): Promise<CsvRecord[]> {
     const allStats = await this.readCsv(this.statsFile)
 
     if (shortCode) {
-      return allStats.filter(stat => stat.shortCode === shortCode)
+      return allStats.filter((stat) => stat.shortCode === shortCode)
     }
 
     return allStats

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { user } = useAuthPageStandard('Profil - URL Shortener')
+const { user } = useAuthPageStandard("Profil - URL Shortener")
 </script>
 
 <template>

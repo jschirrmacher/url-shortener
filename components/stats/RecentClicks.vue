@@ -12,40 +12,40 @@ const props = defineProps<Props>()
 
 // Helper Methods
 const formatDateTime = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString('de-DE', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   })
 }
 
 const getSourceIcon = (source: string): string => {
   switch (source) {
-    case 'website':
-      return '🌐'
-    case 'email':
-      return '📧'
-    case 'qr':
-      return '📱'
-    case 'direct':
-      return '🔗'
+    case "website":
+      return "🌐"
+    case "email":
+      return "📧"
+    case "qr":
+      return "📱"
+    case "direct":
+      return "🔗"
     default:
-      return '❓'
+      return "❓"
   }
 }
 
 const getSourceLabel = (source: string): string => {
   switch (source) {
-    case 'website':
-      return 'Website'
-    case 'email':
-      return 'E-Mail'
-    case 'qr':
-      return 'QR-Code'
-    case 'direct':
-      return 'Direkt'
+    case "website":
+      return "Website"
+    case "email":
+      return "E-Mail"
+    case "qr":
+      return "QR-Code"
+    case "direct":
+      return "Direkt"
     default:
       return source
   }
@@ -53,22 +53,22 @@ const getSourceLabel = (source: string): string => {
 
 const getSourceColor = (source: string): string => {
   switch (source) {
-    case 'website':
-      return 'bg-blue-100 text-blue-800'
-    case 'email':
-      return 'bg-green-100 text-green-800'
-    case 'qr':
-      return 'bg-purple-100 text-purple-800'
-    case 'direct':
-      return 'bg-gray-100 text-gray-800'
+    case "website":
+      return "bg-blue-100 text-blue-800"
+    case "email":
+      return "bg-green-100 text-green-800"
+    case "qr":
+      return "bg-purple-100 text-purple-800"
+    case "direct":
+      return "bg-gray-100 text-gray-800"
     default:
-      return 'bg-orange-100 text-orange-800'
+      return "bg-orange-100 text-orange-800"
   }
 }
 
 const truncateReferrer = (referrer: string, maxLength: number = 40): string => {
-  if (referrer === 'direct') return 'Direkter Zugriff'
-  return referrer.length > maxLength ? referrer.substring(0, maxLength) + '...' : referrer
+  if (referrer === "direct") return "Direkter Zugriff"
+  return referrer.length > maxLength ? referrer.substring(0, maxLength) + "..." : referrer
 }
 </script>
 
@@ -88,10 +88,7 @@ const truncateReferrer = (referrer: string, maxLength: number = 40): string => {
             <div class="flex items-center space-x-2">
               <span class="font-medium text-gray-700">{{ getSourceLabel(click.sourceType) }}</span>
               <span
-                :class="[
-                  'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
-                  getSourceColor(click.sourceType),
-                ]"
+                :class="['inline-flex px-2 py-1 text-xs font-semibold rounded-full', getSourceColor(click.sourceType)]"
               >
                 {{ getSourceLabel(click.sourceType) }}
               </span>
@@ -109,12 +106,7 @@ const truncateReferrer = (referrer: string, maxLength: number = 40): string => {
     </div>
 
     <div v-else class="text-center py-8">
-      <svg
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
@@ -123,9 +115,7 @@ const truncateReferrer = (referrer: string, maxLength: number = 40): string => {
         />
       </svg>
       <h3 class="mt-2 text-sm font-medium text-gray-900">Keine Klicks vorhanden</h3>
-      <p class="mt-1 text-sm text-gray-500">
-        Sobald jemand Ihre URL besucht, erscheinen hier die Details.
-      </p>
+      <p class="mt-1 text-sm text-gray-500">Sobald jemand Ihre URL besucht, erscheinen hier die Details.</p>
     </div>
   </div>
 </template>

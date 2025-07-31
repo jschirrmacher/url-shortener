@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UrlStats } from '~/types/index'
+import type { UrlStats } from "~/types/index"
 
 const route = useRoute()
 const shortCode = route.params.shortCode as string
@@ -7,7 +7,7 @@ const shortCode = route.params.shortCode as string
 const { user } = useAuthPageStandard(`Statistiken - ${shortCode}`)
 
 const loading = ref<boolean>(true)
-const error = ref<string>('')
+const error = ref<string>("")
 const stats = ref<UrlStats | null>(null)
 
 onMounted(async (): Promise<void> => {
@@ -19,14 +19,13 @@ onMounted(async (): Promise<void> => {
 const loadStats = async (): Promise<void> => {
   try {
     loading.value = true
-    error.value = ''
+    error.value = ""
 
     const response = await $fetch<UrlStats>(`/api/urls/${shortCode}/stats`)
     stats.value = response
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    error.value =
-      apiError?.data?.message ?? apiError?.message ?? 'Fehler beim Laden der Statistiken'
+    error.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der Statistiken"
   } finally {
     loading.value = false
   }
@@ -43,17 +42,12 @@ const loadStats = async (): Promise<void> => {
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-12">
-      <div
-        class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"
-      ></div>
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
       <p class="mt-4 text-gray-600">Lade Statistiken...</p>
     </div>
 
     <!-- Error State -->
-    <div
-      v-else-if="error"
-      class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6"
-    >
+    <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
       ❌ {{ error }}
       <button
         @click="loadStats"
@@ -77,12 +71,7 @@ const loadStats = async (): Promise<void> => {
 
     <!-- No Data State -->
     <div v-else class="text-center py-12">
-      <svg
-        class="mx-auto h-12 w-12 text-gray-400"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
+      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path
           stroke-linecap="round"
           stroke-linejoin="round"
