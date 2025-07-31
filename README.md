@@ -1,6 +1,6 @@
 # URL-Shortener mit Analytics
 
-Ein moderner URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit Nuxt3 und TypeScript.
+Ein URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit Nuxt3 und TypeScript.
 
 ## Features
 
@@ -146,4 +146,4 @@ npm run preview
 
 ## Lizenz
 
-MIT
+APACHE 2.0
