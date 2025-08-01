@@ -5,7 +5,7 @@ interface MeResponse {
   user: User
 }
 
-export default defineEventHandler(async (event): Promise<MeResponse> => {
+export default defineEventHandler(async (event) => {
   try {
     const { user } = await authenticateRequest(event)
 

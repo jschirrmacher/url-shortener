@@ -1,4 +1,4 @@
-import authService from "../utils/authService"
+import useUsers from "../server/useUsers"
 import type { User } from "../types/index"
 
 interface SetupResult {
@@ -7,9 +7,8 @@ interface SetupResult {
   user?: User
 }
 
-async function setupAdmin(): Promise<SetupResult> {
+async function setupAdmin() {
   try {
-    // SICHERHEITSCHECK: Nur in Entwicklung ausführen
     if (process.env.NODE_ENV === "production") {
       console.log("❌ Setup-Script ist in der Produktion deaktiviert!")
       console.log("   Erstellen Sie den Admin-Benutzer manuell oder über sichere Deployment-Prozesse.")
@@ -18,8 +17,8 @@ async function setupAdmin(): Promise<SetupResult> {
 
     console.log("🚀 URL-Shortener Admin-Setup wird gestartet...\n")
 
-    // Prüfe ob bereits ein Admin existiert
-    const existingUsers = await authService.getAllUsers()
+    const users = useUsers()
+    const existingUsers = await users.getAllUsers()
     const existingAdmin = existingUsers.find((user) => user.role === "admin")
 
     if (existingAdmin) {
@@ -35,10 +34,9 @@ async function setupAdmin(): Promise<SetupResult> {
       }
     }
 
-    // Standard Admin-Daten
     const adminData = {
       username: "admin",
-      password: "admin123", // WARNUNG: In Produktion ändern!
+      password: "admin123",
       role: "admin" as const,
     }
 
@@ -47,8 +45,7 @@ async function setupAdmin(): Promise<SetupResult> {
     console.log(`   Passwort: ${adminData.password}`)
     console.log("   ⚠️  WICHTIG: Ändern Sie das Passwort nach dem ersten Login!\n")
 
-    // Erstelle Admin-Benutzer
-    const adminUser = await authService.createUser(adminData)
+    const adminUser = await users.createUser(adminData)
 
     console.log("✅ Admin-Benutzer erfolgreich erstellt!")
     console.log("\n📋 Nächste Schritte:")
@@ -74,7 +71,6 @@ async function setupAdmin(): Promise<SetupResult> {
   }
 }
 
-// Script ausführen wenn direkt aufgerufen
 if (import.meta.url === `file://${process.argv[1]}`) {
   setupAdmin()
     .then((result) => {

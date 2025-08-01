@@ -1,4 +1,4 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { requireAdmin, validateRequestBody } from "~/utils/apiAuth"
 
 interface UpdateRoleRequest {
@@ -12,12 +12,10 @@ interface UpdateRoleResponse {
   newRole: "admin" | "user"
 }
 
-export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Prüfe Admin-Berechtigung
     const admin = await requireAdmin(event)
 
-    // Hole Username aus URL-Parameter
     const username = getRouterParam(event, "username")
 
     if (!username) {
@@ -27,12 +25,10 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
       })
     }
 
-    // Validiere Request Body
     const body = validateRequestBody<UpdateRoleRequest>(await readBody(event), ["role"])
 
     const { role } = body
 
-    // Validiere Rolle
     if (!["admin", "user"].includes(role)) {
       throw createError({
         statusCode: 400,
@@ -40,10 +36,10 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
       })
     }
 
-    // Verhindere Selbst-Degradierung des letzten Admins
+    const users = useUsers()
+
     if (username === admin.username && role === "user") {
-      // Prüfe ob es andere Admins gibt
-      const allUsers = await authService.getAllUsers()
+      const allUsers = await users.getAllUsers()
       const adminCount = allUsers.filter((u) => u.role === "admin").length
 
       if (adminCount <= 1) {
@@ -54,8 +50,7 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
       }
     }
 
-    // Prüfe ob Benutzer existiert
-    const existingUser = await authService.getUser(username)
+    const existingUser = await users.getUser(username)
     if (!existingUser) {
       throw createError({
         statusCode: 404,
@@ -63,8 +58,7 @@ export default defineEventHandler(async (event): Promise<UpdateRoleResponse> => 
       })
     }
 
-    // Update Rolle
-    await authService.updateUserRole(username, role)
+    await users.updateUserRole(username, role)
 
     return {
       success: true,

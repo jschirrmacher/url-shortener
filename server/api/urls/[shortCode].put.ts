@@ -1,30 +1,10 @@
-import urlService from "~/utils/urlService"
-import authService from "~/utils/authService"
+import useUrls from "~/server/useUrls"
+import { authenticateRequest } from "~/utils/apiAuth"
 import type { UpdateUrlRequest, UpdateUrlResponse, User, UrlRecord } from "~/types/index"
 
-export default defineEventHandler(async (event): Promise<UpdateUrlResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Authentifizierung prüfen
-    const token = getCookie(event, "auth-token")
-
-    if (!token) {
-      throw createError({
-        statusCode: 401,
-        message: "Authentifizierung erforderlich",
-      })
-    }
-
-    const decoded = authService.verifyToken(token)
-    const user = await authService.getUser(decoded.username)
-
-    if (!user) {
-      throw createError({
-        statusCode: 401,
-        message: "Ungültiger Benutzer",
-      })
-    }
-
-    const currentUser: User = user
+    const { user: currentUser } = await authenticateRequest(event)
 
     const shortCode = getRouterParam(event, "shortCode")
     const body: UpdateUrlRequest = await readBody(event)
@@ -43,8 +23,8 @@ export default defineEventHandler(async (event): Promise<UpdateUrlResponse> => {
       })
     }
 
-    // Prüfe Berechtigung für diese URL
-    const existingUrl: UrlRecord | null = await urlService.getUrlByShortCode(shortCode)
+    const { getUrlByShortCode, updateUrl } = useUrls()
+    const existingUrl: UrlRecord | null = await getUrlByShortCode(shortCode)
 
     if (!existingUrl) {
       throw createError({
@@ -53,7 +33,6 @@ export default defineEventHandler(async (event): Promise<UpdateUrlResponse> => {
       })
     }
 
-    // Nur der Ersteller oder Admins dürfen bearbeiten
     if (currentUser.role !== "admin" && existingUrl.createdBy !== currentUser.username) {
       throw createError({
         statusCode: 403,
@@ -61,16 +40,16 @@ export default defineEventHandler(async (event): Promise<UpdateUrlResponse> => {
       })
     }
 
-    const result: UpdateUrlResponse = await urlService.updateUrl(shortCode, body.originalUrl, body.title)
+    const result: UpdateUrlResponse = await updateUrl(shortCode, body.originalUrl, body.title)
 
     return result
   } catch (error: unknown) {
     console.error("Update API Error:", error)
 
-    if (error && typeof error === "object" && "statusCode" in error) {
+    if (error && typeof error === "object" && "statusCode" in error && "message" in error) {
       throw createError({
-        statusCode: (error as any).statusCode,
-        message: (error as any).message,
+        statusCode: (error as { statusCode: number }).statusCode,
+        message: (error as { message: string }).message,
       })
     }
 

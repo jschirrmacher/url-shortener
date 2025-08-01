@@ -1,4 +1,4 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { requireAdmin } from "~/utils/apiAuth"
 
 interface DeleteUserResponse {
@@ -6,12 +6,10 @@ interface DeleteUserResponse {
   message: string
 }
 
-export default defineEventHandler(async (event): Promise<DeleteUserResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Prüfe Admin-Berechtigung
     const admin = await requireAdmin(event)
 
-    // Hole Username aus URL-Parameter
     const username = getRouterParam(event, "username")
 
     if (!username) {
@@ -21,7 +19,6 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
       })
     }
 
-    // Verhindere Selbstlöschung
     if (username === admin.username) {
       throw createError({
         statusCode: 400,
@@ -29,8 +26,8 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
       })
     }
 
-    // Prüfe ob Benutzer existiert
-    const existingUser = await authService.getUser(username)
+    const users = useUsers()
+    const existingUser = await users.getUser(username)
     if (!existingUser) {
       throw createError({
         statusCode: 404,
@@ -38,8 +35,7 @@ export default defineEventHandler(async (event): Promise<DeleteUserResponse> => 
       })
     }
 
-    // Deaktiviere Benutzer (soft delete)
-    await authService.deactivateUser(username)
+    await users.deactivateUser(username)
 
     return {
       success: true,

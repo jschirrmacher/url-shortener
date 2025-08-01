@@ -1,28 +1,10 @@
-import urlService from "~/utils/urlService"
-import authService from "~/utils/authService"
+import useUrls from "~/server/useUrls"
+import { authenticateRequest } from "~/utils/apiAuth"
 import type { UrlStats } from "~/types/index"
 
-export default defineEventHandler(async (event): Promise<UrlStats> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Authentifizierung prüfen
-    const token = getCookie(event, "auth-token")
-
-    if (!token) {
-      throw createError({
-        statusCode: 401,
-        message: "Authentifizierung erforderlich",
-      })
-    }
-
-    const decoded = authService.verifyToken(token)
-    const user = await authService.getUser(decoded.username)
-
-    if (!user) {
-      throw createError({
-        statusCode: 401,
-        message: "Ungültiger Benutzer",
-      })
-    }
+    await authenticateRequest(event)
 
     const shortCode = getRouterParam(event, "shortCode")
 
@@ -33,7 +15,8 @@ export default defineEventHandler(async (event): Promise<UrlStats> => {
       })
     }
 
-    const stats: UrlStats | null = await urlService.getUrlStats(shortCode)
+    const { getUrlStats } = useUrls()
+    const stats: UrlStats | null = await getUrlStats(shortCode)
 
     if (!stats) {
       throw createError({

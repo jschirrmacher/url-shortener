@@ -5,7 +5,7 @@ interface LogoutResponse {
   message: string
 }
 
-export default defineEventHandler(async (event): Promise<LogoutResponse> => {
+export default defineEventHandler(async (event) => {
   try {
     // Lösche Auth-Cookie
     clearAuthCookie(event)
