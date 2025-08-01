@@ -63,10 +63,10 @@ const loadStats = async (): Promise<void> => {
       <StatsOverview :stats="stats" />
 
       <!-- Source Breakdown -->
-      <SourceBreakdown :source-types="stats.sourceTypes" :referrers="stats.referrers" />
+      <SourceBreakdown :stats="stats" />
 
       <!-- Recent Clicks -->
-      <RecentClicks :recent-clicks="stats.recentClicks" />
+      <RecentClicks :stats="stats" />
     </div>
 
     <!-- No Data State -->

@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import type { UrlStats } from "~/types/index"
+
 // Props
 interface Props {
-  sourceTypes: Record<string, number>
-  referrers: Record<string, number>
+  stats: UrlStats
 }
 
 const props = defineProps<Props>()
@@ -12,12 +13,10 @@ const getSourceIcon = (source: string): string => {
   switch (source) {
     case "website":
       return "🌐"
-    case "email":
-      return "📧"
-    case "qr":
-      return "📱"
     case "direct":
       return "🔗"
+    case "qr-code":
+      return "📱"
     default:
       return "❓"
   }
@@ -27,12 +26,10 @@ const getSourceLabel = (source: string): string => {
   switch (source) {
     case "website":
       return "Website"
-    case "email":
-      return "E-Mail"
-    case "qr":
-      return "QR-Code"
     case "direct":
       return "Direkt"
+    case "qr-code":
+      return "QR-Code"
     default:
       return source
   }
@@ -47,19 +44,17 @@ const getTotalClicks = (data: Record<string, number>): number => {
 }
 
 const sortedSources = computed(() => {
-  return Object.entries(props.sourceTypes)
+  return Object.entries(props.stats.sourceBreakdown)
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10) // Top 10
 })
 
 const sortedReferrers = computed(() => {
-  return Object.entries(props.referrers)
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 10) // Top 10
+  return props.stats.topReferrers.slice(0, 10) // Top 10
 })
 
-const totalSourceClicks = computed(() => getTotalClicks(props.sourceTypes))
-const totalReferrerClicks = computed(() => getTotalClicks(props.referrers))
+const totalSourceClicks = computed(() => getTotalClicks(props.stats.sourceBreakdown))
+const totalReferrerClicks = computed(() => props.stats.totalClicks)
 </script>
 
 <template>
@@ -94,21 +89,21 @@ const totalReferrerClicks = computed(() => getTotalClicks(props.referrers))
 
       <div v-if="sortedReferrers.length > 0" class="space-y-3">
         <div
-          v-for="[referrer, count] in sortedReferrers"
-          :key="referrer"
+          v-for="referrer in sortedReferrers"
+          :key="referrer.referrer"
           class="flex items-center justify-between p-3 bg-gray-50 rounded-md"
         >
           <div class="flex-1 min-w-0">
             <div class="font-medium text-gray-700 truncate">
-              {{ referrer === "direct" ? "Direkter Zugriff" : referrer }}
+              {{ referrer.referrer === "Direct" ? "Direkter Zugriff" : referrer.referrer }}
             </div>
-            <div v-if="referrer !== 'direct'" class="text-sm text-gray-500 truncate">
-              {{ referrer }}
+            <div v-if="referrer.referrer !== 'Direct'" class="text-sm text-gray-500 truncate">
+              {{ referrer.referrer }}
             </div>
           </div>
           <div class="text-right ml-4">
-            <div class="font-semibold text-gray-800">{{ count }}</div>
-            <div class="text-sm text-gray-500">{{ getPercentage(count, totalReferrerClicks) }}%</div>
+            <div class="font-semibold text-gray-800">{{ referrer.count }}</div>
+            <div class="text-sm text-gray-500">{{ getPercentage(referrer.count, totalReferrerClicks) }}%</div>
           </div>
         </div>
       </div>
