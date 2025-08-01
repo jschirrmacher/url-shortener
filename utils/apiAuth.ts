@@ -1,15 +1,8 @@
-import authService from "./authService"
+import useUsers from "~/server/useUsers"
 import type { User, AuthUser } from "~/types/index"
+import type { H3Event } from "h3"
 
-interface AuthResult {
-  user: User
-  isAdmin: boolean
-}
-
-/**
- * Authentifiziert einen API-Request über Cookie-Token
- */
-export async function authenticateRequest(event: any): Promise<AuthResult> {
+export async function authenticateRequest(event: H3Event) {
   const token = getCookie(event, "auth-token")
 
   if (!token) {
@@ -20,8 +13,9 @@ export async function authenticateRequest(event: any): Promise<AuthResult> {
   }
 
   try {
-    const decoded: AuthUser = authService.verifyToken(token)
-    const user = await authService.getUser(decoded.username)
+    const users = useUsers()
+    const decoded: AuthUser = users.verifyToken(token)
+    const user = await users.getUser(decoded.username)
 
     if (!user) {
       throw createError({
@@ -42,10 +36,7 @@ export async function authenticateRequest(event: any): Promise<AuthResult> {
   }
 }
 
-/**
- * Prüft Admin-Berechtigung für API-Request
- */
-export async function requireAdmin(event: any): Promise<User> {
+export async function requireAdmin(event: H3Event) {
   const { user, isAdmin } = await authenticateRequest(event)
 
   if (!isAdmin) {
@@ -58,10 +49,7 @@ export async function requireAdmin(event: any): Promise<User> {
   return user
 }
 
-/**
- * Prüft ob Benutzer Zugriff auf Ressource hat (eigene oder Admin)
- */
-export async function requireOwnershipOrAdmin(event: any, resourceOwner: string): Promise<User> {
+export async function requireOwnershipOrAdmin(event: H3Event, resourceOwner: string) {
   const { user, isAdmin } = await authenticateRequest(event)
 
   if (!isAdmin && user.username !== resourceOwner) {
@@ -74,10 +62,7 @@ export async function requireOwnershipOrAdmin(event: any, resourceOwner: string)
   return user
 }
 
-/**
- * Extrahiert Client-IP aus Request
- */
-export function getClientIP(event: any): string {
+export function getClientIP(event: H3Event) {
   const forwarded = getHeader(event, "x-forwarded-for")
   const realIP = getHeader(event, "x-real-ip")
   const remoteAddress = event.node.req.socket?.remoteAddress
@@ -93,37 +78,25 @@ export function getClientIP(event: any): string {
   return remoteAddress ?? "unknown"
 }
 
-/**
- * Extrahiert User-Agent aus Request
- */
-export function getUserAgent(event: any): string {
+export function getUserAgent(event: H3Event) {
   return getHeader(event, "user-agent") ?? "unknown"
 }
 
-/**
- * Extrahiert Referrer aus Request
- */
-export function getReferrer(event: any): string {
+export function getReferrer(event: H3Event) {
   return getHeader(event, "referer") ?? ""
 }
 
-/**
- * Setzt Auth-Cookie mit sicheren Einstellungen
- */
-export function setAuthCookie(event: any, token: string): void {
+export function setAuthCookie(event: H3Event, token: string) {
   setCookie(event, "auth-token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    maxAge: 60 * 60 * 24 * 7, // 7 Tage
+    maxAge: 60 * 60 * 24 * 7,
     path: "/",
   })
 }
 
-/**
- * Löscht Auth-Cookie
- */
-export function clearAuthCookie(event: any): void {
+export function clearAuthCookie(event: H3Event) {
   deleteCookie(event, "auth-token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -132,10 +105,7 @@ export function clearAuthCookie(event: any): void {
   })
 }
 
-/**
- * Validiert Request-Body gegen Schema
- */
-export function validateRequestBody<T>(body: any, requiredFields: (keyof T)[]): T {
+export function validateRequestBody<T>(body: unknown, requiredFields: (keyof T)[]) {
   if (!body || typeof body !== "object") {
     throw createError({
       statusCode: 400,
@@ -143,8 +113,10 @@ export function validateRequestBody<T>(body: any, requiredFields: (keyof T)[]): 
     })
   }
 
+  const bodyObj = body as Record<string, unknown>
+
   for (const field of requiredFields) {
-    if (!(field in body) || body[field] === null || body[field] === undefined) {
+    if (!(field in bodyObj) || bodyObj[field as string] === null || bodyObj[field as string] === undefined) {
       throw createError({
         statusCode: 400,
         message: `Feld '${String(field)}' ist erforderlich`,
@@ -155,10 +127,7 @@ export function validateRequestBody<T>(body: any, requiredFields: (keyof T)[]): 
   return body as T
 }
 
-/**
- * Validiert URL-Format
- */
-export function validateUrl(url: string): boolean {
+export function validateUrl(url: string) {
   try {
     new URL(url)
     return true
@@ -167,22 +136,14 @@ export function validateUrl(url: string): boolean {
   }
 }
 
-/**
- * Sanitize String für CSV-Speicherung
- */
-export function sanitizeForCsv(value: string): string {
+export function sanitizeForCsv(value: string) {
   if (!value) return ""
-
-  // Escape Anführungszeichen und Kommas
   return value.replace(/"/g, '""').replace(/\r?\n/g, " ")
 }
 
-/**
- * Rate Limiting Helper (einfache In-Memory-Implementierung)
- */
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
 
-export function checkRateLimit(identifier: string, maxRequests: number = 10, windowMs: number = 60000): boolean {
+export function checkRateLimit(identifier: string, maxRequests: number = 10, windowMs: number = 60000) {
   const now = Date.now()
   const record = rateLimitMap.get(identifier)
 

@@ -1,4 +1,4 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { setAuthCookie, validateRequestBody, checkRateLimit, getClientIP } from "~/utils/apiAuth"
 import type { User } from "~/types/index"
 
@@ -13,25 +13,22 @@ interface LoginResponse {
   message?: string
 }
 
-export default defineEventHandler(async (event): Promise<LoginResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Rate Limiting (temporär erhöht für Testing)
     const clientIP = getClientIP(event)
     if (!checkRateLimit(`login:${clientIP}`, 20, 300000)) {
-      // 20 Versuche in 5 Minuten
       throw createError({
         statusCode: 429,
         message: "Zu viele Login-Versuche. Bitte warten Sie 5 Minuten.",
       })
     }
 
-    // Validiere Request Body
     const body = validateRequestBody<LoginRequest>(await readBody(event), ["username", "password"])
 
     const { username, password } = body
 
-    // Authentifiziere Benutzer
-    const result = await authService.authenticateUser(username, password)
+    const users = useUsers()
+    const result = await users.authenticateUser(username, password)
 
     if (!result.success || !result.user || !result.token) {
       throw createError({
@@ -40,7 +37,6 @@ export default defineEventHandler(async (event): Promise<LoginResponse> => {
       })
     }
 
-    // Setze Auth-Cookie
     setAuthCookie(event, result.token)
 
     return {

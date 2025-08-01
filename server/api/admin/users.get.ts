@@ -1,16 +1,15 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { requireAdmin } from "~/utils/apiAuth"
 import type { User } from "~/types/index"
 
-export default defineEventHandler(async (event): Promise<User[]> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Prüfe Admin-Berechtigung
     await requireAdmin(event)
 
-    // Hole alle Benutzer
-    const users = await authService.getAllUsers()
+    const users = useUsers()
+    const allUsers = await users.getAllUsers()
 
-    return users
+    return allUsers
   } catch (error: unknown) {
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error

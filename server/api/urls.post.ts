@@ -1,4 +1,4 @@
-import urlService from "~/utils/urlService"
+import useUrls from "~/server/useUrls"
 import { authenticateRequest, validateRequestBody, validateUrl, checkRateLimit, getClientIP } from "~/utils/apiAuth"
 
 interface CreateUrlRequest {
@@ -14,7 +14,7 @@ interface CreateUrlResponse {
   title?: string
 }
 
-export default defineEventHandler(async (event): Promise<CreateUrlResponse> => {
+export default defineEventHandler(async (event) => {
   try {
     // Authentifiziere Request
     const { user } = await authenticateRequest(event)
@@ -59,7 +59,8 @@ export default defineEventHandler(async (event): Promise<CreateUrlResponse> => {
     }
 
     // Erstelle Short-URL
-    const result = await urlService.createShortUrl({
+    const { createShortUrl } = useUrls()
+    const result = await createShortUrl({
       originalUrl,
       customCode,
       title,

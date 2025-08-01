@@ -25,17 +25,29 @@ export interface ClickRecord {
   sourceType: string
 }
 
-export interface UrlStats extends UrlRecord {
+export type SourceType = "website" | "direct" | "qr-code"
+
+export interface CreateUrlResult {
+  shortCode: string
+  originalUrl: string
+  title?: string
+  shortUrl: string
+}
+
+export interface UrlStats {
+  url: UrlRecord
   totalClicks: number
-  uniqueClicks: number
-  sourceTypes: Record<string, number>
-  dailyClicks: Record<string, number>
-  referrers: Record<string, number>
-  recentClicks: Array<{
-    timestamp: string
-    sourceType: string
-    referrer: string
+  uniqueVisitors: number
+  dailyStats: Array<{
+    date: string
+    clicks: number
+    uniqueVisitors: number
   }>
+  topReferrers: Array<{
+    referrer: string
+    count: number
+  }>
+  sourceBreakdown: Record<string, number>
 }
 
 export interface UpdateUrlRequest {
@@ -44,13 +56,9 @@ export interface UpdateUrlRequest {
 }
 
 export interface UpdateUrlResponse {
-  shortCode: string
-  originalUrl: string
-  title?: string
-  updatedAt: string
-  previousUrl: string
-  shortUrl: string
-  message?: string
+  success: boolean
+  message: string
+  url: UrlRecord
 }
 
 export interface ApiError {

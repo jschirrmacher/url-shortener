@@ -1,4 +1,4 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { authenticateRequest, validateRequestBody } from "~/utils/apiAuth"
 
 interface ChangePasswordRequest {
@@ -11,17 +11,14 @@ interface ChangePasswordResponse {
   message: string
 }
 
-export default defineEventHandler(async (event): Promise<ChangePasswordResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Authentifiziere Request
     const { user } = await authenticateRequest(event)
 
-    // Validiere Request Body
     const body = validateRequestBody<ChangePasswordRequest>(await readBody(event), ["currentPassword", "newPassword"])
 
     const { currentPassword, newPassword } = body
 
-    // Validiere neues Passwort
     if (newPassword.length < 6) {
       throw createError({
         statusCode: 400,
@@ -36,9 +33,13 @@ export default defineEventHandler(async (event): Promise<ChangePasswordResponse>
       })
     }
 
-    // Ändere Passwort
-    await authService.changePassword(user.username, currentPassword, newPassword)
+    const { changePassword, getUser } = useUsers()
+    const existingUser = await getUser(user.username)
+    if (!existingUser) {
+      throw createError({ statusCode: 404, message: "Benutzer nicht gefunden" })
+    }
 
+    await changePassword(user.username, newPassword, user.role === "admin", currentPassword)
     return {
       success: true,
       message: "Passwort erfolgreich geändert",

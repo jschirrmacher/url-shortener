@@ -1,4 +1,4 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { requireAdmin } from "~/utils/apiAuth"
 
 interface ReactivateUserResponse {
@@ -7,12 +7,10 @@ interface ReactivateUserResponse {
   username: string
 }
 
-export default defineEventHandler(async (event): Promise<ReactivateUserResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Prüfe Admin-Berechtigung
     await requireAdmin(event)
 
-    // Hole Username aus URL-Parameter
     const username = getRouterParam(event, "username")
 
     if (!username) {
@@ -22,8 +20,8 @@ export default defineEventHandler(async (event): Promise<ReactivateUserResponse>
       })
     }
 
-    // Reaktiviere Benutzer
-    await authService.reactivateUser(username)
+    const users = useUsers()
+    await users.reactivateUser(username)
 
     return {
       success: true,

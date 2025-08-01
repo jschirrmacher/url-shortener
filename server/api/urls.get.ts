@@ -1,16 +1,17 @@
-import urlService from "~/utils/urlService"
+import useUrls from "~/server/useUrls"
 import { authenticateRequest } from "~/utils/apiAuth"
 import type { UrlRecord } from "~/types/index"
 
-export default defineEventHandler(async (event): Promise<UrlRecord[]> => {
+export default defineEventHandler(async (event) => {
   try {
     // Authentifiziere Request
     const { user } = await authenticateRequest(event)
 
-    // Hole URLs des Benutzers
-    const urls = await urlService.getUserUrls(user.username)
+    // Hole URLs des Benutzers mit Statistiken
+    const { getUrlsWithStats } = useUrls()
+    const userUrls = await getUrlsWithStats(user.username)
 
-    return urls
+    return userUrls
   } catch (error: unknown) {
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error

@@ -1,4 +1,4 @@
-import authService from "~/utils/authService"
+import useUsers from "~/server/useUsers"
 import { requireAdmin, validateRequestBody } from "~/utils/apiAuth"
 import type { User } from "~/types/index"
 
@@ -14,44 +14,29 @@ interface CreateUserResponse {
   message: string
 }
 
-export default defineEventHandler(async (event): Promise<CreateUserResponse> => {
+export default defineEventHandler(async (event) => {
   try {
-    // Prüfe Admin-Berechtigung
     await requireAdmin(event)
 
-    // Validiere Request Body
     const body = validateRequestBody<CreateUserRequest>(await readBody(event), ["username", "password"])
 
     const { username, password, role = "user" } = body
 
     // Validiere Eingaben
     if (username.length < 3) {
-      throw createError({
-        statusCode: 400,
-        message: "Benutzername muss mindestens 3 Zeichen lang sein",
-      })
+      throw createError({ statusCode: 400, message: "Benutzername muss mindestens 3 Zeichen lang sein" })
     }
 
     if (password.length < 6) {
-      throw createError({
-        statusCode: 400,
-        message: "Passwort muss mindestens 6 Zeichen lang sein",
-      })
+      throw createError({ statusCode: 400, message: "Passwort muss mindestens 6 Zeichen lang sein" })
     }
 
     if (!["admin", "user"].includes(role)) {
-      throw createError({
-        statusCode: 400,
-        message: "Ungültige Rolle",
-      })
+      throw createError({ statusCode: 400, message: "Ungültige Rolle" })
     }
 
-    // Erstelle Benutzer
-    const user = await authService.createUser({
-      username,
-      password,
-      role,
-    })
+    const users = useUsers()
+    const user = await users.createUser({ username, password, role })
 
     return {
       success: true,

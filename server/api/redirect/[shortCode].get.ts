@@ -1,7 +1,7 @@
-import urlService from "~/utils/urlService"
+import useUrls from "~/server/useUrls"
 import { getClientIP, getUserAgent, getReferrer } from "~/utils/apiAuth"
 
-export default defineEventHandler(async (event): Promise<void> => {
+export default defineEventHandler(async (event) => {
   try {
     const shortCode = getRouterParam(event, "shortCode")
 
@@ -12,8 +12,10 @@ export default defineEventHandler(async (event): Promise<void> => {
       })
     }
 
+    const { getUrlByShortCode, recordUrlAccess } = useUrls()
+
     // Hole URL-Daten
-    const url = await urlService.getUrlByShortCode(shortCode)
+    const url = await getUrlByShortCode(shortCode)
 
     if (!url) {
       throw createError({
@@ -24,11 +26,7 @@ export default defineEventHandler(async (event): Promise<void> => {
 
     // Erfasse Click-Daten für Analytics
     try {
-      await urlService.recordClick(shortCode, {
-        ip: getClientIP(event),
-        userAgent: getUserAgent(event),
-        referrer: getReferrer(event),
-      })
+      await recordUrlAccess(shortCode, getClientIP(event), getUserAgent(event), getReferrer(event))
     } catch (clickError: unknown) {
       // Click-Tracking-Fehler sollen Redirect nicht blockieren
       console.error("Click tracking error:", clickError)
