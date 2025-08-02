@@ -23,7 +23,7 @@ RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nuxt
 
 # Copy built application
-COPY --from=builder --chown=nuxt:nodejs /app/.output /app/.output
+COPY --from=builder --chown=nuxt:nodejs /app/.output /app
 
 # Set environment variables
 ENV NODE_ENV=production
@@ -40,5 +40,5 @@ USER nuxt
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node --eval "fetch('http://localhost:3000/api/health').then(() => process.exit(0)).catch(() => process.exit(1))"
 
-# Start the application
-CMD ["node", ".output/server/index.mjs"]
+# Start the application from the correct directory
+CMD ["node", "server/index.mjs"]
