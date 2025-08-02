@@ -1,17 +1,14 @@
 ---
 services:
   url-shortener:
-    build: .
-    ports:
-      - "3000:3000"
-    environment:
-      - NODE_ENV=production
-      - BASE_URL=http://localhost:3000
-      - JWT_SECRET=your-super-secret-jwt-key-change-in-production
+    image: joschi64/url-shortener:main
+    networks:
+      - kong-net
     volumes:
       # Mount data directory from host to persist CSV files
       - ./data:/app/data
-    restart: unless-stopped
+    env_file:
+      .env
     healthcheck:
       test:
         [
@@ -24,3 +21,7 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
+
+networks:
+  kong-net:
+    external: true
