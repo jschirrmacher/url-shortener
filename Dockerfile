@@ -11,7 +11,13 @@ RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json* ./
 RUN npm ci
 
+# Copy source code
 COPY . .
+
+# Set build environment
+ENV NODE_ENV=production
+
+# Build the application
 RUN npm run build
 
 # Production image
@@ -29,6 +35,7 @@ COPY --from=builder --chown=nuxt:nodejs /app/.output /app
 ENV NODE_ENV=production
 ENV NUXT_HOST=0.0.0.0
 ENV NUXT_PORT=3000
+ENV BASE_URL=http://localhost:3000
 
 # Expose port
 EXPOSE 3000

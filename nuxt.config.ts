@@ -8,8 +8,8 @@ export default defineNuxtConfig({
   css: ["~/assets/css/main.css"],
   modules: ["@nuxtjs/tailwindcss"],
 
-  // Server-side Rendering
-  ssr: true,
+  // Single Page Application mode for Docker deployment
+  ssr: false,
 
   // Runtime Config für Umgebungsvariablen
   runtimeConfig: {
