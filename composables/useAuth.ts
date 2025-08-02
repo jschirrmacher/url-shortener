@@ -1,10 +1,5 @@
 import type { User } from "~/types/index"
 
-interface LoginCredentials {
-  username: string
-  password: string
-}
-
 interface LoginResponse {
   success: boolean
   user: User
@@ -27,6 +22,10 @@ export const useAuth = () => {
 
   // Lade aktuellen Benutzer
   const fetchUser = async (): Promise<User> => {
+    // Skip during SSR to prevent runtime errors
+    if (import.meta.server) {
+      throw new Error("fetchUser not available during SSR")
+    }
     try {
       const response = await $fetch<{ user: User }>("/api/auth/me")
       user.value = response.user
@@ -37,8 +36,12 @@ export const useAuth = () => {
     }
   }
 
-  // Login
+  // Login - client-side only
   const login = async (username: string, password: string): Promise<LoginResponse> => {
+    if (import.meta.server) {
+      throw new Error("login not available during SSR")
+    }
+    
     const response = await $fetch<LoginResponse>("/api/auth/login", {
       method: "POST",
       body: { username, password },
@@ -51,8 +54,12 @@ export const useAuth = () => {
     return response
   }
 
-  // Logout
+  // Logout - client-side only
   const logout = async (): Promise<void> => {
+    if (import.meta.server) {
+      return
+    }
+    
     try {
       await $fetch("/api/auth/logout", {
         method: "POST",
@@ -65,6 +72,10 @@ export const useAuth = () => {
 
   // Prüfe Auth Status beim Start
   const initAuth = async (): Promise<void> => {
+    if (import.meta.server) {
+      return
+    }
+    
     try {
       await fetchUser()
     } catch {

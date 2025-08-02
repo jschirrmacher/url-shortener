@@ -25,28 +25,56 @@ export function useAuthPage(options: AuthPageOptions) {
     definePageMeta({ middleware: "auth" })
   }
 
-  // Get auth composable
-  const auth = useAuth()
+  // Only initialize auth on client-side to prevent SSR issues
+  let auth: ReturnType<typeof useAuth> | null = null
+  
+  // Initialize auth composable only on client-side
+  if (import.meta.client) {
+    auth = useAuth()
+  }
 
-  // Auth initialization and redirect logic
-  onMounted(async (): Promise<void> => {
-    if (!options.public) {
+  // Auth initialization and redirect logic - client-side only
+  onMounted(async () => {
+    // Skip auth logic for public pages or during SSR
+    if (options.public || import.meta.server) {
+      return
+    }
+
+    // Initialize auth if not already done
+    if (!auth) {
+      auth = useAuth()
+    }
+
+    try {
       await auth.initAuth()
 
       if (!auth.user.value) {
         await navigateTo("/login")
         return
       }
+      
       if (options.requireRole && auth.user.value.role !== options.requireRole) {
         throw createError({
           statusCode: 403,
           statusMessage: "Admin-Berechtigung erforderlich",
         })
       }
+    } catch (error: unknown) {
+      console.error("Auth page error:", error)
+      await navigateTo("/login")
     }
   })
 
-  return auth
+  // Return auth composable or a safe fallback for SSR
+  return auth || {
+    user: readonly(ref(null)),
+    isAuthenticated: computed(() => false),
+    isAdmin: computed(() => false),
+    login: async () => ({ success: false, user: null }),
+    logout: async () => {},
+    fetchUser: async () => { throw new Error("Not available during SSR") },
+    initAuth: async () => {}
+  }
 }
 
 /**
