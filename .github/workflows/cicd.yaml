@@ -68,7 +68,7 @@ jobs:
         id: docker_meta
         uses: crazy-max/ghaction-docker-meta@v5
         with:
-          images: joschi64/homagix
+          images: joschi64/url-shortener
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Login to DockerHub
