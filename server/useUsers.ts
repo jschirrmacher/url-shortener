@@ -18,6 +18,7 @@ interface UserRecord {
   role: "admin" | "user"
   createdAt: string
   active: "true" | "false"
+  [key: string]: string
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-super-secret-jwt-key-change-in-production"
@@ -44,16 +45,8 @@ async function initializeUsers() {
 }
 
 async function saveUsersToFile() {
-  const csvData = users.map((user) => ({
-    username: user.username,
-    password: user.password,
-    role: user.role,
-    createdAt: user.createdAt,
-    active: user.active ? "true" : "false",
-  }))
-
   const { writeCsv } = useCsvService()
-  await writeCsv(USERS_FILE, csvData, ["username", "password", "role", "createdAt", "active"])
+  await writeCsv(USERS_FILE, users, ["username", "password", "role", "createdAt", "active"])
 }
 
 async function hashPassword(password: string) {
@@ -112,6 +105,10 @@ async function authenticateUser(username: string, password: string) {
 
     if (!user) {
       return { success: false, message: "Invalid credentials" }
+    }
+
+    if (user.active !== "true") {
+      return { success: false, message: "Account is deactivated" }
     }
 
     const isValidPassword = await verifyPassword(password, user.password)
