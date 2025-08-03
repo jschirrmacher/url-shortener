@@ -7,8 +7,7 @@ services:
     volumes:
       # Mount data directory from host to persist CSV files
       - ./data:/app/data
-    env_file:
-      .env
+    env_file: .env
     healthcheck:
       test:
         [

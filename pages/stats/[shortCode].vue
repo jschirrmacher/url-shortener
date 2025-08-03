@@ -42,7 +42,7 @@ const loadStats = async (): Promise<void> => {
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-12">
-      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+      <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600" />
       <p class="mt-4 text-gray-600">Lade Statistiken...</p>
     </div>
 
@@ -50,8 +50,8 @@ const loadStats = async (): Promise<void> => {
     <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
       ❌ {{ error }}
       <button
-        @click="loadStats"
         class="ml-4 px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
+        @click="loadStats"
       >
         Erneut versuchen
       </button>

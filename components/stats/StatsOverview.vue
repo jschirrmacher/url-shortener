@@ -53,8 +53,8 @@ const getShortUrl = (shortCode: string): string => {
             <div class="flex items-center space-x-2">
               <span class="text-sm text-gray-500">Kurz-URL:</span>
               <button
-                @click="copyToClipboard(getShortUrl(stats.url.shortCode))"
                 class="text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-1"
+                @click="copyToClipboard(getShortUrl(stats.url.shortCode))"
               >
                 <span>{{ getShortUrl(stats.url.shortCode) }}</span>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

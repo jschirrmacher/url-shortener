@@ -22,7 +22,7 @@ const { pending, error } = await useLazyFetch(`/api/redirect/${shortCode}`, {
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="text-center">
       <div v-if="pending" class="space-y-4">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
         <p class="text-gray-600">Weiterleitung wird vorbereitet...</p>
       </div>
 

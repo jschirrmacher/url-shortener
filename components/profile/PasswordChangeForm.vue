@@ -84,7 +84,7 @@ const dismissError = (): void => {
   <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-6">Passwort ändern</h2>
 
-    <form @submit.prevent="changePassword" class="space-y-6">
+    <form class="space-y-6" @submit.prevent="changePassword">
       <!-- Current Password -->
       <FormField
         v-model="currentPassword"

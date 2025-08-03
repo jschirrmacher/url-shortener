@@ -60,9 +60,9 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold text-gray-800">Meine URLs</h2>
       <button
-        @click="emit('refresh')"
         :disabled="loading"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        @click="emit('refresh')"
       >
         {{ loading ? "Lädt..." : "Aktualisieren" }}
       </button>
@@ -73,7 +73,7 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
       <p class="mt-2 text-gray-600">Lade URLs...</p>
     </div>
 
@@ -100,9 +100,9 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
               <div class="flex items-center space-x-2">
                 <span class="text-sm text-gray-500">Kurz-URL:</span>
                 <button
-                  @click="copyToClipboard(getShortUrl(url.shortCode))"
                   class="text-sm text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-1"
                   :title="getShortUrl(url.shortCode)"
+                  @click="copyToClipboard(getShortUrl(url.shortCode))"
                 >
                   <span>{{ getShortUrl(url.shortCode) }}</span>
                   <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

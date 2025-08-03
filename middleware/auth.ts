@@ -2,7 +2,7 @@ import type { RouteLocationNormalized } from "vue-router"
 
 export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => {
   // Ignoriere Login-Seite und öffentliche Routen (Short-URLs)
-  if (to.path === "/login" || to.path.match(/^\/[a-zA-Z0-9_-]+$/)) {
+  if (to.path === "/login" || to.path.match(/^\/[\w-]+$/)) {
     return
   }
 

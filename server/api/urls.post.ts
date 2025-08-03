@@ -43,7 +43,7 @@ export default defineEventHandler(async (event) => {
 
     // Validiere Custom Code falls vorhanden
     if (customCode) {
-      if (!/^[a-zA-Z0-9_-]+$/.test(customCode)) {
+      if (!/^[\w-]+$/.test(customCode)) {
         throw createError({
           statusCode: 400,
           message: "Custom Code darf nur Buchstaben, Zahlen, Bindestriche und Unterstriche enthalten",

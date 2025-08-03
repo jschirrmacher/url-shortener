@@ -30,7 +30,7 @@ const login = async (): Promise<void> => {
     if (result.success) {
       await navigateTo("/")
     } else {
-      error.value = result.message ?? "Login fehlgeschlagen"
+      error.value = (result as any).message ?? "Login fehlgeschlagen"
     }
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
@@ -50,7 +50,7 @@ const login = async (): Promise<void> => {
           <p class="text-gray-600 mt-2">Bitte melden Sie sich an</p>
         </div>
 
-        <form @submit.prevent="login" class="space-y-6">
+        <form class="space-y-6" @submit.prevent="login">
           <div>
             <label for="username" class="block text-sm font-medium text-gray-700 mb-2"> Benutzername </label>
             <input

@@ -122,7 +122,7 @@ const getRoleBadgeColor = (role: string): string => {
 
     <!-- Loading State -->
     <div v-else class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
       <p class="mt-2 text-gray-600">Lade Profil-Informationen...</p>
     </div>
   </div>
