@@ -36,6 +36,7 @@ async function initializeUsers() {
     users = await readCsv<UserRecord>(USERS_FILE)
     initialized = true
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error("Failed to initialize users:", error)
     users = []
     initialized = true
@@ -125,8 +126,7 @@ async function authenticateUser(username: string, password: string) {
       user: mapUserRecord(user),
       token,
     }
-  } catch (error: unknown) {
-    console.error("Authentication error:", error)
+  } catch {
     return { success: false, message: "Authentication failed" }
   }
 }
@@ -134,7 +134,7 @@ async function authenticateUser(username: string, password: string) {
 function verifyToken(token: string) {
   try {
     return jwt.verify(token, JWT_SECRET) as AuthUser
-  } catch (error: unknown) {
+  } catch {
     throw new Error("Invalid token")
   }
 }
@@ -161,9 +161,11 @@ async function getAllUsers() {
 
 async function changePassword(username: string, newPassword: string, isAdmin = false, currentPassword?: string) {
   const user = await getUserRecord(username)
-  if (isAdmin || (currentPassword && !(await verifyPassword(currentPassword, user!.password)))) {
+
+  if (!isAdmin && (!currentPassword || !(await verifyPassword(currentPassword, user!.password)))) {
     throw new Error("Current password is incorrect or not provided")
   }
+
   user!.password = await hashPassword(newPassword)
   await saveUsersToFile()
 }
