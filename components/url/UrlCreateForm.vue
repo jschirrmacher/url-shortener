@@ -103,7 +103,7 @@ const dismissError = (): void => {
   <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-2xl font-bold text-gray-800 mb-6">URL verkürzen</h2>
 
-    <form @submit.prevent="createShortUrl" class="space-y-6">
+    <form class="space-y-6" @submit.prevent="createShortUrl">
       <!-- Original URL Field -->
       <FormField
         v-model="originalUrl"

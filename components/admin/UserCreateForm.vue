@@ -84,7 +84,7 @@ const createUser = async (): Promise<void> => {
   <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-4">Neuen Benutzer erstellen</h2>
 
-    <form @submit.prevent="createUser" class="space-y-4">
+    <form class="space-y-4" @submit.prevent="createUser">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <label for="username" class="block text-sm font-medium text-gray-700 mb-2"> Benutzername * </label>
@@ -126,8 +126,8 @@ const createUser = async (): Promise<void> => {
       <div class="flex justify-end space-x-3">
         <button
           type="button"
-          @click="resetForm"
           class="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+          @click="resetForm"
         >
           Zurücksetzen
         </button>

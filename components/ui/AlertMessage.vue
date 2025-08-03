@@ -64,9 +64,9 @@ const emojis = {
     <!-- Dismiss Button -->
     <button
       v-if="dismissible"
-      @click="emit('dismiss')"
       class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 hover:bg-gray-100 transition-colors"
       aria-label="Schließen"
+      @click="emit('dismiss')"
     >
       <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
         <path

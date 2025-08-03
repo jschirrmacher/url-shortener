@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken"
-import crypto from "crypto"
-import { promisify } from "util"
+import crypto from "node:crypto"
+import { promisify } from "node:util"
 import useCsvService from "~/utils/csvService"
 import type { User, AuthUser } from "~/types/index"
 

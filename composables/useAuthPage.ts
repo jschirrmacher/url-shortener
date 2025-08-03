@@ -27,7 +27,7 @@ export function useAuthPage(options: AuthPageOptions) {
 
   // Only initialize auth on client-side to prevent SSR issues
   let auth: ReturnType<typeof useAuth> | null = null
-  
+
   // Initialize auth composable only on client-side
   if (import.meta.client) {
     auth = useAuth()
@@ -52,7 +52,7 @@ export function useAuthPage(options: AuthPageOptions) {
         await navigateTo("/login")
         return
       }
-      
+
       if (options.requireRole && auth.user.value.role !== options.requireRole) {
         throw createError({
           statusCode: 403,
@@ -66,15 +66,19 @@ export function useAuthPage(options: AuthPageOptions) {
   })
 
   // Return auth composable or a safe fallback for SSR
-  return auth || {
-    user: readonly(ref(null)),
-    isAuthenticated: computed(() => false),
-    isAdmin: computed(() => false),
-    login: async () => ({ success: false, user: null }),
-    logout: async () => {},
-    fetchUser: async () => { throw new Error("Not available during SSR") },
-    initAuth: async () => {}
-  }
+  return (
+    auth || {
+      user: readonly(ref(null)),
+      isAuthenticated: computed(() => false),
+      isAdmin: computed(() => false),
+      login: async () => ({ success: false, user: null }),
+      logout: async () => {},
+      fetchUser: async () => {
+        throw new Error("Not available during SSR")
+      },
+      initAuth: async () => {},
+    }
+  )
 }
 
 /**

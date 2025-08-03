@@ -40,8 +40,8 @@ onMounted(() => {
   <div v-if="user" class="relative user-menu">
     <!-- Dropdown Button -->
     <button
-      @click="toggleDropdown"
       class="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
+      @click="toggleDropdown"
     >
       <!-- User Avatar -->
       <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
@@ -61,7 +61,7 @@ onMounted(() => {
         stroke="currentColor"
         viewBox="0 0 24 24"
       >
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
       </svg>
     </button>
 
@@ -73,8 +73,8 @@ onMounted(() => {
           <!-- Profile -->
           <NuxtLink
             to="/profile"
-            @click="closeDropdown"
             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            @click="closeDropdown"
           >
             <span class="mr-3">👤</span>
             Mein Profil
@@ -84,18 +84,18 @@ onMounted(() => {
           <NuxtLink
             v-if="user.role === 'admin'"
             to="/admin"
-            @click="closeDropdown"
             class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            @click="closeDropdown"
           >
             <span class="mr-3">⚙️</span>
             Administration
           </NuxtLink>
 
           <!-- Divider -->
-          <div class="border-t border-gray-100 my-1"></div>
+          <div class="border-t border-gray-100 my-1" />
 
           <!-- Logout -->
-          <button @click="handleLogout" class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+          <button class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50" @click="handleLogout">
             <span class="mr-3">🚪</span>
             Abmelden
           </button>

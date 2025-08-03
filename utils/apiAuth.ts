@@ -1,6 +1,6 @@
 import useUsers from "~/server/useUsers"
-import type { User, AuthUser } from "~/types/index"
-import type { H3Event } from "h3"
+import type { AuthUser } from "~/types/index"
+import { getCookie, setCookie, deleteCookie, getHeader, createError, type H3Event } from "h3"
 
 export async function authenticateRequest(event: H3Event) {
   const token = getCookie(event, "auth-token")
@@ -12,27 +12,31 @@ export async function authenticateRequest(event: H3Event) {
     })
   }
 
+  let decoded: AuthUser
   try {
     const users = useUsers()
-    const decoded: AuthUser = users.verifyToken(token)
-    const user = await users.getUser(decoded.username)
-
-    if (!user) {
-      throw createError({
-        statusCode: 401,
-        message: "Ungültiger Benutzer",
-      })
-    }
-
-    return {
-      user,
-      isAdmin: user.role === "admin",
-    }
-  } catch (error: unknown) {
+    decoded = users.verifyToken(token)
+  } catch (_error: unknown) {
+    void _error // Acknowledge the error parameter
     throw createError({
       statusCode: 401,
       message: "Ungültiger Token",
     })
+  }
+
+  const users = useUsers()
+  const user = await users.getUser(decoded.username)
+
+  if (!user) {
+    throw createError({
+      statusCode: 401,
+      message: "Ungültiger Benutzer",
+    })
+  }
+
+  return {
+    user,
+    isAdmin: user.role === "admin",
   }
 }
 
@@ -131,7 +135,8 @@ export function validateUrl(url: string) {
   try {
     new URL(url)
     return true
-  } catch (error: unknown) {
+  } catch (_error: unknown) {
+    void _error // Acknowledge the error parameter
     return false
   }
 }
@@ -160,6 +165,10 @@ export function checkRateLimit(identifier: string, maxRequests: number = 10, win
   return true
 }
 
+export function clearRateLimit() {
+  rateLimitMap.clear()
+}
+
 export default {
   authenticateRequest,
   requireAdmin,
@@ -173,4 +182,5 @@ export default {
   validateUrl,
   sanitizeForCsv,
   checkRateLimit,
+  clearRateLimit,
 }

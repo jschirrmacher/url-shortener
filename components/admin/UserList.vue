@@ -81,9 +81,9 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-xl font-bold text-gray-800">Benutzer-Verwaltung</h2>
       <button
-        @click="emit('refresh')"
         :disabled="loading"
         class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        @click="emit('refresh')"
       >
         {{ loading ? "Lädt..." : "Aktualisieren" }}
       </button>
@@ -94,7 +94,7 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
       <p class="mt-2 text-gray-600">Lade Benutzer...</p>
     </div>
 
@@ -118,8 +118,8 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
             <td class="px-6 py-4 whitespace-nowrap">
               <select
                 :value="user.role"
-                @change="changeRole(user.username, ($event.target as HTMLSelectElement).value as 'admin' | 'user')"
                 class="text-sm border border-gray-300 rounded px-2 py-1"
+                @change="changeRole(user.username, ($event.target as HTMLSelectElement).value as 'admin' | 'user')"
               >
                 <option value="user">Benutzer</option>
                 <option value="admin">Admin</option>
@@ -141,15 +141,15 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
               <button
                 v-if="user.active"
-                @click="deleteUser(user.username)"
                 class="text-red-600 hover:text-red-900 transition-colors"
+                @click="deleteUser(user.username)"
               >
                 Deaktivieren
               </button>
               <button
                 v-else
-                @click="reactivateUser(user.username)"
                 class="text-green-600 hover:text-green-900 transition-colors"
+                @click="reactivateUser(user.username)"
               >
                 Reaktivieren
               </button>

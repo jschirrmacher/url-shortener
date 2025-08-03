@@ -2,14 +2,7 @@ import type { User } from "~/types/index"
 
 interface LoginResponse {
   success: boolean
-  user: User
-  message?: string
-}
-
-interface ApiError {
-  data?: {
-    message?: string
-  }
+  user: User | null
   message?: string
 }
 
@@ -41,17 +34,27 @@ export const useAuth = () => {
     if (import.meta.server) {
       throw new Error("login not available during SSR")
     }
-    
-    const response = await $fetch<LoginResponse>("/api/auth/login", {
-      method: "POST",
-      body: { username, password },
-    })
 
-    if (response.success) {
-      user.value = response.user
+    try {
+      const response = await $fetch<LoginResponse>("/api/auth/login", {
+        method: "POST",
+        body: { username, password },
+      })
+
+      if (response.success) {
+        user.value = response.user
+      }
+
+      return response
+    } catch (error: unknown) {
+      // Handle API errors and return consistent structure
+      const apiError = error as { data?: { message?: string }; message?: string }
+      return {
+        success: false,
+        user: null,
+        message: apiError?.data?.message ?? apiError?.message ?? "Login fehlgeschlagen",
+      }
     }
-
-    return response
   }
 
   // Logout - client-side only
@@ -59,7 +62,7 @@ export const useAuth = () => {
     if (import.meta.server) {
       return
     }
-    
+
     try {
       await $fetch("/api/auth/logout", {
         method: "POST",
@@ -75,7 +78,7 @@ export const useAuth = () => {
     if (import.meta.server) {
       return
     }
-    
+
     try {
       await fetchUser()
     } catch {

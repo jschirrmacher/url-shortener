@@ -25,7 +25,7 @@ const loadUrlData = async (): Promise<void> => {
 
     const response = await $fetch<UrlStats>(`/api/urls/${shortCode}/stats`)
     urlData.value = response
-    newUrl.value = response.originalUrl // Pre-fill with current URL
+    newUrl.value = response.url.originalUrl // Pre-fill with current URL
   } catch (err: unknown) {
     const apiError = err as ApiError
     error.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der URL-Daten"
@@ -89,7 +89,7 @@ onMounted(async (): Promise<void> => {
 
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto" />
       <p class="text-gray-600 mt-4">URL-Daten werden geladen...</p>
     </div>
 
@@ -108,20 +108,20 @@ onMounted(async (): Promise<void> => {
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Short Code</label>
             <p class="text-gray-900 font-mono bg-gray-50 px-3 py-2 rounded">
-              {{ urlData.shortCode }}
+              {{ urlData.url.shortCode }}
             </p>
           </div>
 
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Erstellt am</label>
-            <p class="text-gray-900">{{ formatDate(urlData.createdAt) }}</p>
+            <p class="text-gray-900">{{ formatDate(urlData.url.createdAt) }}</p>
           </div>
         </div>
 
         <div class="mt-4">
           <label class="block text-sm font-medium text-gray-700 mb-1">Aktuelle URL</label>
           <p class="text-gray-900 break-all bg-gray-50 px-3 py-2 rounded">
-            {{ urlData.originalUrl }}
+            {{ urlData.url.originalUrl }}
           </p>
         </div>
 
@@ -135,7 +135,7 @@ onMounted(async (): Promise<void> => {
       <div class="bg-white rounded-lg shadow-md p-6">
         <h2 class="text-xl font-bold text-gray-800 mb-4">URL aktualisieren</h2>
 
-        <form @submit.prevent="updateUrl" class="space-y-4">
+        <form class="space-y-4" @submit.prevent="updateUrl">
           <div>
             <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-2"> Neue URL * </label>
             <input
