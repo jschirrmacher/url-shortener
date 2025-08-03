@@ -20,8 +20,8 @@ export default defineNuxtRouteMiddleware(async (to: RouteLocationNormalized) => 
     if (!user.value) {
       return navigateTo("/login")
     }
-  } catch (error: unknown) {
-    console.error("Auth middleware error:", error)
+  } catch {
+    // Authentication failed - redirect to login
     return navigateTo("/login")
   }
 })

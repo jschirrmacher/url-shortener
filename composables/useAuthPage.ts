@@ -59,8 +59,8 @@ export function useAuthPage(options: AuthPageOptions) {
           statusMessage: "Admin-Berechtigung erforderlich",
         })
       }
-    } catch (error: unknown) {
-      console.error("Auth page error:", error)
+    } catch {
+      // Authentication failed - redirect to login
       await navigateTo("/login")
     }
   })

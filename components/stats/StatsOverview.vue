@@ -6,7 +6,7 @@ interface Props {
   stats: UrlStats
 }
 
-const props = defineProps<Props>()
+const _props = defineProps<Props>()
 
 // Helper Methods
 const formatDate = (dateString: string): string => {

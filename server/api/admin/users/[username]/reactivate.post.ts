@@ -1,12 +1,6 @@
 import useUsers from "~/server/useUsers"
 import { requireAdmin } from "~/utils/apiAuth"
 
-interface ReactivateUserResponse {
-  success: boolean
-  message: string
-  username: string
-}
-
 export default defineEventHandler(async (event) => {
   try {
     await requireAdmin(event)

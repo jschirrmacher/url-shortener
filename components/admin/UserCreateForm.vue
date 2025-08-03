@@ -10,7 +10,7 @@ interface Emits {
   (e: "userCreated", user: User): void
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const _props = withDefaults(defineProps<Props>(), {
   loading: false,
 })
 
@@ -95,7 +95,7 @@ const createUser = async (): Promise<void> => {
             required
             placeholder="benutzername"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
+          >
         </div>
 
         <div>
@@ -107,7 +107,7 @@ const createUser = async (): Promise<void> => {
             required
             placeholder="Mindestens 6 Zeichen"
             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-          />
+          >
         </div>
       </div>
 

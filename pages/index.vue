@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { UrlRecord } from "~/types/index"
 
-const { user } = useAuthPageStandard("URL Shortener - Dashboard")
+const { user: _user } = useAuthPageStandard("URL Shortener - Dashboard")
 
 onMounted(async (): Promise<void> => {
   // Lade URLs nach erfolgreicher Auth
@@ -30,7 +30,7 @@ const loadUrls = async (): Promise<void> => {
 }
 
 // Event Handlers
-const handleUrlCreated = (data: { shortCode: string; shortUrl: string }): void => {
+const handleUrlCreated = (_data: { shortCode: string; shortUrl: string }): void => {
   // Reload URLs to get the new one
   loadUrls()
 }

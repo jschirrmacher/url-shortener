@@ -5,13 +5,6 @@ interface UpdateRoleRequest {
   role: "admin" | "user"
 }
 
-interface UpdateRoleResponse {
-  success: boolean
-  message: string
-  username: string
-  newRole: "admin" | "user"
-}
-
 export default defineEventHandler(async (event) => {
   try {
     const admin = await requireAdmin(event)

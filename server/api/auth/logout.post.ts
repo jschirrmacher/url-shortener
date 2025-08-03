@@ -1,10 +1,5 @@
 import { clearAuthCookie } from "~/utils/apiAuth"
 
-interface LogoutResponse {
-  success: boolean
-  message: string
-}
-
 export default defineEventHandler(async (event) => {
   try {
     // Lösche Auth-Cookie

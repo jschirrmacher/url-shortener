@@ -1,6 +1,5 @@
 import useUrls from "~/server/useUrls"
 import { authenticateRequest } from "~/utils/apiAuth"
-import type { UrlRecord } from "~/types/index"
 
 export default defineEventHandler(async (event) => {
   try {

@@ -9,11 +9,10 @@ interface Props {
 }
 
 interface Emits {
-  (e: "refresh"): void
-  (e: "urlUpdated"): void
+  (e: "refresh" | "urlUpdated"): void
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const _props = withDefaults(defineProps<Props>(), {
   loading: false,
   error: "",
 })

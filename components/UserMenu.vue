@@ -19,8 +19,8 @@ const handleLogout = async (): Promise<void> => {
     closeDropdown()
     await logout()
     await navigateTo("/login")
-  } catch (error: unknown) {
-    console.error("Logout error:", error)
+  } catch {
+    // Error during logout - redirect anyway for security
     await navigateTo("/login")
   }
 }

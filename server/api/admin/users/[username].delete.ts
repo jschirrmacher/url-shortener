@@ -1,11 +1,6 @@
 import useUsers from "~/server/useUsers"
 import { requireAdmin } from "~/utils/apiAuth"
 
-interface DeleteUserResponse {
-  success: boolean
-  message: string
-}
-
 export default defineEventHandler(async (event) => {
   try {
     const admin = await requireAdmin(event)

@@ -1,6 +1,5 @@
 import useUsers from "~/server/useUsers"
 import { requireAdmin } from "~/utils/apiAuth"
-import type { User } from "~/types/index"
 
 export default defineEventHandler(async (event) => {
   try {

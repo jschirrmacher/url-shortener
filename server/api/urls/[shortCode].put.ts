@@ -1,6 +1,6 @@
 import useUrls from "~/server/useUrls"
 import { authenticateRequest } from "~/utils/apiAuth"
-import type { UpdateUrlRequest, UpdateUrlResponse, User, UrlRecord } from "~/types/index"
+import type { UpdateUrlRequest, UpdateUrlResponse, UrlRecord } from "~/types/index"
 
 export default defineEventHandler(async (event) => {
   try {
@@ -44,8 +44,7 @@ export default defineEventHandler(async (event) => {
 
     return result
   } catch (error: unknown) {
-    console.error("Update API Error:", error)
-
+    // Handle update errors appropriately
     if (error && typeof error === "object" && "statusCode" in error && "message" in error) {
       throw createError({
         statusCode: (error as { statusCode: number }).statusCode,

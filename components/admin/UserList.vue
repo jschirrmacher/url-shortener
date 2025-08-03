@@ -10,12 +10,11 @@ interface Props {
 
 interface Emits {
   (e: "refresh"): void
-  (e: "userDeleted", username: string): void
-  (e: "userReactivated", username: string): void
+  (e: "userDeleted" | "userReactivated", username: string): void
   (e: "roleChanged", username: string, newRole: "admin" | "user"): void
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const _props = withDefaults(defineProps<Props>(), {
   loading: false,
   error: "",
 })

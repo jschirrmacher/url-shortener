@@ -16,8 +16,8 @@ export default function useCsvService() {
       await fs.mkdir(dataDir, { recursive: true })
       initialized = true
     } catch (error: unknown) {
-      console.error("CSV Service initialization failed:", error)
-      throw new Error("Failed to initialize CSV service")
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      throw new Error(`Failed to initialize CSV service: ${errorMessage}`)
     }
   }
 
@@ -26,7 +26,7 @@ export default function useCsvService() {
 
     try {
       await fs.access(filePath)
-    } catch (error: unknown) {
+    } catch {
       const headerRow = headers.join(",") + "\n"
       await fs.writeFile(filePath, headerRow, "utf8")
     }
@@ -50,8 +50,8 @@ export default function useCsvService() {
         })
         return record as T
       })
-    } catch (error: unknown) {
-      console.error(`Error reading CSV file ${filePath}:`, error)
+    } catch {
+      // Return empty array on read error - graceful degradation
       return []
     }
   }
@@ -86,8 +86,9 @@ export default function useCsvService() {
     try {
       await fs.appendFile(filePath, line, "utf8")
     } catch (error: unknown) {
-      console.error(`Error appending to CSV file ${filePath}:`, error)
-      throw error
+      // Re-throw with more context for better error handling upstream
+      const errorMessage = error instanceof Error ? error.message : "Unknown error"
+      throw new Error(`Failed to append to CSV file ${filePath}: ${errorMessage}`)
     }
   }
 

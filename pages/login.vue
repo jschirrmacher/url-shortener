@@ -30,7 +30,7 @@ const login = async (): Promise<void> => {
     if (result.success) {
       await navigateTo("/")
     } else {
-      error.value = (result as any).message ?? "Login fehlgeschlagen"
+      error.value = (result as { message?: string }).message ?? "Login fehlgeschlagen"
     }
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
@@ -61,7 +61,7 @@ const login = async (): Promise<void> => {
               autocomplete="username"
               placeholder="Ihr Benutzername"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+            >
           </div>
 
           <div>
@@ -74,7 +74,7 @@ const login = async (): Promise<void> => {
               autocomplete="current-password"
               placeholder="Ihr Passwort"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+            >
           </div>
 
           <button

@@ -7,12 +7,6 @@ interface LoginRequest {
   password: string
 }
 
-interface LoginResponse {
-  success: boolean
-  user: User
-  message?: string
-}
-
 export default defineEventHandler(async (event) => {
   try {
     const clientIP = getClientIP(event)
@@ -41,7 +35,7 @@ export default defineEventHandler(async (event) => {
 
     return {
       success: true,
-      user: result.user,
+      user: result.user as User,
     }
   } catch (error: unknown) {
     if (error && typeof error === "object" && "statusCode" in error) {

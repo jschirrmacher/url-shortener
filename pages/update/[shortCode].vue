@@ -4,7 +4,7 @@ import type { UrlStats, UpdateUrlResponse, ApiError } from "~/types/index"
 const route = useRoute()
 const shortCode = route.params.shortCode as string
 
-const { user } = useAuthPageStandard(`URL bearbeiten - ${shortCode}`)
+const { user: _user } = useAuthPageStandard(`URL bearbeiten - ${shortCode}`)
 
 // Reactive Data
 const loading = ref<boolean>(true)
@@ -145,7 +145,7 @@ onMounted(async (): Promise<void> => {
               required
               placeholder="https://example.com"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-            />
+            >
           </div>
 
           <button
