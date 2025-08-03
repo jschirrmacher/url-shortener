@@ -16,8 +16,7 @@ export async function authenticateRequest(event: H3Event) {
   try {
     const users = useUsers()
     decoded = users.verifyToken(token)
-  } catch (_error: unknown) {
-    void _error // Acknowledge the error parameter
+  } catch {
     throw createError({
       statusCode: 401,
       message: "Ungültiger Token",
@@ -135,8 +134,7 @@ export function validateUrl(url: string) {
   try {
     new URL(url)
     return true
-  } catch (_error: unknown) {
-    void _error // Acknowledge the error parameter
+  } catch {
     return false
   }
 }

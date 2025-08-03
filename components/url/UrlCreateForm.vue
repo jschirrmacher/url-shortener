@@ -75,7 +75,7 @@ const createShortUrl = async (): Promise<void> => {
 }
 
 // Copy to clipboard
-const copyToClipboard = async (text: string): Promise<void> => {
+const _copyToClipboard = async (text: string): Promise<void> => {
   try {
     await navigator.clipboard.writeText(text)
   } catch {

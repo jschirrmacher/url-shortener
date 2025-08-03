@@ -13,7 +13,8 @@ const { pending, error } = await useLazyFetch(`/api/redirect/${shortCode}`, {
     }
   },
   onResponseError({ response }) {
-    console.error("Redirect error:", response.status, response.statusText)
+    // Redirect failed - show error page
+    throw createError({ statusCode: response.status, statusMessage: "URL nicht gefunden" })
   },
 })
 </script>

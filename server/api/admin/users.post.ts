@@ -1,17 +1,10 @@
 import useUsers from "~/server/useUsers"
 import { requireAdmin, validateRequestBody } from "~/utils/apiAuth"
-import type { User } from "~/types/index"
 
 interface CreateUserRequest {
   username: string
   password: string
   role?: "admin" | "user"
-}
-
-interface CreateUserResponse {
-  success: boolean
-  user: User
-  message: string
 }
 
 export default defineEventHandler(async (event) => {

@@ -6,11 +6,6 @@ interface ChangePasswordRequest {
   newPassword: string
 }
 
-interface ChangePasswordResponse {
-  success: boolean
-  message: string
-}
-
 export default defineEventHandler(async (event) => {
   try {
     const { user } = await authenticateRequest(event)

@@ -27,9 +27,9 @@ export default defineEventHandler(async (event) => {
     // Erfasse Click-Daten für Analytics
     try {
       await recordUrlAccess(shortCode, getClientIP(event), getUserAgent(event), getReferrer(event))
-    } catch (clickError: unknown) {
+    } catch {
       // Click-Tracking-Fehler sollen Redirect nicht blockieren
-      console.error("Click tracking error:", clickError)
+      // Silent fail - tracking is not critical for redirect functionality
     }
 
     // Redirect zur Original-URL

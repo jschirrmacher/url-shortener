@@ -1,16 +1,9 @@
 import useUrls from "~/server/useUrls"
-import { authenticateRequest, validateRequestBody, validateUrl, checkRateLimit, getClientIP } from "~/utils/apiAuth"
+import { authenticateRequest, validateRequestBody, validateUrl, checkRateLimit } from "~/utils/apiAuth"
 
 interface CreateUrlRequest {
   originalUrl: string
   customCode?: string
-  title?: string
-}
-
-interface CreateUrlResponse {
-  shortCode: string
-  shortUrl: string
-  originalUrl: string
   title?: string
 }
 

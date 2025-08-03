@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { User } from "~/types/index"
 
-const { user } = useAuthPageAdmin("Administration - URL Shortener")
+const { user: _user } = useAuthPageAdmin("Administration - URL Shortener")
 
 // Reactive Data
 const users = ref<User[]>([])

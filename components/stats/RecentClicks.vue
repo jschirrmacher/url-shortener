@@ -17,7 +17,7 @@ const formatDate = (dateString: string): string => {
   })
 }
 
-const getSourceIcon = (source: string): string => {
+const _getSourceIcon = (source: string): string => {
   switch (source) {
     case "website":
       return "🌐"
@@ -30,7 +30,7 @@ const getSourceIcon = (source: string): string => {
   }
 }
 
-const getSourceLabel = (source: string): string => {
+const _getSourceLabel = (source: string): string => {
   switch (source) {
     case "website":
       return "Website"
@@ -43,7 +43,7 @@ const getSourceLabel = (source: string): string => {
   }
 }
 
-const getSourceColor = (source: string): string => {
+const _getSourceColor = (source: string): string => {
   switch (source) {
     case "website":
       return "bg-blue-100 text-blue-800"

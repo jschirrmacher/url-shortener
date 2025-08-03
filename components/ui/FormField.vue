@@ -66,7 +66,7 @@ const updateValue = (event: Event): void => {
       :pattern="pattern"
       :class="inputClasses"
       @input="updateValue"
-    />
+    >
 
     <!-- Hint -->
     <p v-if="hint && !error" class="text-xs text-gray-500">

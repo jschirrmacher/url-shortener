@@ -14,6 +14,7 @@ interface DailyStats {
   shortCode: string
   clicks: number
   uniqueIps: number
+  [key: string]: string | number | boolean
 }
 
 const CLICKS_FILE = "./data/clicks.csv"
@@ -115,7 +116,7 @@ async function getClickStats(shortCode: string) {
   }
 }
 
-async function updateDailyStats(shortCode: string, ip: string) {
+async function updateDailyStats(shortCode: string, _ip: string) {
   const today = new Date().toISOString().split("T")[0]
   const { readCsv, writeCsv, appendToCsv } = useCsvService()
   const dailyStats = (await readCsv(STATS_FILE)) as unknown as DailyStats[]
@@ -138,7 +139,7 @@ async function updateDailyStats(shortCode: string, ip: string) {
       return stat
     })
 
-    await writeCsv(STATS_FILE, updatedStats as any[], ["date", "shortCode", "clicks", "uniqueIps"])
+    await writeCsv(STATS_FILE, updatedStats as DailyStats[], ["date", "shortCode", "clicks", "uniqueIps"])
   } else {
     // Create new stat
     const newStat = {

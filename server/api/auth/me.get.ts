@@ -1,15 +1,11 @@
 import { authenticateRequest } from "~/utils/apiAuth"
 import type { User } from "~/types/index"
 
-interface MeResponse {
-  user: User
-}
-
 export default defineEventHandler(async (event) => {
   try {
     const { user } = await authenticateRequest(event)
 
-    return { user }
+    return { user: user as User }
   } catch (error: unknown) {
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error

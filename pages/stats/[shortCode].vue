@@ -4,7 +4,7 @@ import type { UrlStats } from "~/types/index"
 const route = useRoute()
 const shortCode = route.params.shortCode as string
 
-const { user } = useAuthPageStandard(`Statistiken - ${shortCode}`)
+const { user: _user } = useAuthPageStandard(`Statistiken - ${shortCode}`)
 
 const loading = ref<boolean>(true)
 const error = ref<string>("")

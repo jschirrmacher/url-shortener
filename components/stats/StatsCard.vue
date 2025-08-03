@@ -8,7 +8,7 @@ interface Props {
   subtitle?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const _props = withDefaults(defineProps<Props>(), {
   icon: "chart",
   color: "blue",
 })

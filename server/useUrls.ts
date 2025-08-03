@@ -17,7 +17,7 @@ async function createShortUrl(data: CreateUrlData) {
   // Validiere URL
   try {
     new URL(originalUrl)
-  } catch (error: unknown) {
+  } catch {
     throw new Error("Ungültige URL")
   }
 
@@ -132,7 +132,7 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string)
   // Validiere URL
   try {
     new URL(originalUrl)
-  } catch (error: unknown) {
+  } catch {
     throw new Error("Ungültige URL")
   }
 
@@ -150,7 +150,7 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string)
     urls[urlIndex].title = title
   }
 
-  await writeCsv(URLS_FILE, urls as any[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
+  await writeCsv(URLS_FILE, urls as UrlRecord[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
 
   return {
     success: true,
@@ -168,7 +168,7 @@ async function deleteUrl(shortCode: string) {
     throw new Error("URL nicht gefunden")
   }
 
-  await writeCsv(URLS_FILE, filteredUrls as any[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
+  await writeCsv(URLS_FILE, filteredUrls as UrlRecord[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
 }
 
 async function generateUniqueShortCode() {
