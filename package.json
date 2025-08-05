@@ -21,7 +21,8 @@
     "prepare": "husky",
     "test": "vitest",
     "test:run": "vitest run",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "update": "npx -y npm-check-updates -du"
   },
   "dependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",
