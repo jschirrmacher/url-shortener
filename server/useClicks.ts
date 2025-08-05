@@ -1,4 +1,4 @@
-import useCsvService from "~/utils/csvService"
+import useCsvService from "~/server/csvService"
 import type { ClickRecord, SourceType } from "~/types/index"
 
 interface ClickData {

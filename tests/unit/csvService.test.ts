@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest"
 import { promises as fs } from "node:fs"
 import path from "node:path"
-import useCsvService from "~/utils/csvService"
+import useCsvService from "~/server/csvService"
 
 // Mock fs module
 vi.mock("fs", () => ({
