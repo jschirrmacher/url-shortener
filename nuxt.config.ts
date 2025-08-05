@@ -13,12 +13,9 @@ export default defineNuxtConfig({
 
   // Runtime Config für Umgebungsvariablen
   runtimeConfig: {
-    // Private keys (nur server-side verfügbar)
-    baseUrl: process.env.BASE_URL || "http://localhost:3000",
-
-    // Public keys (client-side verfügbar)
+    baseUrl: "", // Server-seitige Basis-URL
     public: {
-      baseUrl: process.env.BASE_URL || "http://localhost:3000",
+      baseUrl: "", // Client-seitige Basis-URL
     },
   },
 

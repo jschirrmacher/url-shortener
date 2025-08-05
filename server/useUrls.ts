@@ -46,11 +46,14 @@ async function createShortUrl(data: CreateUrlData) {
   const { appendToCsv } = useCsvService()
   await appendToCsv(URLS_FILE, urlRecord, ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
 
+  const config = useRuntimeConfig()
+  const baseUrl = config.baseUrl ?? "http://localhost:3000"
+
   return {
     shortCode,
     originalUrl,
-    title: title || "",
-    shortUrl: `${process.env.BASE_URL || "http://localhost:3000"}/${shortCode}`,
+    title: title ?? "",
+    shortUrl: `${baseUrl}/${shortCode}`,
   }
 }
 
