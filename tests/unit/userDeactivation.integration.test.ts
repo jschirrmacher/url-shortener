@@ -30,7 +30,6 @@ testuser,hashedpassword:salt,user,2025-01-01T00:00:00.000Z,true`
     // Read the test file
     const content = await fs.readFile(testUsersFile, "utf-8")
     const lines = content.trim().split("\n") // Fixed: single backslash
-    const headers = lines[0].split(",")
     const userData = lines[1].split(",")
     
     // Parse user data
