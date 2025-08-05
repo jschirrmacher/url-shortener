@@ -4,40 +4,23 @@ const shortCode = route.params.shortCode as string
 
 usePublicPage(`Redirect - ${shortCode}`)
 
-// Server-seitiger Redirect - passiert vor dem Rendern der Seite
-try {
-  const useUrlsModule = await import("~/server/useUrls")
-  const { getUrlByShortCode, recordUrlAccess } = useUrlsModule.default()
-  
-  const url = await getUrlByShortCode(shortCode)
-  
-  if (!url) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "Short-URL nicht gefunden",
-    })
-  }
-
-  if (import.meta.server) {
+// Server-seitiger Redirect über die bestehende API
+if (import.meta.server) {
+  // Server-seitiger Redirect - nutze die bestehende redirect API
+  await navigateTo(`/api/redirect/${shortCode}`, { external: true })
+} else {
+  // Client-seitiger Fallback (sollte normalerweise nicht erreicht werden)
+  onMounted(async () => {
     try {
-      const event = useRequestEvent()
-      if (event) {
-        const { getClientIP, getUserAgent, getReferrer } = await import("~/utils/apiAuth")
-        await recordUrlAccess(shortCode, getClientIP(event), getUserAgent(event), getReferrer(event))
-      }
+      // Direkte Weiterleitung zur API - Browser folgt dem 302 Redirect
+      window.location.href = `/api/redirect/${shortCode}`
     } catch {
-      // Click-Tracking-Fehler sollen Redirect nicht blockieren
+      // Bei Fehlern zur Fehlerseite
+      throw createError({ 
+        statusCode: 404, 
+        statusMessage: "Short-URL nicht gefunden" 
+      })
     }
-  }
-
-  await navigateTo(url.originalUrl, { external: true })
-} catch (error) {
-  if (error && typeof error === "object" && "statusCode" in error) {
-    throw error
-  }
-  throw createError({
-    statusCode: 404,
-    statusMessage: "Short-URL nicht gefunden",
   })
 }
 </script>

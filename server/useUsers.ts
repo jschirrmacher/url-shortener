@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken"
 import crypto from "node:crypto"
 import { promisify } from "node:util"
-import useCsvService from "~/utils/csvService"
+import useCsvService from "~/server/csvService"
 import type { User, AuthUser } from "~/types/index"
 
 const scrypt = promisify(crypto.scrypt)
