@@ -35,7 +35,8 @@ const copyToClipboard = async (text: string): Promise<void> => {
 
 const getShortUrl = (shortCode: string): string => {
   const config = useRuntimeConfig()
-  return `${config.public.baseUrl || "http://localhost:3000"}/${shortCode}`
+  const baseUrl = config.public.baseUrl ?? "http://localhost:3000"
+  return `${baseUrl}/${shortCode}`
 }
 </script>
 

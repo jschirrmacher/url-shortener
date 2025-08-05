@@ -92,11 +92,6 @@ shortCode,timestamp,ip,userAgent,referrer,sourceType
 abc123,2024-01-01T12:00:00.000Z,192.168.1.1,Mozilla/5.0...,https://google.com,website
 ```
 
-## 📖 Dokumentation
-
-- **[Development Guidelines](DEVELOPMENT.md)** - Code-Stil, Prettier, Architektur-Entscheidungen
-- **[Admin Guide](ADMIN_GUIDE.md)** - Benutzer-Management und Administration
-
 ## API-Endpunkte
 
 ### POST /api/urls
