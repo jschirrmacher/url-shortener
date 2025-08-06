@@ -3,17 +3,14 @@ import type { User } from "~/types/index"
 
 const { user: _user } = useAuthPageAdmin("Administration - URL Shortener")
 
-// Reactive Data
 const users = ref<User[]>([])
 const usersLoading = ref<boolean>(true)
 const usersError = ref<string>("")
 
 onMounted(async (): Promise<void> => {
-  // Lade Benutzer nach erfolgreicher Auth
   await loadUsers()
 })
 
-// Load Users
 const loadUsers = async (): Promise<void> => {
   try {
     usersLoading.value = true
@@ -29,7 +26,6 @@ const loadUsers = async (): Promise<void> => {
   }
 }
 
-// Event Handlers
 const handleUserCreated = (newUser: User): void => {
   users.value.push(newUser)
 }
@@ -54,21 +50,26 @@ const handleRoleChanged = (username: string, newRole: "admin" | "user"): void =>
     users.value[userIndex].role = newRole
   }
 }
+
+const handlePasswordReset = (username: string): void => {
+  // eslint-disable-next-line no-console
+  console.log(`Passwort für Benutzer "${username}" wurde zurückgesetzt`)
+}
 </script>
 
 <template>
   <div class="max-w-6xl mx-auto py-12 px-4">
-    <!-- Page Header -->
+    
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-800">Admin-Verwaltung</h1>
       <p class="text-gray-600 mt-2">Benutzer- und Systemverwaltung</p>
     </div>
 
     <div class="space-y-6">
-      <!-- Create User Form -->
+      
       <UserCreateForm @user-created="handleUserCreated" />
 
-      <!-- Users List -->
+      
       <UserList
         :users="users"
         :loading="usersLoading"
@@ -77,6 +78,7 @@ const handleRoleChanged = (username: string, newRole: "admin" | "user"): void =>
         @user-deleted="handleUserDeleted"
         @user-reactivated="handleUserReactivated"
         @role-changed="handleRoleChanged"
+        @password-reset="handlePasswordReset"
       />
     </div>
   </div>
