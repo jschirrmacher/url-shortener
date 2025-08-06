@@ -1,57 +1,59 @@
 <script setup lang="ts">
 import type { User } from "~/types/index"
 
-// Props & Emits
 interface Props {
   users: User[]
-  loading?: boolean
-  error?: string
+  loading: boolean
+  error: string
 }
 
 interface Emits {
   (e: "refresh"): void
-  (e: "userDeleted" | "userReactivated", username: string): void
+  (e: "userDeleted" | "userReactivated" | "passwordReset", username: string): void
   (e: "roleChanged", username: string, newRole: "admin" | "user"): void
 }
 
-const _props = withDefaults(defineProps<Props>(), {
-  loading: false,
-  error: "",
-})
-
+const _props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
-// Helper Methods
-const formatDate = (dateString: string): string => {
+const passwordResetModal = ref({
+  isOpen: false,
+  username: "",
+})
+
+function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString("de-DE", {
     year: "numeric",
-    month: "short",
-    day: "numeric",
+    month: "2-digit",
+    day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
   })
 }
 
-// User Actions
-const deleteUser = async (username: string): Promise<void> => {
-  if (!confirm(`Benutzer "${username}" wirklich löschen?`)) return
+async function deleteUser(username: string): Promise<void> {
+  if (!confirm(`Möchten Sie den Benutzer "${username}" wirklich deaktivieren?`)) {
+    return
+  }
 
   try {
     await $fetch(`/api/admin/users/${username}`, {
       method: "DELETE",
     })
+
     emit("userDeleted", username)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
-    alert(apiError?.data?.message ?? apiError?.message ?? "Fehler beim Löschen des Benutzers")
+    alert(apiError?.data?.message ?? apiError?.message ?? "Fehler beim Deaktivieren des Benutzers")
   }
 }
 
-const reactivateUser = async (username: string): Promise<void> => {
+async function reactivateUser(username: string): Promise<void> {
   try {
     await $fetch(`/api/admin/users/${username}/reactivate`, {
       method: "POST",
     })
+
     emit("userReactivated", username)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
@@ -59,50 +61,68 @@ const reactivateUser = async (username: string): Promise<void> => {
   }
 }
 
-const changeRole = async (username: string, newRole: "admin" | "user"): Promise<void> => {
-  if (!confirm(`Rolle von "${username}" zu "${newRole}" ändern?`)) return
-
+async function changeRole(username: string, newRole: "admin" | "user"): Promise<void> {
   try {
     await $fetch(`/api/admin/users/${username}/role`, {
       method: "PUT",
       body: { role: newRole },
     })
+
     emit("roleChanged", username, newRole)
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
     alert(apiError?.data?.message ?? apiError?.message ?? "Fehler beim Ändern der Rolle")
   }
 }
+
+function openPasswordResetModal(username: string): void {
+  passwordResetModal.value = {
+    isOpen: true,
+    username,
+  }
+}
+
+function closePasswordResetModal(): void {
+  passwordResetModal.value = {
+    isOpen: false,
+    username: "",
+  }
+}
+
+function handlePasswordResetSuccess(): void {
+  emit("passwordReset", passwordResetModal.value.username)
+}
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold text-gray-800">Benutzer-Verwaltung</h2>
+  <div class="bg-white shadow rounded-lg">
+    
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-lg font-semibold text-gray-800">Benutzer-Verwaltung</h2>
       <button
+        class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
         :disabled="loading"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
         @click="emit('refresh')"
       >
         {{ loading ? "Lädt..." : "Aktualisieren" }}
       </button>
     </div>
 
-    <!-- Error Message -->
-    <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">❌ {{ error }}</div>
-
-    <!-- Loading State -->
-    <div v-if="loading" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
-      <p class="mt-2 text-gray-600">Lade Benutzer...</p>
+    
+    <div v-if="loading" class="p-6 text-center">
+      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
+      <p class="text-gray-600 mt-2">Benutzer werden geladen...</p>
     </div>
 
-    <!-- Users Table -->
+    
+    <AlertMessage v-else-if="error" type="error" :message="error" class="m-6" />
+
+    
     <div v-else-if="users.length > 0" class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Benutzer</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Benutzername</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rolle</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Erstellt</th>
@@ -110,11 +130,11 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="user in users" :key="user.username" class="hover:bg-gray-50">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ user.username }}</div>
+          <tr v-for="user in users" :key="user.username">
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              {{ user.username }}
             </td>
-            <td class="px-6 py-4 whitespace-nowrap">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <select
                 :value="user.role"
                 class="text-sm border border-gray-300 rounded px-2 py-1"
@@ -138,6 +158,17 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
               {{ formatDate(user.createdAt) }}
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+              
+              <button
+                v-if="user.active"
+                class="text-orange-600 hover:text-orange-900 transition-colors"
+                title="Passwort zurücksetzen"
+                @click="openPasswordResetModal(user.username)"
+              >
+                Passwort
+              </button>
+              
+              
               <button
                 v-if="user.active"
                 class="text-red-600 hover:text-red-900 transition-colors"
@@ -158,9 +189,17 @@ const changeRole = async (username: string, newRole: "admin" | "user"): Promise<
       </table>
     </div>
 
-    <!-- Empty State -->
+    
     <div v-else class="text-center py-8">
       <p class="text-gray-500">Keine Benutzer gefunden</p>
     </div>
+
+    
+    <PasswordResetModal
+      :username="passwordResetModal.username"
+      :is-open="passwordResetModal.isOpen"
+      @close="closePasswordResetModal"
+      @success="handlePasswordResetSuccess"
+    />
   </div>
 </template>
