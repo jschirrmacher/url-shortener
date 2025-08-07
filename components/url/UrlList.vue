@@ -89,13 +89,14 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
   <div class="bg-white rounded-lg shadow-md p-6">
     <div class="flex justify-between items-center mb-6">
       <h2 class="text-xl font-bold text-gray-800">Meine URLs</h2>
-      <button
+      <BaseButton
+        variant="primary"
         :disabled="loading"
-        class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 transition-colors"
+        :loading="loading"
         @click="emit('refresh')"
       >
         {{ loading ? "Lädt..." : "Aktualisieren" }}
-      </button>
+      </BaseButton>
     </div>
 
     <!-- Error Message -->
@@ -176,16 +177,17 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
 
           <!-- Actions -->
           <div class="flex items-center space-x-2">
-            <button
-              class="px-3 py-1 text-sm bg-orange-100 text-orange-700 rounded-md hover:bg-orange-200 transition-colors flex items-center space-x-1"
+            <BaseButton
+              variant="secondary"
+              size="sm"
               title="QR-Code & Bearbeiten"
               @click="openUnifiedModal(url)"
             >
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
               </svg>
-              <span>Details</span>
-            </button>
+              Details
+            </BaseButton>
             <NuxtLink
               :to="`/stats/${url.shortCode}`"
               class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"

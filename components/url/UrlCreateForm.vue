@@ -128,11 +128,11 @@ const dismissError = (): void => {
 
       <!-- Form Actions -->
       <div class="flex justify-end space-x-3">
-        <FormButton type="button" variant="secondary" @click="resetForm"> Zurücksetzen </FormButton>
+        <BaseButton type="button" variant="secondary" @click="resetForm"> Zurücksetzen </BaseButton>
 
-        <FormButton type="submit" variant="primary" :loading="loading" :disabled="loading">
+        <BaseButton type="submit" variant="primary" :loading="loading" :disabled="loading">
           {{ loading ? "Erstelle..." : "URL verkürzen" }}
-        </FormButton>
+        </BaseButton>
       </div>
 
       <!-- Success Message -->
