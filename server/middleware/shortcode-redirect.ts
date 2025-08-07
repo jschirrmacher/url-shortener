@@ -7,6 +7,14 @@ export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
   const path = url.pathname
 
+  // Skip API routes, static assets, and other special paths
+  if (path.startsWith('/api/') || 
+      path.startsWith('/_nuxt/') || 
+      path.startsWith('/favicon.ico') ||
+      path.includes('.')) {
+    return
+  }
+
   const shortCodeMatch = path.match(/^\/([a-z0-9]{6})$/i)
   if (!shortCodeMatch) return
 

@@ -11,3 +11,38 @@ global.console = {
   info: vi.fn(),
   log: vi.fn(),
 }
+
+// Store original process.cwd before mocking
+const originalCwd = process.cwd
+
+// Mock process for development checks and Node.js functions
+global.process = {
+  ...process,
+  dev: false,
+  env: { NODE_ENV: "test" },
+  cwd: originalCwd
+}
+
+// Only mock Vue/Nuxt globals in DOM environment (for snapshot tests)
+if (typeof window !== "undefined") {
+  // Mock Vue auto-imports for test environment
+  global.ref = vi.fn((value) => ({ value }))
+  global.computed = vi.fn((fn) => ({ value: fn() }))
+  global.reactive = vi.fn((obj) => obj)
+  global.nextTick = vi.fn().mockResolvedValue(undefined)
+  global.watch = vi.fn()
+  global.onMounted = vi.fn()
+
+  // Mock Nuxt auto-imports
+  global.useRuntimeConfig = vi.fn(() => ({
+    public: { baseUrl: "http://localhost:3000" }
+  }))
+
+  // Mock navigator.clipboard
+  Object.defineProperty(navigator, "clipboard", {
+    value: {
+      writeText: vi.fn().mockResolvedValue(undefined),
+    },
+    writable: true,
+  })
+}
