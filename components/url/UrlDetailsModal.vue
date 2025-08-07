@@ -213,41 +213,9 @@ watch(
             </div>
 
             <!-- Download Buttons -->
-            <div class="grid grid-rows-2 gap-2">
-              <button
-                type="button"
-                :disabled="!qrCodeUrl"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Als PNG herunterladen"
-                @click="downloadQrCode('png')"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <span>PNG</span>
-              </button>
-              <button
-                type="button"
-                :disabled="!qrCodeUrl"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                title="Als SVG herunterladen"
-                @click="downloadQrCode('svg')"
-              >
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <span>SVG</span>
-              </button>
+            <div class="grid grid-rows-2 gap-2 min-w-[120px]">
+              <DownloadButton format="png" :disabled="!qrCodeUrl" @click="downloadQrCode('png')" />
+              <DownloadButton format="svg" :disabled="!qrCodeUrl" @click="downloadQrCode('svg')" />
             </div>
           </div>
         </div>
@@ -262,13 +230,7 @@ watch(
                 readonly
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm"
               />
-              <button
-                type="button"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                @click="copyToClipboard(shortUrl || '')"
-              >
-                Kopieren
-              </button>
+              <BaseButton variant="secondary" size="sm" @click="copyToClipboard(shortUrl || '')"> Kopieren </BaseButton>
             </div>
           </div>
 
@@ -321,20 +283,15 @@ watch(
 
             <!-- Form Actions -->
             <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-              <button
-                type="button"
-                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                @click="closeModal"
-              >
-                Abbrechen
-              </button>
-              <button
+              <BaseButton variant="secondary" @click="closeModal"> Abbrechen </BaseButton>
+              <BaseButton
+                variant="primary"
                 type="submit"
                 :disabled="!!(updateLoading || !newUrl.trim() || updateSuccess)"
-                class="px-4 py-2 text-sm font-medium text-white bg-orange-600 border border-transparent rounded-md shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                :loading="updateLoading"
               >
                 {{ updateLoading ? "Wird aktualisiert..." : "URL aktualisieren" }}
-              </button>
+              </BaseButton>
             </div>
           </form>
         </div>

@@ -124,20 +124,20 @@ const createUser = async (): Promise<void> => {
       </div>
 
       <div class="flex justify-end space-x-3">
-        <button
+        <BaseButton
           type="button"
-          class="px-4 py-2 text-gray-600 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+          variant="secondary"
           @click="resetForm"
         >
           Zurücksetzen
-        </button>
-        <button
+        </BaseButton>
+        <BaseButton
           type="submit"
-          :disabled="createLoading"
-          class="px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 disabled:opacity-50 transition-colors"
+          variant="primary"
+          :loading="createLoading"
         >
           {{ createLoading ? "Erstelle..." : "Benutzer erstellen" }}
-        </button>
+        </BaseButton>
       </div>
 
       <!-- Success Message -->
