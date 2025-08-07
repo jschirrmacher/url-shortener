@@ -18,6 +18,7 @@ const emit = defineEmits<Emits>()
 
 const dialog = ref<HTMLDialogElement>()
 const newUrl = ref("")
+const isDialogMounted = ref(false)
 
 function useUrlUpdate(shortCode: Ref<string>) {
   const updateLoading = ref(false)
@@ -67,8 +68,10 @@ function useUrlUpdate(shortCode: Ref<string>) {
 const shortCodeRef = toRef(props, "shortCode")
 const { updateLoading, updateError, updateSuccess, updateUrl, resetUpdate } = useUrlUpdate(shortCodeRef)
 
-// QR Code functionality
+// QR Code functionality - only load when dialog is mounted
 const qrCodeUrl = computed(() => {
+  if (!isDialogMounted.value || !props.shortCode) return ""
+
   const config = useRuntimeConfig()
   return `${config.public.baseUrl}/api/qr/${props.shortCode}`
 })
@@ -107,6 +110,10 @@ const openModal = () => {
     dialog.value.showModal()
     // Initialize form with current URL
     newUrl.value = props.originalUrl || ""
+    // Enable QR code loading after dialog is mounted
+    nextTick(() => {
+      isDialogMounted.value = true
+    })
   }
 }
 
@@ -115,6 +122,7 @@ const closeModal = () => {
     dialog.value.close()
     // Reset all states
     resetUpdate()
+    isDialogMounted.value = false
     emit("close")
   }
 }
@@ -177,7 +185,7 @@ watch(
       <!-- Header -->
       <div class="border-b border-gray-200 px-6 py-4">
         <div class="flex items-center justify-between">
-          <h2 class="text-lg font-semibold text-gray-900">URL bearbeiten: {{ shortCode }}</h2>
+          <h2 class="text-lg font-semibold text-gray-900">URL Details: {{ shortCode }}</h2>
           <button
             type="button"
             class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md p-1"
@@ -194,33 +202,49 @@ watch(
       <div class="p-6 space-y-6">
         <!-- QR Code Section -->
         <div class="pt-6">
-          <div class="flex items-center justify-center space-x-6">
+          <h3 class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+          <div class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
             <!-- QR Code -->
             <div class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg">
-              <img :src="qrCodeUrl" :alt="`QR-Code für ${shortCode}`" class="w-32 h-32">
+              <div v-if="!qrCodeUrl" class="w-32 h-32 flex items-center justify-center bg-gray-100 rounded">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
+              </div>
+              <img v-else :src="qrCodeUrl" :alt="`QR-Code für ${shortCode}`" class="w-32 h-32" />
             </div>
-            
+
             <!-- Download Buttons -->
-            <div class="flex flex-col space-y-2">
+            <div class="grid grid-rows-2 gap-2">
               <button
                 type="button"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2"
+                :disabled="!qrCodeUrl"
+                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Als PNG herunterladen"
                 @click="downloadQrCode('png')"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 <span>PNG</span>
               </button>
               <button
                 type="button"
-                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2"
+                :disabled="!qrCodeUrl"
+                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 title="Als SVG herunterladen"
                 @click="downloadQrCode('svg')"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
                 <span>SVG</span>
               </button>
@@ -237,7 +261,7 @@ watch(
                 :value="shortUrl"
                 readonly
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm"
-              >
+              />
               <button
                 type="button"
                 class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
@@ -258,7 +282,7 @@ watch(
                 required
                 placeholder="https://example.com"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              >
+              />
             </div>
 
             <!-- Update Error -->

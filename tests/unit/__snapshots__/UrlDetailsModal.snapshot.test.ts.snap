@@ -126,12 +126,13 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 
     <div data-v-dd4104c0="" class="p-6 space-y-6">
       <!-- QR Code Section -->
       <div data-v-dd4104c0="" class="pt-6">
-        <div data-v-dd4104c0="" class="flex items-center justify-center space-x-6">
+        <h3 data-v-dd4104c0="" class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+        <div data-v-dd4104c0="" class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
           <!-- QR Code -->
           <div data-v-dd4104c0="" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"><img data-v-dd4104c0="" src="[object Object]" alt="QR-Code für abc123" class="w-32 h-32"></div><!-- Download Buttons -->
-          <div data-v-dd4104c0="" class="flex flex-col space-y-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div data-v-dd4104c0="" class="grid grid-rows-2 gap-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg><span data-v-dd4104c0="">SVG</span></button></div>
         </div>
@@ -186,12 +187,13 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`
     <div data-v-dd4104c0="" class="p-6 space-y-6">
       <!-- QR Code Section -->
       <div data-v-dd4104c0="" class="pt-6">
-        <div data-v-dd4104c0="" class="flex items-center justify-center space-x-6">
+        <h3 data-v-dd4104c0="" class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+        <div data-v-dd4104c0="" class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
           <!-- QR Code -->
           <div data-v-dd4104c0="" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"><img data-v-dd4104c0="" src="[object Object]" alt="QR-Code für abc123" class="w-32 h-32"></div><!-- Download Buttons -->
-          <div data-v-dd4104c0="" class="flex flex-col space-y-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div data-v-dd4104c0="" class="grid grid-rows-2 gap-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg><span data-v-dd4104c0="">SVG</span></button></div>
         </div>
@@ -246,12 +248,13 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with differe
     <div data-v-dd4104c0="" class="p-6 space-y-6">
       <!-- QR Code Section -->
       <div data-v-dd4104c0="" class="pt-6">
-        <div data-v-dd4104c0="" class="flex items-center justify-center space-x-6">
+        <h3 data-v-dd4104c0="" class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+        <div data-v-dd4104c0="" class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
           <!-- QR Code -->
           <div data-v-dd4104c0="" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"><img data-v-dd4104c0="" src="[object Object]" alt="QR-Code für ABC-123_test" class="w-32 h-32"></div><!-- Download Buttons -->
-          <div data-v-dd4104c0="" class="flex flex-col space-y-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div data-v-dd4104c0="" class="grid grid-rows-2 gap-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg><span data-v-dd4104c0="">SVG</span></button></div>
         </div>
@@ -306,12 +309,13 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with long UR
     <div data-v-dd4104c0="" class="p-6 space-y-6">
       <!-- QR Code Section -->
       <div data-v-dd4104c0="" class="pt-6">
-        <div data-v-dd4104c0="" class="flex items-center justify-center space-x-6">
+        <h3 data-v-dd4104c0="" class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+        <div data-v-dd4104c0="" class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
           <!-- QR Code -->
           <div data-v-dd4104c0="" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"><img data-v-dd4104c0="" src="[object Object]" alt="QR-Code für abc123" class="w-32 h-32"></div><!-- Download Buttons -->
-          <div data-v-dd4104c0="" class="flex flex-col space-y-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div data-v-dd4104c0="" class="grid grid-rows-2 gap-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg><span data-v-dd4104c0="">SVG</span></button></div>
         </div>
@@ -366,12 +370,13 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal
     <div data-v-dd4104c0="" class="p-6 space-y-6">
       <!-- QR Code Section -->
       <div data-v-dd4104c0="" class="pt-6">
-        <div data-v-dd4104c0="" class="flex items-center justify-center space-x-6">
+        <h3 data-v-dd4104c0="" class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+        <div data-v-dd4104c0="" class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
           <!-- QR Code -->
           <div data-v-dd4104c0="" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"><img data-v-dd4104c0="" src="[object Object]" alt="QR-Code für min" class="w-32 h-32"></div><!-- Download Buttons -->
-          <div data-v-dd4104c0="" class="flex flex-col space-y-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div data-v-dd4104c0="" class="grid grid-rows-2 gap-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg><span data-v-dd4104c0="">SVG</span></button></div>
         </div>
@@ -426,12 +431,13 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with special
     <div data-v-dd4104c0="" class="p-6 space-y-6">
       <!-- QR Code Section -->
       <div data-v-dd4104c0="" class="pt-6">
-        <div data-v-dd4104c0="" class="flex items-center justify-center space-x-6">
+        <h3 data-v-dd4104c0="" class="text-sm font-medium text-gray-900 mb-4">QR-Code</h3>
+        <div data-v-dd4104c0="" class="grid grid-cols-[auto_1fr] gap-6 items-center justify-center">
           <!-- QR Code -->
           <div data-v-dd4104c0="" class="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg"><img data-v-dd4104c0="" src="[object Object]" alt="QR-Code für special123" class="w-32 h-32"></div><!-- Download Buttons -->
-          <div data-v-dd4104c0="" class="flex flex-col space-y-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div data-v-dd4104c0="" class="grid grid-rows-2 gap-2"><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als PNG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              </svg><span data-v-dd4104c0="">PNG</span></button><button data-v-dd4104c0="" type="button" class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed" title="Als SVG herunterladen"><svg data-v-dd4104c0="" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path data-v-dd4104c0="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
               </svg><span data-v-dd4104c0="">SVG</span></button></div>
         </div>
