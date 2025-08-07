@@ -49,16 +49,16 @@ const getShortUrl = (shortCode: string): string => {
   return `${config.public.baseUrl}/${shortCode}`
 }
 
-// QR Code Modal State
-const qrCodeModal = ref({
+// Unified Modal State
+const unifiedModal = ref({
   isOpen: false,
   shortCode: "",
   shortUrl: "",
   originalUrl: ""
 })
 
-const openQrCodeModal = (url: UrlRecord): void => {
-  qrCodeModal.value = {
+const openUnifiedModal = (url: UrlRecord): void => {
+  unifiedModal.value = {
     isOpen: true,
     shortCode: url.shortCode,
     shortUrl: getShortUrl(url.shortCode),
@@ -66,13 +66,18 @@ const openQrCodeModal = (url: UrlRecord): void => {
   }
 }
 
-const closeQrCodeModal = (): void => {
-  qrCodeModal.value = {
+const closeUnifiedModal = (): void => {
+  unifiedModal.value = {
     isOpen: false,
     shortCode: "",
     shortUrl: "",
     originalUrl: ""
   }
+}
+
+const handleUrlUpdated = (_updatedUrl: UrlRecord): void => {
+  emit('urlUpdated')
+  // Optionally show a success toast here
 }
 
 const truncateUrl = (url: string, maxLength: number = 50): string => {
@@ -172,26 +177,20 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
           <!-- Actions -->
           <div class="flex items-center space-x-2">
             <button
-              class="px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors flex items-center space-x-1"
-              title="QR-Code anzeigen"
-              @click="openQrCodeModal(url)"
+              class="px-3 py-1 text-sm bg-orange-100 text-orange-700 rounded-md hover:bg-orange-200 transition-colors flex items-center space-x-1"
+              title="QR-Code & Bearbeiten"
+              @click="openUnifiedModal(url)"
             >
               <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4" />
               </svg>
-              <span>QR-Code</span>
+              <span>Aktionen</span>
             </button>
             <NuxtLink
               :to="`/stats/${url.shortCode}`"
               class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
             >
               Statistiken
-            </NuxtLink>
-            <NuxtLink
-              :to="`/update/${url.shortCode}`"
-              class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
-            >
-              Bearbeiten
             </NuxtLink>
           </div>
         </div>
@@ -213,12 +212,13 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
     </div>
   </div>
 
-  <!-- QR Code Modal -->
-  <QrCodeModal
-    :short-code="qrCodeModal.shortCode"
-    :short-url="qrCodeModal.shortUrl"
-    :original-url="qrCodeModal.originalUrl"
-    :is-open="qrCodeModal.isOpen"
-    @close="closeQrCodeModal"
+  <!-- Details Modal -->
+  <UrlDetailsModal
+    :short-code="unifiedModal.shortCode"
+    :short-url="unifiedModal.shortUrl"
+    :original-url="unifiedModal.originalUrl"
+    :is-open="unifiedModal.isOpen"
+    @close="closeUnifiedModal"
+    @updated="handleUrlUpdated"
   />
 </template>
