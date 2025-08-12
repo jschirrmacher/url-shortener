@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// Props
 interface Props {
   label: string
   modelValue: string
@@ -13,16 +12,21 @@ interface Props {
   id?: string
 }
 
+const props = withDefaults(defineProps<Props>(), {
+  type: "text",
+  placeholder: "",
+  required: false,
+  disabled: false,
+  error: "",
+  hint: "",
+  pattern: "",
+  id: "",
+})
+
 // Emits
 interface Emits {
   (e: "update:modelValue", value: string): void
 }
-
-const props = withDefaults(defineProps<Props>(), {
-  type: "text",
-  required: false,
-  disabled: false,
-})
 
 const emit = defineEmits<Emits>()
 

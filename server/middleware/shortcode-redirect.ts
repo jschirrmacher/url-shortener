@@ -2,16 +2,13 @@ import useUrls from "~/server/useUrls"
 import { getClientIP, getUserAgent, getReferrer } from "~/utils/apiAuth"
 
 export default defineEventHandler(async (event) => {
-  if (event.node.req.method !== 'GET') return
+  if (event.node.req.method !== "GET") return
 
   const url = getRequestURL(event)
   const path = url.pathname
 
   // Skip API routes, static assets, and other special paths
-  if (path.startsWith('/api/') || 
-      path.startsWith('/_nuxt/') || 
-      path.startsWith('/favicon.ico') ||
-      path.includes('.')) {
+  if (path.startsWith("/api/") || path.startsWith("/_nuxt/") || path.startsWith("/favicon.ico") || path.includes(".")) {
     return
   }
 

@@ -8,9 +8,10 @@ interface Props {
   subtitle?: string
 }
 
-const _props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   icon: "chart",
   color: "blue",
+  subtitle: "",
 })
 
 // Color classes mapping

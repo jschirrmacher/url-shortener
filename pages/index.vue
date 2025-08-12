@@ -47,11 +47,9 @@ const handleUrlsRefresh = (): void => {
       <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
       <p class="text-gray-600 mt-2">Verwalten Sie Ihre Kurz-URLs</p>
     </div>
-
     <div class="space-y-6">
       <!-- URL Create Form -->
       <UrlCreateForm @url-created="handleUrlCreated" />
-
       <!-- URLs List -->
       <UrlList
         :urls="urls"

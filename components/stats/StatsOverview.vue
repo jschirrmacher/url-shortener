@@ -46,18 +46,12 @@ const getShortUrl = (shortCode: string): string => {
     <div class="bg-white rounded-lg shadow-md p-6">
       <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
         <div class="flex-1 min-w-0">
-          <h2 class="text-2xl font-bold text-gray-800 mb-2">
-            {{ stats.url.title || "Unbenannte URL" }}
-          </h2>
-
+          <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ stats.url.title || "Unbenannte URL" }}</h2>
           <div class="space-y-2">
             <div class="flex items-center space-x-2">
               <span class="text-sm text-gray-500">Kurz-URL:</span>
-              <button
-                class="text-blue-600 hover:text-blue-800 transition-colors flex items-center space-x-1"
-                @click="copyToClipboard(getShortUrl(stats.url.shortCode))"
-              >
-                <span>{{ getShortUrl(stats.url.shortCode) }}</span>
+              <BaseButton variant="ghost" size="sm" @click="copyToClipboard(getShortUrl(stats.url.shortCode))">
+                <span class="mr-1">{{ getShortUrl(stats.url.shortCode) }}</span>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     stroke-linecap="round"
@@ -66,9 +60,8 @@ const getShortUrl = (shortCode: string): string => {
                     d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
                   />
                 </svg>
-              </button>
+              </BaseButton>
             </div>
-
             <div class="flex items-center space-x-2">
               <span class="text-sm text-gray-500">Ziel:</span>
               <a
@@ -88,14 +81,12 @@ const getShortUrl = (shortCode: string): string => {
                 </svg>
               </a>
             </div>
-
             <div class="text-sm text-gray-500">
               Erstellt: {{ formatDate(stats.url.createdAt) }}
-              <span v-if="stats.url.createdBy"> von {{ stats.url.createdBy }}</span>
+              <span v-if="stats.url.createdBy">von {{ stats.url.createdBy }}</span>
             </div>
           </div>
         </div>
-
         <!-- Actions -->
         <div class="flex items-center space-x-3">
           <NuxtLink
@@ -110,20 +101,16 @@ const getShortUrl = (shortCode: string): string => {
         </div>
       </div>
     </div>
-
     <!-- Stats Cards Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <StatsCard title="Gesamt-Klicks" :value="stats.totalClicks" icon="click" color="blue" />
-
       <StatsCard title="Unique Visitors" :value="stats.uniqueVisitors" icon="users" color="green" />
-
       <StatsCard
         title="Traffic-Quellen"
         :value="Object.keys(stats.sourceBreakdown).length"
         icon="globe"
         color="orange"
       />
-
       <StatsCard title="Top Referrer" :value="stats.topReferrers.length" icon="eye" color="purple" />
     </div>
   </div>

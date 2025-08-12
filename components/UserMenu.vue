@@ -39,17 +39,16 @@ onMounted(() => {
 <template>
   <div v-if="user" class="relative user-menu">
     <!-- Dropdown Button -->
-    <button
-      class="flex items-center space-x-2 px-3 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-orange-500"
-      @click="toggleDropdown"
-    >
+    <BaseButton variant="secondary" @click="toggleDropdown">
       <!-- User Avatar -->
-      <div class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
+      <div
+        class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-2"
+      >
         {{ user.username.charAt(0).toUpperCase() }}
       </div>
 
       <!-- User Info -->
-      <div class="flex flex-col items-start">
+      <div class="flex flex-col items-start mr-2">
         <span class="font-medium text-gray-900">{{ user.username }}</span>
       </div>
 
@@ -63,8 +62,7 @@ onMounted(() => {
       >
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
       </svg>
-    </button>
-
+    </BaseButton>
     <!-- Dropdown Menu -->
     <div v-show="isOpen" class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div class="py-2">
@@ -95,10 +93,10 @@ onMounted(() => {
           <div class="border-t border-gray-100 my-1" />
 
           <!-- Logout -->
-          <button class="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50" @click="handleLogout">
+          <BaseButton variant="ghost" size="sm" full-width @click="handleLogout">
             <span class="mr-3">🚪</span>
             Abmelden
-          </button>
+          </BaseButton>
         </div>
       </div>
     </div>

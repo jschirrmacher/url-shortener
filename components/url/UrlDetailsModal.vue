@@ -209,7 +209,7 @@ watch(
               <div v-if="!qrCodeUrl" class="w-32 h-32 flex items-center justify-center bg-gray-100 rounded">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
               </div>
-              <img v-else :src="qrCodeUrl" :alt="`QR-Code für ${shortCode}`" class="w-32 h-32" />
+              <img v-else :src="qrCodeUrl" :alt="`QR-Code für ${shortCode}`" class="w-32 h-32" >
             </div>
 
             <!-- Download Buttons -->
@@ -223,20 +223,20 @@ watch(
         <!-- URL Info & Edit -->
         <div class="space-y-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1"> Kurz-URL </label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Kurz-URL</label>
             <div class="flex items-center space-x-2">
               <input
                 :value="shortUrl"
                 readonly
                 class="flex-1 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-sm"
-              />
-              <BaseButton variant="secondary" size="sm" @click="copyToClipboard(shortUrl || '')"> Kopieren </BaseButton>
+              >
+              <BaseButton variant="secondary" size="sm" @click="copyToClipboard(shortUrl || '')">Kopieren</BaseButton>
             </div>
           </div>
 
           <form class="space-y-4" @submit.prevent="handleSubmit">
             <div>
-              <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-1"> Ziel-URL </label>
+              <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-1">Ziel-URL</label>
               <input
                 id="newUrl"
                 v-model="newUrl"
@@ -244,7 +244,7 @@ watch(
                 required
                 placeholder="https://example.com"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
-              />
+              >
             </div>
 
             <!-- Update Error -->
@@ -283,7 +283,7 @@ watch(
 
             <!-- Form Actions -->
             <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-              <BaseButton variant="secondary" @click="closeModal"> Abbrechen </BaseButton>
+              <BaseButton variant="secondary" @click="closeModal">Abbrechen</BaseButton>
               <BaseButton
                 variant="primary"
                 type="submit"

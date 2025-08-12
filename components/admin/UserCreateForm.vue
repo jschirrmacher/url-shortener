@@ -87,7 +87,7 @@ const createUser = async (): Promise<void> => {
     <form class="space-y-4" @submit.prevent="createUser">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label for="username" class="block text-sm font-medium text-gray-700 mb-2"> Benutzername * </label>
+          <label for="username" class="block text-sm font-medium text-gray-700 mb-2">Benutzername *</label>
           <input
             id="username"
             v-model="newUsername"
@@ -99,7 +99,7 @@ const createUser = async (): Promise<void> => {
         </div>
 
         <div>
-          <label for="password" class="block text-sm font-medium text-gray-700 mb-2"> Passwort * </label>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Passwort *</label>
           <input
             id="password"
             v-model="newPassword"
@@ -124,18 +124,8 @@ const createUser = async (): Promise<void> => {
       </div>
 
       <div class="flex justify-end space-x-3">
-        <BaseButton
-          type="button"
-          variant="secondary"
-          @click="resetForm"
-        >
-          Zurücksetzen
-        </BaseButton>
-        <BaseButton
-          type="submit"
-          variant="primary"
-          :loading="createLoading"
-        >
+        <BaseButton type="button" variant="secondary" @click="resetForm">Zurücksetzen</BaseButton>
+        <BaseButton type="submit" variant="primary" :loading="createLoading">
           {{ createLoading ? "Erstelle..." : "Benutzer erstellen" }}
         </BaseButton>
       </div>

@@ -6,7 +6,7 @@ export default defineNuxtConfig({
 
   // CSS Framework - verwende Tailwind CSS direkt
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxtjs/tailwindcss"],
+  modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint"],
 
   // Server-side Rendering
   ssr: true,

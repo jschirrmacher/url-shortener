@@ -37,7 +37,7 @@ async function initializeUsers() {
     users = await readCsv<UserRecord>(USERS_FILE)
     initialized = true
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error("Failed to initialize users:", error)
     users = []
     initialized = true

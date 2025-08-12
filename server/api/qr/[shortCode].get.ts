@@ -72,7 +72,7 @@ export default defineEventHandler(async (event) => {
 
     return qrCodeData
   } catch (error) {
-    // eslint-disable-next-line no-console
+     
     console.error("QR Code generation failed:", error)
     throw createHttpError(500, "QR-Code konnte nicht generiert werden: " + (error as Error).message)
   }

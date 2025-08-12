@@ -111,7 +111,7 @@ describe("Password Change Functionality", () => {
       mockUsers.getUser.mockResolvedValue(mockUser)
 
       const existingUser = await mockUsers.getUser("testuser")
-      
+
       expect(existingUser).toBeTruthy()
       expect(existingUser?.username).toBe("testuser")
     })
@@ -120,7 +120,7 @@ describe("Password Change Functionality", () => {
       mockUsers.getUser.mockResolvedValue(null)
 
       const nonExistentUser = await mockUsers.getUser("nonexistent")
-      
+
       expect(nonExistentUser).toBeNull()
     })
   })
@@ -128,18 +128,18 @@ describe("Password Change Functionality", () => {
   describe("Password Change Service", () => {
     it("should handle successful password change", async () => {
       mockUsers.changePassword.mockResolvedValue(undefined)
-      
+
       await mockUsers.changePassword("testuser", "newpass123", false, "oldpass123")
-      
+
       expect(mockUsers.changePassword).toHaveBeenCalledWith("testuser", "newpass123", false, "oldpass123")
     })
 
     it("should handle password change failure", async () => {
       mockUsers.changePassword.mockRejectedValue(new Error("Current password is incorrect"))
-      
-      await expect(
-        mockUsers.changePassword("testuser", "newpass123", false, "wrongpass")
-      ).rejects.toThrow("Current password is incorrect")
+
+      await expect(mockUsers.changePassword("testuser", "newpass123", false, "wrongpass")).rejects.toThrow(
+        "Current password is incorrect",
+      )
     })
   })
 
@@ -159,7 +159,7 @@ describe("Password Change Functionality", () => {
 
       testScenarios.forEach(({ name, isAdmin, hasPassword, correct }) => {
         const correctResult = analyzeCorrectLogic(isAdmin, hasPassword, correct)
-        
+
         if (name.includes("Admin")) {
           expect(correctResult).toBe(false)
         }
@@ -179,11 +179,11 @@ describe("Password Change Functionality", () => {
         if (isAdmin) {
           return Promise.resolve()
         }
-        
+
         if (!currentPassword) {
           throw new Error("Current password required for regular users")
         }
-        
+
         return Promise.resolve()
       })
 

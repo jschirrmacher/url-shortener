@@ -83,7 +83,6 @@ const dismissError = (): void => {
 <template>
   <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-6">Passwort ändern</h2>
-
     <form class="space-y-6" @submit.prevent="changePassword">
       <!-- Current Password -->
       <FormField
@@ -93,7 +92,6 @@ const dismissError = (): void => {
         placeholder="Ihr aktuelles Passwort"
         required
       />
-
       <!-- New Password -->
       <FormField
         v-model="newPassword"
@@ -103,7 +101,6 @@ const dismissError = (): void => {
         hint="Das Passwort sollte mindestens 6 Zeichen lang sein"
         required
       />
-
       <!-- Confirm New Password -->
       <FormField
         v-model="confirmPassword"
@@ -112,19 +109,15 @@ const dismissError = (): void => {
         placeholder="Neues Passwort wiederholen"
         required
       />
-
       <!-- Form Actions -->
       <div class="flex justify-end space-x-3">
-        <BaseButton type="button" variant="secondary" @click="resetForm"> Zurücksetzen </BaseButton>
-
+        <BaseButton type="button" variant="secondary" @click="resetForm">Zurücksetzen</BaseButton>
         <BaseButton type="submit" variant="primary" :loading="loading" :disabled="loading">
           {{ loading ? "Ändere..." : "Passwort ändern" }}
         </BaseButton>
       </div>
-
       <!-- Success Message -->
       <AlertMessage v-if="success" type="success" :message="success" dismissible @dismiss="dismissSuccess" />
-
       <!-- Error Message -->
       <AlertMessage v-if="error" type="error" :message="error" dismissible @dismiss="dismissError" />
     </form>

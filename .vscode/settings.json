@@ -1,0 +1,18 @@
+{
+  // Vue-Dateien: Nur ESLint für Formatierung, kein Prettier
+  "[vue]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": null,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    }
+  },
+  
+  // Für andere Dateien weiterhin Prettier verwenden
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

@@ -55,19 +55,12 @@ const emojis = {
   <div :class="alertClasses">
     <!-- Icon -->
     <span class="text-lg">{{ emojis[type] }}</span>
-
     <!-- Message -->
     <div class="flex-1">
       <span>{{ message }}</span>
     </div>
-
     <!-- Dismiss Button -->
-    <button
-      v-if="dismissible"
-      class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 hover:bg-gray-100 transition-colors"
-      aria-label="Schließen"
-      @click="emit('dismiss')"
-    >
+    <BaseButton v-if="dismissible" variant="ghost" size="sm" aria-label="Schließen" @click="emit('dismiss')">
       <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
         <path
           fill-rule="evenodd"
@@ -75,6 +68,6 @@ const emojis = {
           clip-rule="evenodd"
         />
       </svg>
-    </button>
+    </BaseButton>
   </div>
 </template>

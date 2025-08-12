@@ -67,7 +67,6 @@ const sortedDailyStats = computed(() => {
 <template>
   <div class="bg-white rounded-lg shadow-md p-6">
     <h3 class="text-lg font-semibold text-gray-800 mb-4">Tägliche Statistiken</h3>
-
     <div v-if="sortedDailyStats.length > 0" class="space-y-3">
       <div
         v-for="(day, index) in sortedDailyStats"
@@ -81,13 +80,11 @@ const sortedDailyStats = computed(() => {
             <div class="text-sm text-gray-500">{{ day.uniqueVisitors }} unique Besucher</div>
           </div>
         </div>
-
         <div class="text-right">
           <div class="font-semibold text-gray-800">{{ day.clicks }} Klicks</div>
         </div>
       </div>
     </div>
-
     <div v-else class="text-center py-8">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path

@@ -52,24 +52,19 @@ const handleRoleChanged = (username: string, newRole: "admin" | "user"): void =>
 }
 
 const handlePasswordReset = (username: string): void => {
-  // eslint-disable-next-line no-console
+   
   console.log(`Passwort für Benutzer "${username}" wurde zurückgesetzt`)
 }
 </script>
 
 <template>
   <div class="max-w-6xl mx-auto py-12 px-4">
-    
     <div class="mb-8">
       <h1 class="text-3xl font-bold text-gray-800">Admin-Verwaltung</h1>
       <p class="text-gray-600 mt-2">Benutzer- und Systemverwaltung</p>
     </div>
-
     <div class="space-y-6">
-      
       <UserCreateForm @user-created="handleUserCreated" />
-
-      
       <UserList
         :users="users"
         :loading="usersLoading"
