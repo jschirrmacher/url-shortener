@@ -13,7 +13,7 @@ interface Emits {
   (e: "roleChanged", username: string, newRole: "admin" | "user"): void
 }
 
-const _props = defineProps<Props>()
+defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const passwordResetModal = ref({
@@ -96,28 +96,17 @@ function handlePasswordResetSuccess(): void {
 
 <template>
   <div class="bg-white shadow rounded-lg">
-    
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
       <h2 class="text-lg font-semibold text-gray-800">Benutzer-Verwaltung</h2>
-      <button
-        class="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-        :disabled="loading"
-        @click="emit('refresh')"
-      >
+      <BaseButton variant="primary" size="sm" :loading="loading" @click="emit('refresh')">
         {{ loading ? "Lädt..." : "Aktualisieren" }}
-      </button>
+      </BaseButton>
     </div>
-
-    
     <div v-if="loading" class="p-6 text-center">
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
       <p class="text-gray-600 mt-2">Benutzer werden geladen...</p>
     </div>
-
-    
     <AlertMessage v-else-if="error" type="error" :message="error" class="m-6" />
-
-    
     <div v-else-if="users.length > 0" class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">
@@ -131,9 +120,7 @@ function handlePasswordResetSuccess(): void {
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
           <tr v-for="user in users" :key="user.username">
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-              {{ user.username }}
-            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
               <select
                 :value="user.role"
@@ -154,47 +141,31 @@ function handlePasswordResetSuccess(): void {
                 {{ user.active ? "Aktiv" : "Deaktiviert" }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ formatDate(user.createdAt) }}
-            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(user.createdAt) }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-              
-              <button
+              <BaseButton
                 v-if="user.active"
-                class="text-orange-600 hover:text-orange-900 transition-colors"
+                variant="ghost"
+                size="sm"
                 title="Passwort zurücksetzen"
                 @click="openPasswordResetModal(user.username)"
               >
                 Passwort
-              </button>
-              
-              
-              <button
-                v-if="user.active"
-                class="text-red-600 hover:text-red-900 transition-colors"
-                @click="deleteUser(user.username)"
-              >
+              </BaseButton>
+              <BaseButton v-if="user.active" variant="ghost" size="sm" @click="deleteUser(user.username)">
                 Deaktivieren
-              </button>
-              <button
-                v-else
-                class="text-green-600 hover:text-green-900 transition-colors"
-                @click="reactivateUser(user.username)"
-              >
+              </BaseButton>
+              <BaseButton v-else variant="ghost" size="sm" @click="reactivateUser(user.username)">
                 Reaktivieren
-              </button>
+              </BaseButton>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
-
-    
     <div v-else class="text-center py-8">
       <p class="text-gray-500">Keine Benutzer gefunden</p>
     </div>
-
-    
     <PasswordResetModal
       :username="passwordResetModal.username"
       :is-open="passwordResetModal.isOpen"

@@ -9,8 +9,8 @@ describe("DownloadButton", () => {
   it("renders PNG button correctly", () => {
     const wrapper = mount(DownloadButton, {
       props: {
-        format: "png"
-      }
+        format: "png",
+      },
     })
 
     expect(wrapper.html()).toMatchSnapshot()
@@ -19,8 +19,8 @@ describe("DownloadButton", () => {
   it("renders SVG button correctly", () => {
     const wrapper = mount(DownloadButton, {
       props: {
-        format: "svg"
-      }
+        format: "svg",
+      },
     })
 
     expect(wrapper.html()).toMatchSnapshot()
@@ -30,8 +30,8 @@ describe("DownloadButton", () => {
     const wrapper = mount(DownloadButton, {
       props: {
         format: "png",
-        disabled: true
-      }
+        disabled: true,
+      },
     })
 
     expect(wrapper.html()).toMatchSnapshot()
@@ -41,8 +41,8 @@ describe("DownloadButton", () => {
     const wrapper = mount(DownloadButton, {
       props: {
         format: "svg",
-        disabled: true
-      }
+        disabled: true,
+      },
     })
 
     expect(wrapper.html()).toMatchSnapshot()
@@ -51,20 +51,20 @@ describe("DownloadButton", () => {
   it("displays correct format label for PNG", () => {
     const wrapper = mount(DownloadButton, {
       props: {
-        format: "png"
-      }
+        format: "png",
+      },
     })
 
-    expect(wrapper.text()).toContain('PNG')
+    expect(wrapper.text()).toContain("PNG")
   })
 
   it("displays correct format label for SVG", () => {
     const wrapper = mount(DownloadButton, {
       props: {
-        format: "svg"
-      }
+        format: "svg",
+      },
     })
 
-    expect(wrapper.text()).toContain('SVG')
+    expect(wrapper.text()).toContain("SVG")
   })
 })

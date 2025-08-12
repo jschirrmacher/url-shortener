@@ -31,7 +31,6 @@ const getRoleBadgeColor = (role: string): string => {
 <template>
   <div class="bg-white rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-6">Profil-Informationen</h2>
-
     <div v-if="user" class="space-y-4">
       <!-- User Avatar & Name -->
       <div class="flex items-center space-x-4">
@@ -47,7 +46,6 @@ const getRoleBadgeColor = (role: string): string => {
           </span>
         </div>
       </div>
-
       <!-- User Details -->
       <div class="border-t border-gray-200 pt-4">
         <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -55,17 +53,14 @@ const getRoleBadgeColor = (role: string): string => {
             <dt class="text-sm font-medium text-gray-500">Benutzername</dt>
             <dd class="mt-1 text-sm text-gray-900">{{ user.username }}</dd>
           </div>
-
           <div>
             <dt class="text-sm font-medium text-gray-500">Rolle</dt>
             <dd class="mt-1 text-sm text-gray-900">{{ getRoleLabel(user.role) }}</dd>
           </div>
-
           <div>
             <dt class="text-sm font-medium text-gray-500">Mitglied seit</dt>
             <dd class="mt-1 text-sm text-gray-900">{{ formatDate(user.createdAt) }}</dd>
           </div>
-
           <div>
             <dt class="text-sm font-medium text-gray-500">Status</dt>
             <dd class="mt-1">
@@ -81,7 +76,6 @@ const getRoleBadgeColor = (role: string): string => {
           </div>
         </dl>
       </div>
-
       <!-- Quick Actions -->
       <div class="border-t border-gray-200 pt-4">
         <h4 class="text-sm font-medium text-gray-500 mb-3">Schnellzugriff</h4>
@@ -100,7 +94,6 @@ const getRoleBadgeColor = (role: string): string => {
             </svg>
             Meine URLs
           </NuxtLink>
-
           <NuxtLink
             v-if="user.role === 'admin'"
             to="/admin"
@@ -119,7 +112,6 @@ const getRoleBadgeColor = (role: string): string => {
         </div>
       </div>
     </div>
-
     <!-- Loading State -->
     <div v-else class="text-center py-8">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />

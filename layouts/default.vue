@@ -10,7 +10,7 @@ const { user } = useAuth()
       <div class="max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <NuxtLink to="/" class="text-xl font-bold text-gray-800 hover:text-orange-600"> 🔗 URL-Shortener </NuxtLink>
+            <NuxtLink to="/" class="text-xl font-bold text-gray-800 hover:text-orange-600">🔗 URL-Shortener</NuxtLink>
           </div>
 
           <!-- Right side content -->

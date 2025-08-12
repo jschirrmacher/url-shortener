@@ -171,7 +171,13 @@ async function deleteUrl(shortCode: string) {
     throw new Error("URL nicht gefunden")
   }
 
-  await writeCsv(URLS_FILE, filteredUrls as UrlRecord[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
+  await writeCsv(URLS_FILE, filteredUrls as UrlRecord[], [
+    "shortCode",
+    "originalUrl",
+    "title",
+    "createdAt",
+    "createdBy",
+  ])
 }
 
 async function generateUniqueShortCode() {

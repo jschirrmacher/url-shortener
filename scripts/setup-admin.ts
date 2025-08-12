@@ -1,7 +1,7 @@
 import useUsers from "../server/useUsers"
 import type { User } from "../types/index"
 
-interface SetupResult {
+interface _SetupResult {
   success: boolean
   message: string
   user?: User

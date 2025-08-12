@@ -30,37 +30,6 @@ const loadStats = async (): Promise<void> => {
     loading.value = false
   }
 }
-
-// QR Code Modal State
-const qrCodeModal = ref({
-  isOpen: false,
-  shortCode: "",
-  shortUrl: "",
-  originalUrl: ""
-})
-
-const openQrCodeModal = (): void => {
-  if (stats.value) {
-    const config = useRuntimeConfig()
-    const baseUrl = config.public?.baseUrl || "http://localhost:3000"
-    
-    qrCodeModal.value = {
-      isOpen: true,
-      shortCode: shortCode,
-      shortUrl: `${baseUrl}/${shortCode}`,
-      originalUrl: stats.value.url?.originalUrl || ""
-    }
-  }
-}
-
-const closeQrCodeModal = (): void => {
-  qrCodeModal.value = {
-    isOpen: false,
-    shortCode: "",
-    shortUrl: "",
-    originalUrl: ""
-  }
-}
 </script>
 
 <template>
@@ -70,24 +39,16 @@ const closeQrCodeModal = (): void => {
       <h1 class="text-3xl font-bold text-gray-800">Statistiken</h1>
       <p class="text-gray-600 mt-2">Detaillierte Analyse für {{ shortCode }}</p>
     </div>
-
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600" />
       <p class="mt-4 text-gray-600">Lade Statistiken...</p>
     </div>
-
     <!-- Error State -->
     <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
       ❌ {{ error }}
-      <button
-        class="ml-4 px-3 py-1 bg-red-600 text-white rounded text-sm hover:bg-red-700 transition-colors"
-        @click="loadStats"
-      >
-        Erneut versuchen
-      </button>
+      <BaseButton variant="danger" size="sm" @click="loadStats">Erneut versuchen</BaseButton>
     </div>
-
     <!-- Stats Content -->
     <div v-else-if="stats" class="space-y-6">
       <!-- URL Info with QR Code -->
@@ -106,32 +67,15 @@ const closeQrCodeModal = (): void => {
               </div>
             </div>
           </div>
-          <div class="ml-6 flex flex-col items-center">
-            <QrCodeDisplay
-              :short-code="shortCode"
-              :size="120"
-              :show-download="false"
-            />
-            <button
-              class="mt-2 px-3 py-1 text-xs bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition-colors"
-              @click="openQrCodeModal"
-            >
-              QR-Code vergrößern
-            </button>
-          </div>
         </div>
       </div>
-
       <!-- Stats Overview -->
       <StatsOverview :stats="stats" />
-
       <!-- Source Breakdown -->
       <SourceBreakdown :stats="stats" />
-
       <!-- Recent Clicks -->
       <RecentClicks :stats="stats" />
     </div>
-
     <!-- No Data State -->
     <div v-else class="text-center py-12">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -146,13 +90,4 @@ const closeQrCodeModal = (): void => {
       <p class="mt-1 text-sm text-gray-500">Für diese URL sind noch keine Daten vorhanden.</p>
     </div>
   </div>
-
-  <!-- QR Code Modal -->
-  <QrCodeModal
-    :short-code="qrCodeModal.shortCode"
-    :short-url="qrCodeModal.shortUrl"
-    :original-url="qrCodeModal.originalUrl"
-    :is-open="qrCodeModal.isOpen"
-    @close="closeQrCodeModal"
-  />
 </template>

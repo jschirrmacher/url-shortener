@@ -50,7 +50,7 @@ describe("Admin Password Reset Functionality", () => {
       }
 
       const validRequest: PasswordResetRequest = {
-        newPassword: "newpassword123"
+        newPassword: "newpassword123",
       }
 
       expect(validRequest).toHaveProperty("newPassword")
@@ -66,7 +66,7 @@ describe("Admin Password Reset Functionality", () => {
 
       const successResponse: PasswordResetResponse = {
         success: true,
-        message: 'Passwort für Benutzer "testuser" wurde erfolgreich geändert'
+        message: 'Passwort für Benutzer "testuser" wurde erfolgreich geändert',
       }
 
       expect(successResponse).toHaveProperty("success")
@@ -127,25 +127,25 @@ describe("Admin Password Reset Functionality", () => {
 
       const initialState: ModalState = {
         isOpen: false,
-        username: ""
+        username: "",
       }
 
       const openModal = (_state: ModalState, username: string): ModalState => {
         return {
           isOpen: true,
-          username
+          username,
         }
       }
 
       const closeModal = (_state: ModalState): ModalState => {
         return {
           isOpen: false,
-          username: ""
+          username: "",
         }
       }
 
       expect(initialState.isOpen).toBe(false)
-      
+
       const openedState = openModal(initialState, "testuser")
       expect(openedState.isOpen).toBe(true)
       expect(openedState.username).toBe("testuser")
