@@ -5,6 +5,39 @@ const { user, logout } = useAuth()
 // Reactive Data
 const isOpen = ref<boolean>(false)
 
+// Menu Structure
+interface MenuItem {
+  label?: string
+  icon?: string
+  to?: string
+  action?: () => Promise<void>
+  condition?: boolean
+  divider?: boolean
+}
+
+const menuItems = computed<MenuItem[]>(() => [
+  {
+    label: "Mein Profil",
+    icon: "👤",
+    to: "/profile",
+  },
+  {
+    label: "Administration",
+    icon: "⚙️",
+    to: "/admin",
+    condition: user.value?.role === "admin",
+  },
+  {
+    divider: true,
+  },
+  {
+    label: "Abmelden",
+    icon: "🚪",
+    to: "/login",
+    action: handleLogout,
+  },
+])
+
 // Methods
 const toggleDropdown = (): void => {
   isOpen.value = !isOpen.value
@@ -18,10 +51,16 @@ const handleLogout = async (): Promise<void> => {
   try {
     closeDropdown()
     await logout()
-    await navigateTo("/login")
   } catch {
-    // Error during logout - redirect anyway for security
-    await navigateTo("/login")
+    // Error during logout - NuxtLink will still navigate to /login for security
+  }
+}
+
+const handleItemClick = async (item: MenuItem): Promise<void> => {
+  if (item.action) {
+    await item.action()
+  } else {
+    closeDropdown()
   }
 }
 
@@ -63,40 +102,26 @@ onMounted(() => {
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
       </svg>
     </BaseButton>
+
     <!-- Dropdown Menu -->
     <div v-show="isOpen" class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
       <div class="py-2">
-        <!-- Menu Items -->
         <div class="py-1">
-          <!-- Profile -->
-          <NuxtLink
-            to="/profile"
-            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            @click="closeDropdown"
-          >
-            <span class="mr-3">👤</span>
-            Mein Profil
-          </NuxtLink>
-
-          <!-- Admin (nur für Admins) -->
-          <NuxtLink
-            v-if="user.role === 'admin'"
-            to="/admin"
-            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            @click="closeDropdown"
-          >
-            <span class="mr-3">⚙️</span>
-            Administration
-          </NuxtLink>
-
-          <!-- Divider -->
-          <div class="border-t border-gray-100 my-1" />
-
-          <!-- Logout -->
-          <BaseButton variant="ghost" size="sm" full-width @click="handleLogout">
-            <span class="mr-3">🚪</span>
-            Abmelden
-          </BaseButton>
+          <template v-for="(item, index) in menuItems" :key="index">
+            <!-- Divider -->
+            <div v-if="item.divider && (item.condition ?? true)" class="border-t border-gray-100 my-1" />
+            
+            <!-- Menu Item -->
+            <NuxtLink
+              v-else-if="item.condition ?? true"
+              :to="item.to"
+              class="menu-item"
+              @click="handleItemClick(item)"
+            >
+              <span class="menu-item-icon">{{ item.icon }}</span>
+              {{ item.label }}
+            </NuxtLink>
+          </template>
         </div>
       </div>
     </div>
@@ -117,5 +142,24 @@ onMounted(() => {
 .user-menu button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Menu Item Styles */
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  color: #374151;
+  text-decoration: none;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.menu-item:hover {
+  background-color: #f3f4f6;
+}
+
+.menu-item-icon {
+  margin-right: 0.75rem;
 }
 </style>
