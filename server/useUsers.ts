@@ -185,6 +185,16 @@ async function reactivateUser(username: string) {
   await saveUsersToFile()
 }
 
+async function deleteUser(username: string) {
+  await initializeUsers()
+  const userIndex = users.findIndex((u) => u.username === username)
+  if (userIndex === -1) {
+    throw new Error("User not found")
+  }
+  users.splice(userIndex, 1)
+  await saveUsersToFile()
+}
+
 async function getUserRecord(username: string, failOnNotFound = true) {
   await initializeUsers()
   const user = users.find((u) => u.username === username)
@@ -205,5 +215,6 @@ export default function useUsers() {
     updateUserRole,
     deactivateUser,
     reactivateUser,
+    deleteUser,
   }
 }

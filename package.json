@@ -18,6 +18,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "setup-admin": "tsx ./scripts/setupAdmin.js",
     "update": "npx -y npm-check-updates -du"
   },
   "dependencies": {
