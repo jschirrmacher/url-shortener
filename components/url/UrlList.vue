@@ -10,21 +10,35 @@ interface Props {
 
 interface Emits {
   (e: "refresh" | "urlUpdated"): void
+  (e: "deleted", shortCode: string): void
+  (e: "openDetails", url: UrlRecord): void
 }
 
-const _props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   loading: false,
   error: "",
 })
 
 const emit = defineEmits<Emits>()
 
+// Helper function for sorting URLs
+const getSortedUrls = () => {
+  return [...props.urls].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  })
+}
+
+// Error state for delete operations
+const state = reactive({
+  deleteError: ""
+})
+
 // Helper Methods
 const formatDate = (dateString: string): string => {
   return new Date(dateString).toLocaleDateString("de-DE", {
     year: "numeric",
-    month: "short",
-    day: "numeric",
+    month: "2-digit",
+    day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
   })
@@ -64,6 +78,7 @@ const openUnifiedModal = (url: UrlRecord): void => {
     shortUrl: getShortUrl(url.shortCode),
     originalUrl: url.originalUrl,
   }
+  emit("openDetails", url)
 }
 
 const closeUnifiedModal = (): void => {
@@ -80,7 +95,25 @@ const handleUrlUpdated = (_updatedUrl: UrlRecord): void => {
   // Optionally show a success toast here
 }
 
-const truncateUrl = (url: string, maxLength: number = 50): string => {
+const deleteUrl = async (shortCode: string): Promise<void> => {
+  try {
+    state.deleteError = ""
+    const { error } = await useFetch(`/api/urls/${shortCode}`, {
+      method: 'DELETE'
+    })
+
+    if (error.value) {
+      throw error.value
+    }
+    emit("deleted", shortCode)
+  } catch (error: unknown) {
+    const apiError = error as { data?: { message?: string }; message?: string }
+    state.deleteError = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Löschen"
+  }
+}
+
+const truncateUrl = (url: string | undefined, maxLength: number = 50): string => {
+  if (!url) return ""
   return url.length > maxLength ? url.substring(0, maxLength) + "..." : url
 }
 </script>
@@ -95,6 +128,8 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
     </div>
     <!-- Error Message -->
     <div v-if="error" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">❌ {{ error }}</div>
+    <!-- Delete Error Message -->
+    <div v-if="state.deleteError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">❌ {{ state.deleteError }}</div>
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
       <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
@@ -103,8 +138,9 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
     <!-- URLs Grid -->
     <div v-else-if="urls.length > 0" class="grid gap-4">
       <div
-        v-for="url in urls"
+        v-for="url in getSortedUrls()"
         :key="url.shortCode"
+        :data-testid="`url-item-${url.shortCode}`"
         class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
       >
         <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
@@ -120,6 +156,7 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
               <div class="flex items-center space-x-2">
                 <span class="text-sm text-gray-500">Kurz-URL:</span>
                 <BaseButton
+                  :data-testid="`copy-button-${url.shortCode}`"
                   variant="ghost"
                   size="sm"
                   :title="getShortUrl(url.shortCode)"
@@ -159,12 +196,19 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
               <div class="text-xs text-gray-500">
                 Erstellt: {{ formatDate(url.createdAt) }}
                 <span v-if="url.createdBy">von {{ url.createdBy }}</span>
+                <span v-if="url.totalClicks !== undefined" class="ml-2">• {{ url.totalClicks }} Klicks</span>
               </div>
             </div>
           </div>
           <!-- Actions -->
           <div class="flex items-center space-x-2">
-            <BaseButton variant="secondary" size="sm" title="QR-Code & Bearbeiten" @click="openUnifiedModal(url)">
+            <BaseButton 
+              :data-testid="`details-button-${url.shortCode}`"
+              variant="secondary" 
+              size="sm" 
+              title="QR-Code & Bearbeiten" 
+              @click="openUnifiedModal(url)"
+            >
               <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
@@ -174,6 +218,22 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
                 />
               </svg>
               Details
+            </BaseButton>
+            <BaseButton 
+              :data-testid="`delete-button-${url.shortCode}`"
+              variant="danger" 
+              size="sm" 
+              title="URL löschen" 
+              @click="deleteUrl(url.shortCode)"
+            >
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
+              </svg>
             </BaseButton>
             <NuxtLink
               :to="`/stats/${url.shortCode}`"
@@ -195,7 +255,7 @@ const truncateUrl = (url: string, maxLength: number = 50): string => {
           d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
         />
       </svg>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">Keine URLs vorhanden</h3>
+      <h3 class="mt-2 text-sm font-medium text-gray-900">Noch keine URLs erstellt</h3>
       <p class="mt-1 text-sm text-gray-500">Erstellen Sie Ihre erste Kurz-URL oben.</p>
     </div>
   </div>

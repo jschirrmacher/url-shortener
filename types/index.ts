@@ -23,6 +23,7 @@ export interface ClickRecord {
   userAgent: string
   referrer: string
   sourceType: string
+  [key: string]: string // Index-Signatur für CSV-Kompatibilität
 }
 
 export type SourceType = "website" | "direct" | "qr-code"
@@ -53,6 +54,7 @@ export interface UrlStats {
 export interface UpdateUrlRequest {
   originalUrl: string
   title?: string
+  newShortCode?: string
 }
 
 export interface UpdateUrlResponse {

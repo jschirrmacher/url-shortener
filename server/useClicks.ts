@@ -180,6 +180,36 @@ function determineSourceType(referrer: string, userAgent: string): SourceType {
   return "website"
 }
 
+async function updateShortCodeInClicks(oldShortCode: string, newShortCode: string) {
+  const { readCsv, writeCsv } = useCsvService()
+  
+  // Update clicks.csv
+  const clicks = (await readCsv(CLICKS_FILE)) as unknown as ClickRecord[]
+  const updatedClicks = clicks.map((click) => {
+    if (click.shortCode === oldShortCode) {
+      return { ...click, shortCode: newShortCode }
+    }
+    return click
+  })
+  
+  if (updatedClicks.length > 0) {
+    await writeCsv(CLICKS_FILE, updatedClicks as ClickRecord[], ["shortCode", "timestamp", "ip", "userAgent", "referrer", "sourceType"])
+  }
+  
+  // Update stats.csv
+  const stats = (await readCsv(STATS_FILE)) as unknown as DailyStats[]
+  const updatedStats = stats.map((stat) => {
+    if (stat.shortCode === oldShortCode) {
+      return { ...stat, shortCode: newShortCode }
+    }
+    return stat
+  })
+  
+  if (updatedStats.length > 0) {
+    await writeCsv(STATS_FILE, updatedStats as DailyStats[], ["date", "shortCode", "clicks", "uniqueIps"])
+  }
+}
+
 export default function useClicks() {
   return {
     recordClick,
@@ -189,5 +219,6 @@ export default function useClicks() {
     getClicksForDate,
     getDailyStats,
     determineSourceType,
+    updateShortCodeInClicks,
   }
 }

@@ -106,3 +106,5 @@ export default function useCsvService() {
     getFilePath,
   }
 }
+
+export const csvService = useCsvService()
