@@ -56,7 +56,7 @@ const handleUrlsRefresh = (): void => {
         :loading="urlsLoading"
         :error="urlsError"
         @refresh="handleUrlsRefresh"
-        @url-updated="handleUrlsRefresh"
+        @updated="handleUrlsRefresh"
       />
     </div>
   </div>
