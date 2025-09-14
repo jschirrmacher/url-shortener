@@ -1,108 +1,17 @@
 <script setup lang="ts">
 import type { UrlStats } from "~/types/index"
 
-// Props
 interface Props {
   stats: UrlStats
 }
 
-const _props = defineProps<Props>()
-
-// Helper Methods
-const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString("de-DE", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  })
-}
-
-const copyToClipboard = async (text: string): Promise<void> => {
-  try {
-    await navigator.clipboard.writeText(text)
-  } catch {
-    // Fallback for older browsers
-    const textArea = document.createElement("textarea")
-    textArea.value = text
-    document.body.appendChild(textArea)
-    textArea.select()
-    document.execCommand("copy")
-    document.body.removeChild(textArea)
-  }
-}
-
-const getShortUrl = (shortCode: string): string => {
-  const config = useRuntimeConfig()
-  const baseUrl = config.public.baseUrl ?? "http://localhost:3000"
-  return `${baseUrl}/${shortCode}`
-}
+defineProps<Props>()
 </script>
 
 <template>
-  <div class="space-y-6">
-    <!-- URL Info Card -->
-    <div class="bg-white rounded-lg shadow-md p-6">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
-        <div class="flex-1 min-w-0">
-          <h2 class="text-2xl font-bold text-gray-800 mb-2">{{ stats.url.title || "Unbenannte URL" }}</h2>
-          <div class="space-y-2">
-            <div class="flex items-center space-x-2">
-              <span class="text-sm text-gray-500">Kurz-URL:</span>
-              <BaseButton variant="ghost" size="sm" @click="copyToClipboard(getShortUrl(stats.url.shortCode))">
-                <span class="mr-1">{{ getShortUrl(stats.url.shortCode) }}</span>
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
-                </svg>
-              </BaseButton>
-            </div>
-            <div class="flex items-center space-x-2">
-              <span class="text-sm text-gray-500">Ziel:</span>
-              <a
-                :href="stats.url.originalUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-blue-600 hover:text-blue-800 transition-colors break-all"
-              >
-                {{ stats.url.originalUrl }}
-                <svg class="inline h-3 w-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </a>
-            </div>
-            <div class="text-sm text-gray-500">
-              Erstellt: {{ formatDate(stats.url.createdAt) }}
-              <span v-if="stats.url.createdBy">von {{ stats.url.createdBy }}</span>
-            </div>
-          </div>
-        </div>
-        <!-- Actions -->
-        <div class="flex items-center space-x-3">
-          <NuxtLink
-            :to="`/update/${stats.url.shortCode}`"
-            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Bearbeiten
-          </NuxtLink>
-          <NuxtLink to="/" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
-            Zurück
-          </NuxtLink>
-        </div>
-      </div>
-    </div>
+  <div class="stats-overview">
     <!-- Stats Cards Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="stats-grid">
       <StatsCard title="Gesamt-Klicks" :value="stats.totalClicks" icon="click" color="blue" />
       <StatsCard title="Unique Visitors" :value="stats.uniqueVisitors" icon="users" color="green" />
       <StatsCard
@@ -115,3 +24,30 @@ const getShortUrl = (shortCode: string): string => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.stats-overview {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 1.5rem;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+</style>

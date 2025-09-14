@@ -51,24 +51,19 @@ const loadStats = async (): Promise<void> => {
     </div>
     <!-- Stats Content -->
     <div v-else-if="stats" class="space-y-6">
-      <!-- URL Info with QR Code -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-start justify-between">
-          <div class="flex-1">
-            <h3 class="text-lg font-medium text-gray-900 mb-2">URL-Informationen</h3>
-            <div class="space-y-2">
-              <div>
-                <span class="text-sm font-medium text-gray-500">Kurz-URL:</span>
-                <p class="text-sm text-blue-600 font-mono">{{ `${$config.public.baseUrl}/${shortCode}` }}</p>
-              </div>
-              <div>
-                <span class="text-sm font-medium text-gray-500">Ziel-URL:</span>
-                <p class="text-sm text-gray-700 break-all">{{ stats.url?.originalUrl }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- URL Info -->
+      <UrlItem 
+        :url="{
+          shortCode: shortCode,
+          originalUrl: stats.url?.originalUrl || '',
+          title: stats.url?.title || 'Unbenannte URL',
+          createdAt: stats.url?.createdAt || new Date().toISOString(),
+          createdBy: stats.url?.createdBy || '',
+          totalClicks: stats.totalClicks
+        }"
+        :show-actions="false"
+      />
+      
       <!-- Stats Overview -->
       <StatsOverview :stats="stats" />
       <!-- Source Breakdown -->
