@@ -94,7 +94,7 @@ const createUser = async (): Promise<void> => {
             type="text"
             required
             placeholder="benutzername"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
         </div>
 
@@ -106,7 +106,7 @@ const createUser = async (): Promise<void> => {
             type="password"
             required
             placeholder="Mindestens 6 Zeichen"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
         </div>
       </div>
@@ -116,7 +116,7 @@ const createUser = async (): Promise<void> => {
         <select
           id="role"
           v-model="newRole"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+          class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <option value="user">Benutzer</option>
           <option value="admin">Administrator</option>

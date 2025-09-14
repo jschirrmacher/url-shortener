@@ -29,17 +29,17 @@ const baseClasses =
 const variantClasses = computed(() => {
   switch (props.variant) {
     case "primary":
-      return "text-white bg-orange-600 border border-transparent hover:bg-orange-700 focus:ring-orange-500"
+      return "text-white bg-blue-600 border border-transparent hover:bg-blue-700 focus:ring-blue-500"
     case "secondary":
-      return "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-orange-500"
+      return "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-blue-500"
     case "success":
       return "text-white bg-green-600 border border-transparent hover:bg-green-700 focus:ring-green-500"
     case "danger":
       return "text-white bg-red-600 border border-transparent hover:bg-red-700 focus:ring-red-500"
     case "ghost":
-      return "text-gray-700 bg-transparent border border-transparent hover:bg-gray-100 focus:ring-orange-500"
+      return "text-gray-700 bg-transparent border border-transparent hover:bg-gray-100 focus:ring-blue-500"
     default:
-      return "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-orange-500"
+      return "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 focus:ring-blue-500"
   }
 })
 

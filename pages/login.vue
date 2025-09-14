@@ -59,7 +59,7 @@ const login = async (): Promise<void> => {
               required
               autocomplete="username"
               placeholder="Ihr Benutzername"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
           </div>
           <div>
@@ -71,7 +71,7 @@ const login = async (): Promise<void> => {
               required
               autocomplete="current-password"
               placeholder="Ihr Passwort"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
           </div>
           <BaseButton type="submit" variant="primary" :loading="loading" full-width>
