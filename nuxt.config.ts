@@ -6,7 +6,15 @@ export default defineNuxtConfig({
 
   // CSS Framework - verwende Tailwind CSS direkt
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxtjs/tailwindcss", "@nuxt/eslint"],
+  modules: ["@nuxt/eslint"],
+
+  // PostCSS Konfiguration
+  postcss: {
+    plugins: {
+      '@tailwindcss/postcss': {},
+      autoprefixer: {},
+    },
+  },
 
   // Server-side Rendering
   ssr: true,
