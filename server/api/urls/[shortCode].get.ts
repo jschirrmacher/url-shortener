@@ -1,13 +1,12 @@
 import useUrls from "~/server/useUrls"
 import { authenticateRequest } from "~/utils/apiAuth"
-import type { UpdateUrlRequest, UpdateUrlResponse, UrlRecord } from "~/types/index"
+import type { UrlRecord } from "~/types/index"
 
 export default defineEventHandler(async (event) => {
   try {
     const { user: currentUser } = await authenticateRequest(event)
 
     const shortCode = getRouterParam(event, "shortCode")
-    const body: UpdateUrlRequest = await readBody(event)
 
     if (!shortCode) {
       throw createError({
@@ -16,35 +15,27 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    if (!body.originalUrl) {
-      throw createError({
-        statusCode: 400,
-        message: "originalUrl ist erforderlich",
-      })
-    }
+    const { getUrlByShortCode } = useUrls()
+    const url: UrlRecord | null = await getUrlByShortCode(shortCode)
 
-    const { getUrlByShortCode, updateUrl } = useUrls()
-    const existingUrl: UrlRecord | null = await getUrlByShortCode(shortCode)
-
-    if (!existingUrl) {
+    if (!url) {
       throw createError({
         statusCode: 404,
         message: "URL nicht gefunden",
       })
     }
 
-    if (currentUser.role !== "admin" && existingUrl.createdBy !== currentUser.username) {
+    // Check permissions - users can only see their own URLs, admins can see all
+    if (currentUser.role !== "admin" && url.createdBy !== currentUser.username) {
       throw createError({
         statusCode: 403,
-        message: "Keine Berechtigung zum Bearbeiten dieser URL",
+        message: "Keine Berechtigung zum Anzeigen dieser URL",
       })
     }
 
-    const result: UpdateUrlResponse = await updateUrl(shortCode, body.originalUrl, body.title, body.newShortCode)
-
-    return result
+    return url
   } catch (error: unknown) {
-    // Handle update errors appropriately
+    // Handle errors appropriately
     if (error && typeof error === "object" && "statusCode" in error && "message" in error) {
       throw createError({
         statusCode: (error as { statusCode: number }).statusCode,

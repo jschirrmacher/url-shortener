@@ -18,6 +18,7 @@ const emit = defineEmits<Emits>()
 
 const dialog = ref<HTMLDialogElement>()
 const newUrl = ref("")
+const newShortCode = ref("")
 const isDialogMounted = ref(false)
 
 function useUrlUpdate(shortCode: Ref<string>) {
@@ -25,7 +26,7 @@ function useUrlUpdate(shortCode: Ref<string>) {
   const updateError = ref("")
   const updateSuccess = ref(false)
 
-  const updateUrl = async (newUrl: string): Promise<boolean> => {
+  const updateUrl = async (newUrl: string, newShortCode?: string): Promise<boolean> => {
     if (!shortCode.value || !newUrl.trim()) return false
 
     try {
@@ -33,10 +34,23 @@ function useUrlUpdate(shortCode: Ref<string>) {
       updateError.value = ""
       updateSuccess.value = false
 
-      await $fetch<UpdateUrlResponse>(`/api/urls/${shortCode.value}`, {
+      const body: { originalUrl: string; newShortCode?: string } = { originalUrl: newUrl.trim() }
+      if (newShortCode && newShortCode !== shortCode.value) {
+        body.newShortCode = newShortCode
+      }
+
+      const { data: response, error } = await useFetch<UpdateUrlResponse>(`/api/urls/${shortCode.value}`, {
         method: "PUT",
-        body: { originalUrl: newUrl.trim() },
+        body,
       })
+
+      if (error.value) {
+        throw error.value
+      }
+
+      if (!response.value) {
+        throw new Error("Keine Antwort vom Server")
+      }
 
       updateSuccess.value = true
       return true
@@ -108,8 +122,9 @@ const copyToClipboard = async (text: string) => {
 const openModal = () => {
   if (dialog.value) {
     dialog.value.showModal()
-    // Initialize form with current URL
+    // Initialize form with current values
     newUrl.value = props.originalUrl || ""
+    newShortCode.value = props.shortCode || ""
     // Enable QR code loading after dialog is mounted
     nextTick(() => {
       isDialogMounted.value = true
@@ -129,11 +144,11 @@ const closeModal = () => {
 
 // Handle form submission
 const handleSubmit = async () => {
-  const success = await updateUrl(newUrl.value)
+  const success = await updateUrl(newUrl.value, newShortCode.value)
   if (success) {
     // Create updated URL record
     const updatedUrl: UrlRecord = {
-      shortCode: props.shortCode,
+      shortCode: newShortCode.value || props.shortCode,
       originalUrl: newUrl.value,
       createdAt: new Date().toISOString(), // We don't have the original date here
       createdBy: "current-user", // We don't have user info here
@@ -187,6 +202,7 @@ watch(
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900">URL Details: {{ shortCode }}</h2>
           <button
+            data-testid="close-button"
             type="button"
             class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md p-1"
             @click="closeModal"
@@ -235,6 +251,23 @@ watch(
           </div>
 
           <form class="space-y-4" @submit.prevent="handleSubmit">
+            <div>
+              <label for="newShortCode" class="block text-sm font-medium text-gray-700 mb-1">Kurz-Code</label>
+              <input
+                id="newShortCode"
+                v-model="newShortCode"
+                type="text"
+                required
+                placeholder="z.B. mein-link"
+                pattern="[a-zA-Z0-9-_]+"
+                title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+              >
+              <p class="text-xs text-gray-500 mt-1">
+                Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
+              </p>
+            </div>
+
             <div>
               <label for="newUrl" class="block text-sm font-medium text-gray-700 mb-1">Ziel-URL</label>
               <input
@@ -285,9 +318,10 @@ watch(
             <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
               <BaseButton variant="secondary" @click="closeModal">Abbrechen</BaseButton>
               <BaseButton
+                data-testid="save-button"
                 variant="primary"
                 type="submit"
-                :disabled="!!(updateLoading || !newUrl.trim() || updateSuccess)"
+                :disabled="!!(updateLoading || !newUrl.trim() || !newShortCode.trim() || updateSuccess)"
                 :loading="updateLoading"
               >
                 {{ updateLoading ? "Wird aktualisiert..." : "URL aktualisieren" }}

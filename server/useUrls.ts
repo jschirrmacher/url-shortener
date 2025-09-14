@@ -131,7 +131,7 @@ async function getUrlStats(shortCode: string) {
   }
 }
 
-async function updateUrl(shortCode: string, originalUrl: string, title?: string) {
+async function updateUrl(shortCode: string, originalUrl: string, title?: string, newShortCode?: string) {
   // Validiere URL
   try {
     new URL(originalUrl)
@@ -147,7 +147,27 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string)
     throw new Error("URL nicht gefunden")
   }
 
-  // Update URL
+  // Wenn ein neuer shortCode angegeben wurde, prüfe ob er bereits existiert
+  if (newShortCode && newShortCode !== shortCode) {
+    // Validiere neuen shortCode
+    if (!/^[a-zA-Z0-9-_]+$/.test(newShortCode)) {
+      throw new Error("Ungültiger Short Code. Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt.")
+    }
+
+    const existingUrl = urls.find((url) => url.shortCode === newShortCode)
+    if (existingUrl) {
+      throw new Error("Short Code bereits vergeben")
+    }
+
+    // Update shortCode in URLs
+    urls[urlIndex].shortCode = newShortCode
+
+    // Update shortCode in clicks data
+    const { updateShortCodeInClicks } = useClicks()
+    await updateShortCodeInClicks(shortCode, newShortCode)
+  }
+
+  // Update URL and title
   urls[urlIndex].originalUrl = originalUrl
   if (title !== undefined) {
     urls[urlIndex].title = title
