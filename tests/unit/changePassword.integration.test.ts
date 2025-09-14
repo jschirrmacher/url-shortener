@@ -3,8 +3,30 @@ import { existsSync, mkdirSync, rmSync } from "node:fs"
 import { join } from "node:path"
 import useUsers from "~/server/useUsers"
 
+const createdUsers: string[] = []
+
 function createUserData(username: string, role: "admin" | "user" = "user") {
   return { username, password: "oldpass123", role }
+}
+
+async function createTestUser(username: string, role: "admin" | "user" = "user") {
+  const users = useUsers()
+  const userData = createUserData(username, role)
+  const user = await users.createUser(userData)
+  createdUsers.push(username)
+  return { user, userData }
+}
+
+async function cleanupUsers() {
+  const users = useUsers()
+  for (const username of createdUsers) {
+    try {
+      await users.deleteUser(username)
+    } catch {
+      // User might already be deleted, ignore error
+    }
+  }
+  createdUsers.length = 0
 }
 
 function setupTestEnvironment(testDataDir: string) {
@@ -45,20 +67,24 @@ describe("Password Change Integration", () => {
     setupTestEnvironment(testDataDir)
   })
 
-  afterEach(() => {
+  afterEach(async () => {
+    // Ensure we're in the test environment before cleanup
+    const currentDataDir = process.env.DATA_DIR
+    if (currentDataDir === testDataDir) {
+      await cleanupUsers()
+    }
     cleanupTestEnvironment(testDataDir)
   })
 
   describe("Admin Password Management", () => {
     it("should allow admin to change password without current password verification", async () => {
-      const users = useUsers()
       const username = `admin_${Date.now()}`
-      const userData = createUserData(username, "admin")
+      const { user, userData } = await createTestUser(username, "admin")
 
-      const adminUser = await users.createUser(userData)
-      expect(adminUser.username).toBe(username)
-      expect(adminUser.role).toBe("admin")
+      expect(user.username).toBe(username)
+      expect(user.role).toBe("admin")
 
+      const users = useUsers()
       const newPassword = "newpass123"
       await expect(users.changePassword(username, newPassword, true)).resolves.toBeUndefined()
 
@@ -66,12 +92,10 @@ describe("Password Change Integration", () => {
     })
 
     it("should allow admin to change password with current password verification", async () => {
-      const users = useUsers()
       const username = `admin_${Date.now()}_2`
-      const userData = createUserData(username, "admin")
+      const { userData } = await createTestUser(username, "admin")
 
-      await users.createUser(userData)
-
+      const users = useUsers()
       const newPassword = "newpass123"
       await expect(users.changePassword(username, newPassword, true, userData.password)).resolves.toBeUndefined()
 
@@ -81,12 +105,10 @@ describe("Password Change Integration", () => {
 
   describe("Regular User Password Management", () => {
     it("should enforce current password requirement for regular users", async () => {
-      const users = useUsers()
       const username = `user_${Date.now()}`
-      const userData = createUserData(username, "user")
+      const { userData } = await createTestUser(username, "user")
 
-      await users.createUser(userData)
-
+      const users = useUsers()
       const newPassword = "newpass123"
 
       await expect(users.changePassword(username, newPassword, false)).rejects.toThrow(
@@ -113,12 +135,10 @@ describe("Password Change Integration", () => {
 
   describe("Security Validation", () => {
     it("should properly hash passwords and maintain security", async () => {
-      const users = useUsers()
       const username = `testuser_${Date.now()}`
-      const userData = createUserData(username, "user")
+      const { userData } = await createTestUser(username, "user")
 
-      await users.createUser(userData)
-
+      const users = useUsers()
       const newPassword = "newpass123"
       await users.changePassword(username, newPassword, false, userData.password)
 
