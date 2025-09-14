@@ -28,7 +28,7 @@ const colorClasses = {
   },
   orange: {
     bg: "bg-orange-50",
-    text: "text-orange-600",
+    text: "text-blue-600",
     icon: "text-orange-500",
   },
   purple: {

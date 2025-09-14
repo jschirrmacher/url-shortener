@@ -132,18 +132,18 @@ const truncateUrl = (url: string | undefined, maxLength: number = 50): string =>
     <div v-if="state.deleteError" class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">❌ {{ state.deleteError }}</div>
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-8">
-      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600" />
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" />
       <p class="mt-2 text-gray-600">Lade URLs...</p>
     </div>
     <!-- URLs Grid -->
-    <div v-else-if="urls.length > 0" class="grid gap-4">
+    <div v-else-if="urls.length > 0" class="grid grid-cols-1 gap-4">
       <div
         v-for="url in getSortedUrls()"
         :key="url.shortCode"
         :data-testid="`url-item-${url.shortCode}`"
         class="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
       >
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
+        <div class="flex md:flex-row md:items-center md:justify-between space-y-3 md:space-y-0">
           <!-- URL Info -->
           <div class="flex-1 min-w-0">
             <div class="flex items-center space-x-2 mb-2">
@@ -201,7 +201,7 @@ const truncateUrl = (url: string | undefined, maxLength: number = 50): string =>
             </div>
           </div>
           <!-- Actions -->
-          <div class="flex items-center space-x-2">
+          <div class="flex flex-col space-y-2">
             <BaseButton 
               :data-testid="`details-button-${url.shortCode}`"
               variant="secondary" 
@@ -220,13 +220,30 @@ const truncateUrl = (url: string | undefined, maxLength: number = 50): string =>
               Details
             </BaseButton>
             <BaseButton 
+              :data-testid="`stats-button-${url.shortCode}`"
+              variant="secondary" 
+              size="sm" 
+              title="Statistiken anzeigen"
+              @click="$router.push(`/stats/${url.shortCode}`)"
+            >
+              <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              Statistiken
+            </BaseButton>
+            <BaseButton 
               :data-testid="`delete-button-${url.shortCode}`"
               variant="danger" 
               size="sm" 
               title="URL löschen" 
               @click="deleteUrl(url.shortCode)"
             >
-              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="h-4 w-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
@@ -234,13 +251,8 @@ const truncateUrl = (url: string | undefined, maxLength: number = 50): string =>
                   d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                 />
               </svg>
+              Löschen
             </BaseButton>
-            <NuxtLink
-              :to="`/stats/${url.shortCode}`"
-              class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors"
-            >
-              Statistiken
-            </NuxtLink>
           </div>
         </div>
       </div>

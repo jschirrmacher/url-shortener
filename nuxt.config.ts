@@ -4,17 +4,9 @@ export default defineNuxtConfig({
   // Compatibility Date
   compatibilityDate: "2025-07-26",
 
-  // CSS Framework - verwende Tailwind CSS direkt
+  // CSS Framework - natives CSS
   css: ["~/assets/css/main.css"],
   modules: ["@nuxt/eslint"],
-
-  // PostCSS Konfiguration
-  postcss: {
-    plugins: {
-      '@tailwindcss/postcss': {},
-      autoprefixer: {},
-    },
-  },
 
   // Server-side Rendering
   ssr: true,

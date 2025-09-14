@@ -204,7 +204,8 @@ watch(
           <button
             data-testid="close-button"
             type="button"
-            class="text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded-md p-1"
+            class="bg-transparent outline-none text-gray-400 hover:text-gray-600"
+            style="border: none; box-shadow: none;"
             @click="closeModal"
           >
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -261,7 +262,7 @@ watch(
                 placeholder="z.B. mein-link"
                 pattern="[a-zA-Z0-9-_]+"
                 title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
               <p class="text-xs text-gray-500 mt-1">
                 Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
@@ -276,7 +277,7 @@ watch(
                 type="url"
                 required
                 placeholder="https://example.com"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               >
             </div>
 
