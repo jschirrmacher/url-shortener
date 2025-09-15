@@ -2,10 +2,19 @@
 interface Props {
   type: 'success' | 'error' | 'warning' | 'info'
   title: string
-  message?: string
+  message: string
+  dismissible?: boolean
 }
 
-defineProps<Props>()
+interface Emits {
+  dismiss: []
+}
+
+withDefaults(defineProps<Props>(), {
+  dismissible: false
+})
+
+defineEmits<Emits>()
 
 const typeConfig = {
   success: {
@@ -57,6 +66,16 @@ const typeConfig = {
         <h3 :class="typeConfig[type].titleColor">{{ title }}</h3>
         <p v-if="message" :class="typeConfig[type].messageColor">{{ message }}</p>
       </div>
+      <button
+        v-if="dismissible"
+        class="dismiss-button"
+        :class="typeConfig[type].iconColor"
+        @click="$emit('dismiss')"
+      >
+        <svg class="dismiss-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
     </div>
   </div>
 </template>
@@ -88,5 +107,23 @@ const typeConfig = {
 .alert-text p {
   font-size: 0.875rem;
   margin: 0.25rem 0 0 0;
+}
+
+.dismiss-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.dismiss-button:hover {
+  opacity: 0.7;
+}
+
+.dismiss-icon {
+  width: 1rem;
+  height: 1rem;
 }
 </style>
