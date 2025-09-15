@@ -1,0 +1,41 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Stats Page Snapshot > should match snapshot in loading state 1`] = `
+"<div class="max-w-6xl mx-auto py-12 px-4">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Statistiken</h1>
+        <p class="text-gray-600 mt-2">Detaillierte Analyse für abc123</p>
+      </div><button><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg> Zurück </button>
+    </div>
+  </div><!-- Loading State -->
+  <div class="text-center py-12">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+    <p class="mt-4 text-gray-600">Lade Statistiken...</p>
+  </div>
+</div>"
+`;
+
+exports[`Stats Page Snapshot > should match snapshot with stats data 1`] = `
+"<div class="max-w-6xl mx-auto py-12 px-4">
+  <!-- Page Header -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-800">Statistiken</h1>
+        <p class="text-gray-600 mt-2">Detaillierte Analyse für abc123</p>
+      </div><button><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg> Zurück </button>
+    </div>
+  </div><!-- Loading State -->
+  <div class="text-center py-12">
+    <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600"></div>
+    <p class="mt-4 text-gray-600">Lade Statistiken...</p>
+  </div>
+</div>"
+`;
