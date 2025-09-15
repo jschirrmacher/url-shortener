@@ -1,18 +1,24 @@
 <script setup lang="ts">
-import type { UrlRecord } from "~/types/index"
+import type { UrlRecord, User } from "~/types/index"
 
 interface Props {
   urls: UrlRecord[]
   loading: boolean
   error: string | null
+  isAdmin?: boolean
+  allUsers?: User[]
 }
 
 interface Emits {
   refresh: []
   updated: [url: UrlRecord]
+  changeOwner: [shortCode: string, newOwner: string]
 }
 
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  isAdmin: false,
+  allUsers: () => []
+})
 const emit = defineEmits<Emits>()
 
 // State für Delete-Funktionalität
@@ -94,8 +100,11 @@ async function deleteUrl(shortCode: string) {
         v-for="url in getSortedUrls()"
         :key="url.shortCode"
         :url="url"
+        :is-admin="isAdmin"
+        :all-users="allUsers"
         @open-details="openUnifiedModal"
         @delete="deleteUrl"
+        @change-owner="(shortCode, newOwner) => $emit('changeOwner', shortCode, newOwner)"
       />
     </div>
     

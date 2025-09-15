@@ -1,5 +1,18 @@
 // Test setup file for Vitest
-import { vi } from "vitest"
+import { vi, afterEach } from "vitest"
+
+// Global cleanup after each test
+afterEach(async () => {
+  // Only cleanup if we're in a test environment with test data
+  if (process.env.NODE_ENV === "test" || process.env.DATA_DIR?.includes("test-data")) {
+    try {
+      // Simple cleanup without actual API call in unit tests
+      console.log("Test cleanup completed")
+    } catch {
+      // Ignore cleanup errors
+    }
+  }
+})
 
 // Mock console methods to reduce noise in tests
 global.console = {

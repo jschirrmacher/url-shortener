@@ -29,6 +29,14 @@ async function cleanupUsers() {
   createdUsers.length = 0
 }
 
+async function cleanupTestData() {
+  try {
+    await $fetch("/api/test/cleanup", { method: "DELETE" })
+  } catch {
+    // Ignore cleanup errors in tests
+  }
+}
+
 function setupTestEnvironment(testDataDir: string) {
   if (existsSync(testDataDir)) {
     rmSync(testDataDir, { recursive: true, force: true })
@@ -72,6 +80,7 @@ describe("Password Change Integration", () => {
     const currentDataDir = process.env.DATA_DIR
     if (currentDataDir === testDataDir) {
       await cleanupUsers()
+      await cleanupTestData()
     }
     cleanupTestEnvironment(testDataDir)
   })

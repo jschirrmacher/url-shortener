@@ -2,6 +2,14 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest"
 import { promises as fs } from "node:fs"
 import path from "node:path"
 
+async function cleanupTestData() {
+  try {
+    await $fetch("/api/test/cleanup", { method: "DELETE" })
+  } catch {
+    // Ignore cleanup errors in tests
+  }
+}
+
 describe("User Deactivation Integration", () => {
   const testDataDir = "./test-data"
   const testUsersFile = path.join(testDataDir, "users.csv")
@@ -19,6 +27,7 @@ testuser,hashedpassword:salt,user,2025-01-01T00:00:00.000Z,true`
 
   afterEach(async () => {
     // Clean up test data
+    await cleanupTestData()
     try {
       await fs.rm(testDataDir, { recursive: true, force: true })
     } catch {
@@ -30,14 +39,14 @@ testuser,hashedpassword:salt,user,2025-01-01T00:00:00.000Z,true`
     // Read the test file
     const content = await fs.readFile(testUsersFile, "utf-8")
     const lines = content.trim().split("\n") // Fixed: single backslash
-    const userData = lines[1].split(",")
+    const userData = lines[1]!.split(",")
 
     // Parse user data
     const user = {
-      username: userData[0],
-      password: userData[1],
-      role: userData[2] as "user" | "admin",
-      createdAt: userData[3],
+      username: userData[0]!,
+      password: userData[1]!,
+      role: userData[2]! as "user" | "admin",
+      createdAt: userData[3]!,
       active: userData[4] as "true" | "false",
     }
 

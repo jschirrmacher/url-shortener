@@ -160,7 +160,7 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string,
     }
 
     // Update shortCode in URLs
-    urls[urlIndex].shortCode = newShortCode
+    urls[urlIndex]!.shortCode = newShortCode
 
     // Update shortCode in clicks data
     const { updateShortCodeInClicks } = useClicks()
@@ -168,9 +168,9 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string,
   }
 
   // Update URL and title
-  urls[urlIndex].originalUrl = originalUrl
+  urls[urlIndex]!.originalUrl = originalUrl
   if (title !== undefined) {
-    urls[urlIndex].title = title
+    urls[urlIndex]!.title = title
   }
 
   await writeCsv(URLS_FILE, urls as UrlRecord[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])

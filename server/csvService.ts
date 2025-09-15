@@ -46,7 +46,7 @@ export default function useCsvService() {
         const values = line.split(",")
         const record: CsvRecord = {}
         headers.forEach((header, index) => {
-          record[header] = values[index] || ""
+          record[header] = values[index] ?? ""
         })
         return record as T
       })
