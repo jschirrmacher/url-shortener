@@ -4,9 +4,12 @@ import type { UrlRecord } from "~/types/index"
 interface Props {
   url: UrlRecord
   shortUrl: string
+  showOwner?: boolean
 }
 
-defineProps<Props>()
+withDefaults(defineProps<Props>(), {
+  showOwner: false
+})
 
 const { copyToClipboard } = useClipboard()
 
@@ -76,9 +79,15 @@ function formatDate(dateString: string) {
         </a>
       </div>
       
+      <!-- Owner Info for Admins -->
+      <div v-if="showOwner" class="url-row owner-row">
+        <span class="label">Eigentümer:</span>
+        <span class="owner-name">{{ url.createdBy }}</span>
+      </div>
+      
       <div class="metadata">
         Erstellt: {{ formatDate(url.createdAt) }}
-        <span v-if="url.createdBy">von {{ url.createdBy }}</span>
+        <span v-if="!showOwner && url.createdBy">von {{ url.createdBy }}</span>
         <span v-if="url.totalClicks !== undefined">• {{ url.totalClicks }} Klicks</span>
       </div>
     </div>
@@ -174,5 +183,17 @@ function formatDate(dateString: string) {
   font-size: 0.75rem;
   color: #6b7280;
   margin-top: 0.25rem;
+}
+
+.owner-row {
+  background-color: #f3f4f6;
+  padding: 0.5rem;
+  border-radius: 0.375rem;
+  border: 1px solid #e5e7eb;
+}
+
+.owner-name {
+  font-weight: 600;
+  color: #374151;
 }
 </style>

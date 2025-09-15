@@ -71,7 +71,7 @@ export function getClientIP(event: H3Event) {
   const remoteAddress = event.node.req.socket?.remoteAddress
 
   if (typeof forwarded === "string") {
-    return forwarded.split(",")[0].trim()
+    return forwarded.split(",")[0]!.trim()
   }
 
   if (typeof realIP === "string") {
