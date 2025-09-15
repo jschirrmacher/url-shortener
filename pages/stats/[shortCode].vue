@@ -36,8 +36,18 @@ const loadStats = async (): Promise<void> => {
   <div class="max-w-6xl mx-auto py-12 px-4">
     <!-- Page Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-800">Statistiken</h1>
-      <p class="text-gray-600 mt-2">Detaillierte Analyse für {{ shortCode }}</p>
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800">Statistiken</h1>
+          <p class="text-gray-600 mt-2">Detaillierte Analyse für {{ shortCode }}</p>
+        </div>
+        <BaseButton variant="secondary" @click="$router.push('/')">
+          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Zurück
+        </BaseButton>
+      </div>
     </div>
     <!-- Loading State -->
     <div v-if="loading" class="text-center py-12">
