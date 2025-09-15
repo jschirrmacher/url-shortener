@@ -136,10 +136,10 @@ const dismissError = (): void => {
       </div>
 
       <!-- Success Message -->
-      <AlertMessage v-if="success" type="success" :message="success" dismissible @dismiss="dismissSuccess" />
+      <AlertMessage v-if="success" type="success" title="Erfolgreich erstellt" :message="success" dismissible @dismiss="dismissSuccess" />
 
       <!-- Error Message -->
-      <AlertMessage v-if="error" type="error" :message="error" dismissible @dismiss="dismissError" />
+      <AlertMessage v-if="error" type="error" title="Fehler" :message="error" dismissible @dismiss="dismissError" />
     </form>
   </div>
 </template>

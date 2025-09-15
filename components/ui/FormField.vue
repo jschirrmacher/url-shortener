@@ -19,7 +19,7 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   error: "",
   hint: "",
-  pattern: "",
+  pattern: undefined,
   id: "",
 })
 
@@ -67,7 +67,7 @@ const updateValue = (event: Event): void => {
       :placeholder="placeholder"
       :required="required"
       :disabled="disabled"
-      :pattern="pattern"
+      v-bind="pattern ? { pattern } : {}"
       :class="inputClasses"
       @input="updateValue"
     >
