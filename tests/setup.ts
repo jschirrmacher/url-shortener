@@ -36,18 +36,8 @@ global.process = {
   cwd: originalCwd,
 }
 
-// Only mock Vue/Nuxt globals in DOM environment (for snapshot tests)
+// Only mock Nuxt globals in DOM environment (for snapshot tests)
 if (typeof window !== "undefined") {
-  // Mock Vue auto-imports for test environment with proper typing
-  ;(global as any).ref = vi.fn((value) => ({ value }))
-  ;(global as any).computed = vi.fn((fn) => ({ value: fn() }))
-  ;(global as any).reactive = vi.fn((obj) => obj)
-  ;(global as any).readonly = vi.fn((obj) => obj)
-  ;(global as any).toRef = vi.fn((obj, key) => ({ value: obj[key] }))
-  ;(global as any).nextTick = vi.fn().mockResolvedValue(undefined)
-  ;(global as any).watch = vi.fn()
-  ;(global as any).onMounted = vi.fn()
-
   // Mock Nuxt auto-imports
   ;(global as any).useRuntimeConfig = vi.fn(() => ({
     public: { baseUrl: "http://localhost:3000" },
