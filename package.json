@@ -19,7 +19,8 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "setup-admin": "tsx ./scripts/setupAdmin.js",
-    "update": "npx -y npm-check-updates -du"
+    "update": "npx -y npm-check-updates -du",
+    "setup": "npm install && allow-scripts"
   },
   "dependencies": {
     "@types/qrcode": "1.5.5",
@@ -30,6 +31,7 @@
     "qrcode": "1.5.4"
   },
   "devDependencies": {
+    "@lavamoat/allow-scripts": "3.3.5",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/eslint-config": "1.9.0",
@@ -67,5 +69,13 @@
     "*.{ts,vue}": [
       "vue-tsc --noEmit"
     ]
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "$root$": true,
+      "@nuxt/eslint-config>eslint-plugin-import-x>unrs-resolver": false,
+      "nuxt>@parcel/watcher": true,
+      "nuxt>esbuild": true
+    }
   }
 }
