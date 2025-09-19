@@ -1,101 +1,221 @@
 <script setup lang="ts">
-import type { UrlStats } from "~/types/index"
+import { computed } from "vue"
+import type { UrlStats, Source } from "~/types/index"
+import StackedBar from "./StackedBar.vue"
 
-// Props
 interface Props {
   stats: UrlStats
 }
 
+type DayData = {
+  date: string
+  clicks: number
+  uniqueVisitors: number
+}
+
+type SourceBreakdown = Record<string, number>
+
 const props = defineProps<Props>()
 
-// Helper Methods
-const formatDate = (dateString: string): string => {
-  return new Date(dateString).toLocaleDateString("de-DE", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
+function createLast30Days() {
+  const days = []
+  for (let i = 29; i >= 0; i--) {
+    const date = new Date()
+    date.setDate(date.getDate() - i)
+    days.push(date.toISOString().split("T")[0] ?? "")
+  }
+  return days
+}
+
+function mapExistingData(days: string[]): DayData[] {
+  const dataMap = new Map()
+  props.stats.dailyStats?.forEach((item) => {
+    dataMap.set(item.date, item)
+  })
+
+  return days.map((date) => {
+    const existing = dataMap.get(date)
+    return existing || { date, clicks: 0, uniqueVisitors: 0 }
   })
 }
 
-const _getSourceIcon = (source: string): string => {
-  switch (source) {
-    case "website":
-      return "🌐"
-    case "direct":
-      return "🔗"
-    case "qr-code":
-      return "📱"
-    default:
-      return "❓"
+function normalizeSourceBreakdown(): SourceBreakdown {
+  const normalized: SourceBreakdown = {}
+  Object.entries(props.stats.sourceBreakdown ?? {}).forEach(([source, count]) => {
+    const normalizedSource = source.trim() || "direct"
+    normalized[normalizedSource] = (normalized[normalizedSource] || 0) + count
+  })
+
+  if (Object.keys(normalized).length === 0) {
+    normalized.direct = 0
   }
+
+  return normalized
 }
 
-const _getSourceLabel = (source: string): string => {
-  switch (source) {
-    case "website":
-      return "Website"
-    case "direct":
-      return "Direkt"
-    case "qr-code":
-      return "QR-Code"
-    default:
-      return source
-  }
+function calculateSources(clicks: number, normalizedBreakdown: SourceBreakdown, totalSources: number): Source[] {
+  if (clicks === 0) return []
+
+  return Object.entries(normalizedBreakdown)
+    .map(([id, amount]) => ({
+      id,
+      count: totalSources > 0 ? Math.round(clicks * (amount / totalSources)) : 0,
+      color: getSourceColor(id),
+      label: getSourceLabel(id),
+    }))
+    .filter((source) => source.count > 0)
 }
 
-const _getSourceColor = (source: string): string => {
-  switch (source) {
-    case "website":
-      return "bg-blue-100 text-blue-800"
-    case "direct":
-      return "bg-gray-100 text-gray-800"
-    case "qr-code":
-      return "bg-purple-100 text-purple-800"
-    default:
-      return "bg-orange-100 text-orange-800"
-  }
+function monthName(date: string) {
+  return new Date(date).toLocaleDateString(undefined, { month: "short" })
 }
 
-// Sort daily stats by date (most recent first)
-const sortedDailyStats = computed(() => {
-  return [...props.stats.dailyStats]
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 10) // Show last 10 days
+const dailyData = computed(() => {
+  const days = createLast30Days()
+  const data = mapExistingData(days)
+  const maxClicks = Math.max(...data.map((d) => d.clicks), 1)
+  const normalizedBreakdown = normalizeSourceBreakdown()
+  const totalSources = Object.values(normalizedBreakdown).reduce((sum, count) => sum + count, 0)
+
+  return data.map((item, index) => {
+    const [_year, monthNum, dayNum] = item.date.split("-")
+    const previousMonth = index > 0 ? data[index - 1]?.date.split("-")[1] : null
+    const percentage = (item.clicks / maxClicks) * 100
+    const sources = calculateSources(item.clicks, normalizedBreakdown, totalSources)
+    const day = index % 3 === 0 || index === data.length - 1 ? dayNum || "" : ""
+    const month = index === 0 || monthNum !== previousMonth ? monthName(item.date) : ""
+
+    return {
+      ...item,
+      percentage,
+      sources,
+      day,
+      month,
+    }
+  })
 })
+
+const availableSources = computed(() => {
+  return Object.keys(normalizeSourceBreakdown()).filter(Boolean)
+})
+
+function getSourceColor(source: string): string {
+  const colors: Record<string, string> = {
+    website: "#3b82f6",
+    direct: "#6b7280",
+    "qr-code": "#8b5cf6",
+    email: "#10b981",
+    social: "#f59e0b",
+    referral: "#ef4444",
+    email_or_direct: "#06b6d4",
+  }
+  return colors[source] ?? "#f97316"
+}
+
+function getSourceLabel(source: string): string {
+  const labels: Record<string, string> = {
+    website: "Website",
+    direct: "Direkt",
+    "qr-code": "QR-Code",
+    email: "E-Mail",
+    social: "Social Media",
+    referral: "Verweis",
+    email_or_direct: "E-Mail/Direkt",
+  }
+  return labels[source] ?? source
+}
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-4">Tägliche Statistiken</h3>
-    <div v-if="sortedDailyStats.length > 0" class="space-y-3">
-      <div
-        v-for="(day, index) in sortedDailyStats"
-        :key="index"
-        class="flex items-center justify-between p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors"
-      >
-        <div class="flex items-center space-x-3">
-          <span class="text-lg">📅</span>
-          <div>
-            <div class="font-medium text-gray-700">{{ formatDate(day.date) }}</div>
-            <div class="text-sm text-gray-500">{{ day.uniqueVisitors }} unique Besucher</div>
-          </div>
-        </div>
-        <div class="text-right">
-          <div class="font-semibold text-gray-800">{{ day.clicks }} Klicks</div>
-        </div>
+  <div class="recent-clicks-chart">
+    <h3 class="chart-title">Tägliche Klicks nach Quelle (letzte 30 Tage)</h3>
+
+    <div class="legend">
+      <div v-for="source in availableSources" :key="source" class="legend-item">
+        <div class="legend-color" :style="{ backgroundColor: getSourceColor(source) }" />
+        <span>{{ getSourceLabel(source) }}</span>
       </div>
     </div>
-    <div v-else class="text-center py-8">
-      <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-        />
-      </svg>
-      <h3 class="mt-2 text-sm font-medium text-gray-900">Keine Statistiken vorhanden</h3>
-      <p class="mt-1 text-sm text-gray-500">Sobald jemand Ihre URL besucht, erscheinen hier die Details.</p>
+
+    <div class="chart-container">
+      <div class="chart-bars">
+        <StackedBar v-for="item in dailyData" :key="item.date" v-bind="item" />
+      </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.recent-clicks-chart {
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  box-shadow:
+    0 4px 6px -1px rgb(0 0 0 / 0.1),
+    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  padding: 1.5rem;
+}
+
+.chart-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+}
+
+.legend {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+.no-data {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+}
+
+.chart-container {
+  height: 250px;
+  display: flex;
+  align-items: flex-end;
+  padding-top: 2rem;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
+  gap: 1px;
+}
+
+@media (max-width: 768px) {
+  .chart-bars {
+    gap: 0.5px;
+  }
+
+  .legend {
+    gap: 0.5rem;
+  }
+
+  .legend-item {
+    font-size: 0.75rem;
+  }
+}
+</style>

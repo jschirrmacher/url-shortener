@@ -87,3 +87,9 @@ export interface Click {
   referrer: string
   sourceType: "website" | "email" | "qr" | "direct"
 }
+export interface Source {
+  id: string
+  count: number
+  color: string
+  label: string
+}
