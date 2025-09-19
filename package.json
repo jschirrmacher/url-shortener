@@ -73,7 +73,7 @@
   "lavamoat": {
     "allowScripts": {
       "$root$": true,
-      "@nuxt/eslint-config>eslint-plugin-import-x>unrs-resolver": false,
+      "@nuxt/eslint-config>eslint-plugin-import-x>unrs-resolver": true,
       "nuxt>@parcel/watcher": true,
       "nuxt>esbuild": true
     }
