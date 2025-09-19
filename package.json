@@ -20,7 +20,8 @@
     "test:coverage": "vitest run --coverage",
     "setup-admin": "tsx ./scripts/setupAdmin.js",
     "update": "npx -y npm-check-updates -du",
-    "setup": "npm install && allow-scripts"
+    "setup": "npm install && allow-scripts",
+    "setup:ci": "npm ci && allow-scripts"
   },
   "dependencies": {
     "@types/qrcode": "1.5.5",
