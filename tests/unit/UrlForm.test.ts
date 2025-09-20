@@ -61,7 +61,7 @@ describe("UrlForm Component", () => {
 
     // Form should be invalid initially (no URL entered)
     const vm = wrapper.vm as any
-    expect(vm.isFormValid.value).toBe(false)
+    expect(vm.isFormValid).toBe(false)
     
     // Try to submit form without URL - should not call API
     const form = wrapper.find('form')
@@ -82,7 +82,7 @@ describe("UrlForm Component", () => {
 
     const vm = wrapper.vm as any
     // Form should be invalid due to URL format
-    expect(vm.isFormValid.value).toBe(false)
+    expect(vm.isFormValid).toBe(false)
 
     // Try to submit form with invalid URL - should not call API
     const form = wrapper.find('form')
@@ -106,7 +106,7 @@ describe("UrlForm Component", () => {
 
     const vm = wrapper.vm as any
     // Form should be invalid due to shortCode
-    expect(vm.isFormValid.value).toBe(false)
+    expect(vm.isFormValid).toBe(false)
 
     // Try to submit form with invalid shortCode - should not call API
     const form = wrapper.find('form')
