@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue"
+import { reactive, computed } from "vue"
 
 interface CreateUrlResponse {
   shortCode: string
