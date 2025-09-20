@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref, onMounted } from "vue"
 import type { UrlStats } from "~/types/index"
 
 const route = useRoute()

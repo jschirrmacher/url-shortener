@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { reactive } from "vue"
 import type { UrlRecord, User } from "~/types/index"
 
 interface Props {

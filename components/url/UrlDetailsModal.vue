@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed, watch } from "vue"
+import { ref, watch } from "vue"
 import type { UrlRecord, UpdateUrlResponse } from "~/types/index"
 
 interface Props {
