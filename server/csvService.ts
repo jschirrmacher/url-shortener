@@ -5,8 +5,8 @@ interface CsvRecord {
   [key: string]: string | number | boolean
 }
 
-export default function useCsvService() {
-  const dataDir = "./data"
+export default function useCsvService(customDataDir?: string) {
+  const dataDir = customDataDir ?? "./data"
   let initialized = false
 
   async function ensureInitialized() {
@@ -41,12 +41,12 @@ export default function useCsvService() {
 
       if (lines.length <= 1) return []
 
-      const headers = lines[0].split(",")
+      const headers = lines[0]!.split(",")
       return lines.slice(1).map((line) => {
         const values = line.split(",")
         const record: CsvRecord = {}
         headers.forEach((header, index) => {
-          record[header] = values[index] ?? ""
+          record[header] = values[index] || ""
         })
         return record as T
       })
