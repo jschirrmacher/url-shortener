@@ -5,10 +5,10 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 
   <div data-v-dd4104c0="" class="modal-content">
     <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url="[object Object]"></qrcodesection>
-      <alertmessage data-v-dd4104c0="" type="error" title="Fehler beim Aktualisieren" message="[object Object]"></alertmessage>
-      <alertmessage data-v-dd4104c0="" type="success" title="Erfolgreich aktualisiert" message="Die URL wurde erfolgreich geändert."></alertmessage>
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="[object Object]"></urleditform>
+      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"
@@ -19,10 +19,10 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`
   <div data-v-dd4104c0="" class="modal-content">
     <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url="[object Object]"></qrcodesection>
-      <alertmessage data-v-dd4104c0="" type="error" title="Fehler beim Aktualisieren" message="[object Object]"></alertmessage>
-      <alertmessage data-v-dd4104c0="" type="success" title="Erfolgreich aktualisiert" message="Die URL wurde erfolgreich geändert."></alertmessage>
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="[object Object]"></urleditform>
+      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"
@@ -33,10 +33,10 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with differe
   <div data-v-dd4104c0="" class="modal-content">
     <modalheader data-v-dd4104c0="" title="URL Details: ABC-123_test"></modalheader>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="ABC-123_test" qr-code-url="[object Object]"></qrcodesection>
-      <alertmessage data-v-dd4104c0="" type="error" title="Fehler beim Aktualisieren" message="[object Object]"></alertmessage>
-      <alertmessage data-v-dd4104c0="" type="success" title="Erfolgreich aktualisiert" message="Die URL wurde erfolgreich geändert."></alertmessage>
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/ABC-123_test" short-code="ABC-123_test" original-url="https://example.com" loading="[object Object]"></urleditform>
+      <qrcodesection data-v-dd4104c0="" short-code="ABC-123_test" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/ABC-123_test" short-code="ABC-123_test" original-url="https://example.com" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"
@@ -47,10 +47,10 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with long UR
   <div data-v-dd4104c0="" class="modal-content">
     <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url="[object Object]"></qrcodesection>
-      <alertmessage data-v-dd4104c0="" type="error" title="Fehler beim Aktualisieren" message="[object Object]"></alertmessage>
-      <alertmessage data-v-dd4104c0="" type="success" title="Erfolgreich aktualisiert" message="Die URL wurde erfolgreich geändert."></alertmessage>
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/long123" short-code="abc123" original-url="https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments" loading="[object Object]"></urleditform>
+      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/long123" short-code="abc123" original-url="https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"
@@ -61,10 +61,10 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal
   <div data-v-dd4104c0="" class="modal-content">
     <modalheader data-v-dd4104c0="" title="URL Details: min"></modalheader>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="min" qr-code-url="[object Object]"></qrcodesection>
-      <alertmessage data-v-dd4104c0="" type="error" title="Fehler beim Aktualisieren" message="[object Object]"></alertmessage>
-      <alertmessage data-v-dd4104c0="" type="success" title="Erfolgreich aktualisiert" message="Die URL wurde erfolgreich geändert."></alertmessage>
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/min" short-code="min" original-url="https://a.co" loading="[object Object]"></urleditform>
+      <qrcodesection data-v-dd4104c0="" short-code="min" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/min" short-code="min" original-url="https://a.co" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"
@@ -75,10 +75,10 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with special
   <div data-v-dd4104c0="" class="modal-content">
     <modalheader data-v-dd4104c0="" title="URL Details: special123"></modalheader>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="special123" qr-code-url="[object Object]"></qrcodesection>
-      <alertmessage data-v-dd4104c0="" type="error" title="Fehler beim Aktualisieren" message="[object Object]"></alertmessage>
-      <alertmessage data-v-dd4104c0="" type="success" title="Erfolgreich aktualisiert" message="Die URL wurde erfolgreich geändert."></alertmessage>
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/special123" short-code="special123" original-url="https://example.com/path?param=value&amp;other=test#section" loading="[object Object]"></urleditform>
+      <qrcodesection data-v-dd4104c0="" short-code="special123" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/special123" short-code="special123" original-url="https://example.com/path?param=value&amp;other=test#section" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"

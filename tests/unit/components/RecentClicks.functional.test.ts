@@ -29,7 +29,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: today, clicks: 10, uniqueVisitors: 5 }], { direct: 10 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const bars = wrapper.findAll(".bar-item")
+      const bars = wrapper.findAll(".stacked-bar")
 
       expect(bars).toHaveLength(30)
     })
@@ -38,7 +38,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: "2024-01-01", clicks: 5, uniqueVisitors: 3 }], { direct: 5 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const allBars = wrapper.findAll(".bar-stack")
+      const allBars = wrapper.findAll(".stack")
       const emptyBars = allBars.filter(
         (bar) => bar.classes().includes("bar-empty") || bar.attributes("style")?.includes("height: 2px"),
       )
@@ -50,7 +50,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: "2024-01-01", clicks: 10, uniqueVisitors: 5 }], { direct: 10 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const bars = wrapper.findAll(".bar-item")
+      const bars = wrapper.findAll(".stacked-bar")
 
       expect(bars).toHaveLength(30)
       // TODO: Validate actual chronological order
@@ -83,7 +83,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: today, clicks: 20, uniqueVisitors: 10 }], { website: 12, direct: 8 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const segments = wrapper.findAll(".bar-segment")
+      const segments = wrapper.findAll(".segment")
 
       expect(segments.length).toBeGreaterThan(0)
 
@@ -111,7 +111,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([], { direct: 0 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const emptyBars = wrapper.findAll(".bar-empty")
+      const emptyBars = wrapper.findAll(".empty")
 
       expect(emptyBars.length).toBe(30) // Alle 30 Tage sollten leer sein
       emptyBars.forEach((bar) => {
@@ -126,7 +126,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: today, clicks: 25, uniqueVisitors: 12 }], { website: 15, direct: 10 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const barStacks = wrapper.findAll(".bar-stack")
+      const barStacks = wrapper.findAll(".stack")
 
       const dataBar = barStacks.find((bar) => bar.attributes("title")?.includes("25 Klicks"))
 
@@ -140,7 +140,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: today, clicks: 15, uniqueVisitors: 8 }], { direct: 15 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const barValues = wrapper.findAll(".bar-value")
+      const barValues = wrapper.findAll(".value")
 
       const valueBar = barValues.find((val) => val.text() === "15")
       expect(valueBar).toBeTruthy()
@@ -152,7 +152,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       const stats = createMockStats([{ date: "2024-01-01", clicks: 10, uniqueVisitors: 5 }], { direct: 10 })
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const allLabels = wrapper.findAll(".bar-label")
+      const allLabels = wrapper.findAll(".label")
       const visibleLabels = allLabels.filter((label) => label.text().trim() !== "")
 
       expect(visibleLabels.length).toBe(11)
@@ -190,7 +190,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       )
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const barStacks = wrapper.findAll(".bar-stack")
+      const barStacks = wrapper.findAll(".stack")
 
       const maxBar = barStacks.find((bar) => bar.attributes("title")?.includes("20 Klicks"))
       expect(maxBar).toBeTruthy()
@@ -211,7 +211,7 @@ describe("RecentClicks - Funktionale Anforderungen", () => {
       )
 
       const wrapper = mount(RecentClicks, { props: { stats } })
-      const barWrappers = wrapper.findAll(".bar-wrapper")
+      const barWrappers = wrapper.findAll(".stacked-bar")
 
       // Alle bar-wrapper sollten align-items: flex-end haben
       expect(barWrappers.length).toBeGreaterThan(0)
