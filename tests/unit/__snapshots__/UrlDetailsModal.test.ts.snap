@@ -1,0 +1,15 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UrlDetailsModal Component > should match snapshot 1`] = `
+"<dialog data-v-dd4104c0="" class="modal-dialog">
+  <div data-v-dd4104c0="" class="modal-content">
+    <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
+    <div data-v-dd4104c0="" class="modal-body">
+      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <!--v-if-->
+      <!--v-if-->
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="false"></urleditform>
+    </div>
+  </div>
+</dialog>"
+`;

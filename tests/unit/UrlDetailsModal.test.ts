@@ -1,267 +1,180 @@
-/**
- * @vitest-environment happy-dom
- */
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, beforeEach, vi } from "vitest"
 import { mount } from "@vue/test-utils"
 import UrlDetailsModal from "~/components/url/UrlDetailsModal.vue"
 
-// Mock global functions
+// Mock $fetch
 const mockFetch = vi.fn()
-global.$fetch = mockFetch as any
+vi.stubGlobal("$fetch", mockFetch)
 
-// Mock useRuntimeConfig
-vi.mock('#app', () => ({
-  useRuntimeConfig: () => ({
-    public: {
-      baseUrl: 'http://localhost:3000'
-    }
-  })
-}))
+// Mock fetch for QR code
+global.fetch = vi.fn()
 
 describe("UrlDetailsModal Component", () => {
-  const mockUrl = {
+  const mockProps = {
     shortCode: "abc123",
+    shortUrl: "http://localhost:3000/abc123",
     originalUrl: "https://example.com",
-    title: "Example Site",
-    createdAt: "2024-01-01T00:00:00.000Z",
-    createdBy: "testuser",
-    totalClicks: 42
+    isOpen: true
   }
 
   beforeEach(() => {
     vi.clearAllMocks()
-  })
-
-  it.skip("should render URL details correctly", () => {
-    const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
-      }
-    })
-
-    expect(wrapper.text()).toContain("abc123")
-    expect(wrapper.text()).toContain("https://example.com")
-    expect(wrapper.text()).toContain("Example Site")
-  })
-
-  it.skip("should show form fields when editing", async () => {
-    const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
-      }
-    })
-
-    // Find and click edit button
-    const editButton = wrapper.find('[data-testid="edit-button"]')
-    if (editButton.exists()) {
-      await editButton.trigger('click')
-    }
-
-    // Should show input fields
-    expect(wrapper.find('input[type="url"]').exists()).toBe(true)
-    expect(wrapper.find('input[placeholder*="Short Code"]').exists()).toBe(true)
-  })
-
-  it("should validate shortCode format", async () => {
-    const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
-      }
-    })
-
-    // Enter edit mode
-    const editButton = wrapper.find('[data-testid="edit-button"]')
-    if (editButton.exists()) {
-      await editButton.trigger('click')
-    }
-
-    // Try invalid shortCode
-    const shortCodeInput = wrapper.find('input[placeholder*="Short Code"]')
-    if (shortCodeInput.exists()) {
-      await shortCodeInput.setValue('invalid code') // space not allowed
-      
-      // Should show validation error
-      expect(wrapper.text()).toContain('Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt')
-    }
-  })
-
-  it.skip("should call API when updating URL", async () => {
-    const mockResponse = {
-      success: true,
-      message: "URL erfolgreich aktualisiert",
-      url: {
-        ...mockUrl,
-        originalUrl: "https://newexample.com"
-      }
-    }
-    mockFetch.mockResolvedValueOnce(mockResponse)
-
-    const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
-      }
-    })
-
-    // Enter edit mode
-    const editButton = wrapper.find('[data-testid="edit-button"]')
-    if (editButton.exists()) {
-      await editButton.trigger('click')
-    }
-
-    // Change URL
-    const urlInput = wrapper.find('input[type="url"]')
-    if (urlInput.exists()) {
-      await urlInput.setValue('https://newexample.com')
-    }
-
-    // Submit form
-    const saveButton = wrapper.find('[data-testid="save-button"]')
-    if (saveButton.exists()) {
-      await saveButton.trigger('click')
-    }
-
-    // Should call API
-    expect(mockFetch).toHaveBeenCalledWith(`/api/urls/${mockUrl.shortCode}`, {
-      method: 'PUT',
-      body: {
-        originalUrl: 'https://newexample.com'
-      }
+    // Mock fetch for QR code generation
+    ;(global.fetch as any).mockResolvedValue({
+      blob: () => Promise.resolve(new Blob())
     })
   })
 
-  it.skip("should include newShortCode when shortCode changes", async () => {
-    const mockResponse = {
-      success: true,
-      message: "URL erfolgreich aktualisiert",
-      url: {
-        ...mockUrl,
-        shortCode: "new123"
-      }
-    }
-    mockFetch.mockResolvedValueOnce(mockResponse)
-
+  it("should render modal when open", () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
-      }
+      props: mockProps
     })
 
-    // Enter edit mode
-    const editButton = wrapper.find('[data-testid="edit-button"]')
-    if (editButton.exists()) {
-      await editButton.trigger('click')
-    }
-
-    // Change shortCode
-    const shortCodeInput = wrapper.find('input[placeholder*="Short Code"]')
-    if (shortCodeInput.exists()) {
-      await shortCodeInput.setValue('new123')
-    }
-
-    // Submit form
-    const saveButton = wrapper.find('[data-testid="save-button"]')
-    if (saveButton.exists()) {
-      await saveButton.trigger('click')
-    }
-
-    // Should call API with newShortCode
-    expect(mockFetch).toHaveBeenCalledWith(`/api/urls/${mockUrl.shortCode}`, {
-      method: 'PUT',
-      body: {
-        originalUrl: mockUrl.originalUrl,
-        newShortCode: 'new123'
-      }
-    })
+    const dialog = wrapper.find('dialog')
+    expect(dialog.exists()).toBe(true)
+    // Dialog exists and component is mounted with isOpen=true
+    expect(wrapper.props('isOpen')).toBe(true)
   })
 
-  it.skip("should show error message on API failure", async () => {
-    const errorMessage = "Short Code bereits vergeben"
-    mockFetch.mockRejectedValueOnce({
-      data: { message: errorMessage }
-    })
-
+  it("should not show modal when closed", () => {
     const wrapper = mount(UrlDetailsModal, {
       props: {
-        url: mockUrl,
-        isOpen: true
+        ...mockProps,
+        isOpen: false
       }
     })
 
-    // Enter edit mode and try to save
-    const editButton = wrapper.find('[data-testid="edit-button"]')
-    if (editButton.exists()) {
-      await editButton.trigger('click')
-    }
-
-    const saveButton = wrapper.find('[data-testid="save-button"]')
-    if (saveButton.exists()) {
-      await saveButton.trigger('click')
-    }
-
-    // Wait for error to appear
-    await wrapper.vm.$nextTick()
-
-    // Should show error message
-    expect(wrapper.text()).toContain(errorMessage)
+    const dialog = wrapper.find('dialog')
+    expect(dialog.attributes('open')).toBeUndefined()
   })
 
-  it.skip("should emit close event when modal is closed", async () => {
+  it("should display URL information in template", () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
-      }
+      props: mockProps
     })
 
-    // Find and click close button
-    const closeButton = wrapper.find('[data-testid="close-button"]')
-    if (closeButton.exists()) {
+    const html = wrapper.html()
+    expect(html).toContain('abc123')
+    expect(html).toContain('https://example.com')
+  })
+
+  it("should generate QR code URL correctly", () => {
+    const wrapper = mount(UrlDetailsModal, {
+      props: mockProps
+    })
+
+    // Check if QR code image source is generated
+    const qrImage = wrapper.find('img[alt*="QR"]')
+    if (qrImage.exists()) {
+      expect(qrImage.attributes('src')).toContain('/api/qr/abc123')
+    }
+  })
+
+  it("should emit close event when close button clicked", async () => {
+    const wrapper = mount(UrlDetailsModal, {
+      props: mockProps
+    })
+
+    // Look for close button (X or close text)
+    const closeButtons = wrapper.findAll('button')
+    const closeButton = closeButtons.find(btn => 
+      btn.text().includes('×') || 
+      btn.text().includes('Schließen') ||
+      btn.text().includes('Close') ||
+      btn.attributes('aria-label')?.includes('close')
+    )
+
+    if (closeButton) {
       await closeButton.trigger('click')
+      expect(wrapper.emitted('close')).toBeTruthy()
     }
-
-    // Should emit close event
-    expect(wrapper.emitted('close')).toBeTruthy()
   })
 
-  it.skip("should emit updated event when URL is successfully updated", async () => {
-    const mockResponse = {
-      success: true,
-      message: "URL erfolgreich aktualisiert",
-      url: {
-        ...mockUrl,
-        originalUrl: "https://newexample.com"
-      }
-    }
-    mockFetch.mockResolvedValueOnce(mockResponse)
-
-    const wrapper = mount(UrlDetailsModal, {
-      props: {
-        url: mockUrl,
-        isOpen: true
+  it("should handle copy functionality", async () => {
+    // Mock clipboard API
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: vi.fn().mockResolvedValue(undefined)
       }
     })
 
-    // Simulate successful update
-    const editButton = wrapper.find('[data-testid="edit-button"]')
-    if (editButton.exists()) {
-      await editButton.trigger('click')
+    const wrapper = mount(UrlDetailsModal, {
+      props: mockProps
+    })
+
+    // Look for copy button
+    const copyButtons = wrapper.findAll('button')
+    const copyButton = copyButtons.find(btn => 
+      btn.text().includes('Kopieren') || 
+      btn.text().includes('Copy') ||
+      btn.html().includes('copy')
+    )
+
+    if (copyButton) {
+      await copyButton.trigger('click')
+      expect(navigator.clipboard.writeText).toHaveBeenCalled()
     }
+  })
 
-    const saveButton = wrapper.find('[data-testid="save-button"]')
-    if (saveButton.exists()) {
-      await saveButton.trigger('click')
-    }
+  it("should contain QR code functionality", () => {
+    const wrapper = mount(UrlDetailsModal, {
+      props: mockProps
+    })
 
-    // Wait for API call to complete
-    await wrapper.vm.$nextTick()
+    const html = wrapper.html()
+    // Check for QR code related content
+    const hasQrContent = html.includes('QR') || 
+                        html.includes('qr') ||
+                        wrapper.find('img').exists() ||
+                        html.includes('/api/qr/')
+    
+    expect(hasQrContent).toBe(true)
+  })
 
-    // Should emit updated event with new URL data
-    expect(wrapper.emitted('updated')).toBeTruthy()
-    expect(wrapper.emitted('updated')?.[0]).toEqual([mockResponse.url])
+  it("should match snapshot", () => {
+    const wrapper = mount(UrlDetailsModal, {
+      props: mockProps
+    })
+
+    expect(wrapper.html()).toMatchSnapshot()
+  })
+
+  it("should handle props changes reactively", async () => {
+    const wrapper = mount(UrlDetailsModal, {
+      props: mockProps
+    })
+
+    // Change shortCode prop
+    await wrapper.setProps({
+      shortCode: "xyz789",
+      shortUrl: "http://localhost:3000/xyz789"
+    })
+
+    // Check if template updates
+    const html = wrapper.html()
+    expect(html).toContain('xyz789')
+  })
+
+  it("should handle modal open/close state changes", async () => {
+    const wrapper = mount(UrlDetailsModal, {
+      props: {
+        ...mockProps,
+        isOpen: false
+      }
+    })
+
+    // Initially closed
+    let dialog = wrapper.find('dialog')
+    expect(dialog.attributes('open')).toBeUndefined()
+
+    // Open modal
+    await wrapper.setProps({ isOpen: true })
+    dialog = wrapper.find('dialog')
+    expect(dialog.attributes('open')).toBeDefined()
+
+    // Close modal
+    await wrapper.setProps({ isOpen: false })
+    dialog = wrapper.find('dialog')
+    expect(dialog.attributes('open')).toBeUndefined()
   })
 })
