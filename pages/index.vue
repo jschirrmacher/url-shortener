@@ -116,11 +116,11 @@ const handleOwnerChange = async (shortCode: string, newOwner: string): Promise<v
             <select id="user-filter" v-model="selectedUser" class="filter-select">
               <option value="all">Alle Benutzer</option>
               <option 
-                v-for="user in allUsers" 
-                :key="user.username"
-                :value="user.username"
+                v-for="userItem in allUsers" 
+                :key="userItem.username"
+                :value="userItem.username"
               >
-                {{ user.username }}
+                {{ userItem.username }}
               </option>
             </select>
           </div>
