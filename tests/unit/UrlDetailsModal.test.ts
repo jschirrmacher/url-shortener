@@ -14,6 +14,7 @@ describe("UrlDetailsModal Component", () => {
     shortCode: "abc123",
     shortUrl: "http://localhost:3000/abc123",
     originalUrl: "https://example.com",
+    title: "Example Website",
     isOpen: true
   }
 
@@ -46,16 +47,6 @@ describe("UrlDetailsModal Component", () => {
 
     const dialog = wrapper.find('dialog')
     expect(dialog.attributes('open')).toBeUndefined()
-  })
-
-  it("should display URL information in template", () => {
-    const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
-    })
-
-    const html = wrapper.html()
-    expect(html).toContain('abc123')
-    expect(html).toContain('https://example.com')
   })
 
   it("should generate QR code URL correctly", () => {

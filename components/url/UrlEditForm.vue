@@ -3,11 +3,12 @@ interface Props {
   shortUrl: string
   shortCode: string
   originalUrl: string
+  title?: string
   loading: boolean
 }
 
 interface Emits {
-  submit: [data: { shortCode: string; originalUrl: string }]
+  submit: [data: { shortCode: string; originalUrl: string; title: string }]
   cancel: []
 }
 
@@ -16,21 +17,16 @@ const emit = defineEmits<Emits>()
 
 const { copyToClipboard } = useClipboard()
 
+// Initialize with prop values - will be reactive to user input
 const newShortCode = ref(props.shortCode)
 const newUrl = ref(props.originalUrl)
-
-watch(() => props.shortCode, (value) => {
-  newShortCode.value = value
-})
-
-watch(() => props.originalUrl, (value) => {
-  newUrl.value = value
-})
+const newTitle = ref(props.title || "")
 
 function handleSubmit() {
   emit('submit', {
     shortCode: newShortCode.value,
-    originalUrl: newUrl.value
+    originalUrl: newUrl.value,
+    title: newTitle.value
   })
 }
 </script>
@@ -48,6 +44,16 @@ function handleSubmit() {
     </div>
 
     <form class="edit-form" @submit.prevent="handleSubmit">
+      <div class="form-field">
+        <label for="newTitle">Titel (optional)</label>
+        <input
+          id="newTitle"
+          v-model="newTitle"
+          type="text"
+          placeholder="Beschreibender Titel für den Link"
+        >
+      </div>
+
       <div class="form-field">
         <label for="newShortCode">Kurz-Code</label>
         <input

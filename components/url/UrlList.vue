@@ -33,6 +33,7 @@ const unifiedModal = reactive({
   shortCode: "",
   shortUrl: "",
   originalUrl: "",
+  title: "",
 })
 
 function getSortedUrls() {
@@ -46,6 +47,7 @@ function openUnifiedModal(url: UrlRecord) {
   unifiedModal.shortCode = url.shortCode
   unifiedModal.shortUrl = `${baseUrl}/${url.shortCode}`
   unifiedModal.originalUrl = url.originalUrl
+  unifiedModal.title = url.title || ""
   unifiedModal.isOpen = true
 }
 
@@ -54,6 +56,7 @@ function closeUnifiedModal() {
   unifiedModal.shortCode = ""
   unifiedModal.shortUrl = ""
   unifiedModal.originalUrl = ""
+  unifiedModal.title = ""
 }
 
 function handleUrlUpdated(url: UrlRecord) {
@@ -123,6 +126,7 @@ async function deleteUrl(shortCode: string) {
     :short-code="unifiedModal.shortCode"
     :short-url="unifiedModal.shortUrl"
     :original-url="unifiedModal.originalUrl"
+    :title="unifiedModal.title"
     :is-open="unifiedModal.isOpen"
     @close="closeUnifiedModal"
     @updated="handleUrlUpdated"
