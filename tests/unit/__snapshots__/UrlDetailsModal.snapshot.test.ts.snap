@@ -8,7 +8,7 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 
       <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="false"></urleditform>
+      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com"></urlform>
     </div>
   </div>
 </dialog>"
@@ -22,7 +22,7 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`
       <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="false"></urleditform>
+      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com"></urlform>
     </div>
   </div>
 </dialog>"
@@ -36,7 +36,7 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with differe
       <qrcodesection data-v-dd4104c0="" short-code="ABC-123_test" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/ABC-123_test" short-code="ABC-123_test" original-url="https://example.com" loading="false"></urleditform>
+      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/ABC-123_test" short-code="ABC-123_test" original-url="https://example.com"></urlform>
     </div>
   </div>
 </dialog>"
@@ -50,7 +50,7 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with long UR
       <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/long123" short-code="abc123" original-url="https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments" loading="false"></urleditform>
+      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/long123" short-code="abc123" original-url="https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments"></urlform>
     </div>
   </div>
 </dialog>"
@@ -64,7 +64,7 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal
       <qrcodesection data-v-dd4104c0="" short-code="min" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/min" short-code="min" original-url="https://a.co" loading="false"></urleditform>
+      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/min" short-code="min" original-url="https://a.co"></urlform>
     </div>
   </div>
 </dialog>"
@@ -78,7 +78,7 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with special
       <qrcodesection data-v-dd4104c0="" short-code="special123" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/special123" short-code="special123" original-url="https://example.com/path?param=value&amp;other=test#section" loading="false"></urleditform>
+      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/special123" short-code="special123" original-url="https://example.com/path?param=value&amp;other=test#section"></urlform>
     </div>
   </div>
 </dialog>"

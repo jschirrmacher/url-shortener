@@ -199,13 +199,12 @@ watch(
           message="Die URL wurde erfolgreich geändert."
         />
 
-        <UrlEditForm
+        <UrlForm
           :short-url="shortUrl || ''"
           :short-code="shortCode"
           :original-url="originalUrl || ''"
           :title="title"
-          :loading="updateLoading"
-          @submit="updateUrl"
+          @changed="updateUrl"
           @cancel="closeModal"
         />
       </div>
