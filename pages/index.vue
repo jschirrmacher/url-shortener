@@ -74,9 +74,39 @@ const changeUrlOwner = async (shortCode: string, newOwner: string): Promise<void
   }
 }
 
+// URL Creation State
+const createLoading = ref(false)
+const createError = ref("")
+const createSuccess = ref(false)
+const createSuccessMessage = ref("")
+
 // Event Handlers
-const handleUrlCreated = (_data: { shortCode: string; shortUrl: string }): void => {
-  loadUrls()
+async function handleUrlChanged(data: { shortCode: string; originalUrl: string; title: string }): Promise<void> {
+  createLoading.value = true
+  createError.value = ""
+  createSuccess.value = false
+
+  try {
+    const response = await $fetch("/api/urls", {
+      method: "POST",
+      body: {
+        originalUrl: data.originalUrl,
+        customCode: data.shortCode || undefined,
+        title: data.title || undefined
+      }
+    })
+
+    createSuccess.value = true
+    createSuccessMessage.value = `Kurz-URL erstellt: ${response.shortUrl}`
+    
+    // Reload URLs
+    await loadUrls()
+  } catch (error) {
+    const apiError = error as { data?: { message?: string }; message?: string }
+    createError.value = apiError?.data?.message || apiError?.message || "Fehler beim Erstellen der URL"
+  } finally {
+    createLoading.value = false
+  }
 }
 
 const handleUrlsRefresh = (): void => {
@@ -128,8 +158,25 @@ const handleOwnerChange = async (shortCode: string, newOwner: string): Promise<v
       </div>
     </div>
     <div class="space-y-6">
+      <!-- Success message -->
+      <AlertMessage
+        v-if="createSuccess"
+        type="success"
+        title="URL erfolgreich erstellt"
+        :message="createSuccessMessage"
+      />
+
+      <!-- Error message -->
+      <AlertMessage
+        v-if="createError"
+        type="error"
+        title="Fehler"
+        :message="createError"
+      />
+
       <!-- URL Create Form -->
-      <UrlCreateForm @url-created="handleUrlCreated" />
+      <UrlForm @changed="handleUrlChanged" />
+      
       <!-- URLs List -->
       <UrlList
         :urls="filteredUrls"

@@ -1,35 +1,50 @@
 <script setup lang="ts">
-import { reactive, computed } from "vue"
-
-interface CreateUrlResponse {
-  shortCode: string
-  originalUrl: string
-  shortUrl: string
-}
-
-interface ApiError {
-  data?: { message?: string }
-  message?: string
+interface Props {
+  shortUrl?: string
+  shortCode?: string
+  originalUrl?: string
+  title?: string
 }
 
 interface Emits {
-  (e: "created", url: CreateUrlResponse): void
+  (e: "changed", data: { shortCode: string; originalUrl: string; title: string }): void
+  (e: "cancel"): void
 }
+
+const props = withDefaults(defineProps<Props>(), {
+  title: '',
+  shortCode: '',
+  shortUrl: '',
+  originalUrl: ''
+})
 
 const emit = defineEmits<Emits>()
 
-// Form state
-const state = reactive({
+const { copyToClipboard } = useClipboard()
+
+const isEditMode = computed(() => !!props.shortUrl)
+
+const formData = reactive({
   originalUrl: "",
   shortCode: "",
-  loading: false,
-  error: "",
-  success: false,
-  successMessage: ""
+  title: ""
+})
+
+// Initialize form data when component mounts or props change
+watchEffect(() => {
+  formData.originalUrl = props.originalUrl || ""
+  formData.shortCode = props.shortCode || ""
+  formData.title = props.title || ""
+})
+
+// Validation state
+const validationErrors = reactive({
+  originalUrl: "",
+  shortCode: ""
 })
 
 // Validation
-const isValidUrl = (url: string): boolean => {
+function isValidUrl(url: string): boolean {
   try {
     new URL(url)
     return true
@@ -38,177 +53,229 @@ const isValidUrl = (url: string): boolean => {
   }
 }
 
-const isValidShortCode = (code: string): boolean => {
-  if (!code) return true // Optional field
-  return /^[a-zA-Z0-9-_]+$/.test(code)
+function isValidShortCode(code: string): boolean {
+  if (!code) return true
+  return /^[a-zA-Z0-9_-]+$/.test(code)
 }
 
-const isFormValid = computed(() => {
-  const hasUrl = state.originalUrl.trim() !== ''
-  const validUrl = hasUrl && isValidUrl(state.originalUrl)
-  const validShortCode = isValidShortCode(state.shortCode)
+function validateForm(): boolean {
+  // Trigger validation for empty fields
+  if (!formData.originalUrl.trim()) {
+    validationErrors.originalUrl = "URL ist erforderlich"
+  }
   
+  // Return true if no validation errors exist
+  return !validationErrors.originalUrl && !validationErrors.shortCode
+}
+
+// Real-time validation
+watch(() => formData.originalUrl, (value) => {
+  if (value.trim() && !isValidUrl(value)) {
+    validationErrors.originalUrl = "Ungültige URL"
+  } else {
+    validationErrors.originalUrl = ""
+  }
+})
+
+watch(() => formData.shortCode, (value) => {
+  if (value && !isValidShortCode(value)) {
+    validationErrors.shortCode = "Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+  } else {
+    validationErrors.shortCode = ""
+  }
+})
+
+const isFormValid = computed(() => {
+  const hasUrl = formData.originalUrl.trim() !== ''
+  const validUrl = hasUrl && isValidUrl(formData.originalUrl)
+  const validShortCode = isValidShortCode(formData.shortCode)
   return hasUrl && validUrl && validShortCode
 })
 
-// Form submission
-const handleSubmit = async () => {
-  if (!isFormValid.value) return
-
-  try {
-    state.loading = true
-    state.error = ""
-    state.success = false
-
-    const body: { originalUrl: string; shortCode?: string } = {
-      originalUrl: state.originalUrl.trim()
-    }
-
-    if (state.shortCode.trim()) {
-      body.shortCode = state.shortCode.trim()
-    }
-
-    const { data: response, error } = await useFetch<CreateUrlResponse>('/api/urls', {
-      method: 'POST',
-      body
-    })
-
-    if (error.value) {
-      throw error.value
-    }
-
-    if (!response.value) {
-      throw new Error("Keine Antwort vom Server")
-    }
-
-    // Success
-    state.success = true
-    state.successMessage = `URL erfolgreich verkürzt: ${response.value.shortUrl}`
-    
-    // Emit created event
-    emit("created", response.value)
-
-    // Reset form
-    resetForm()
-
-  } catch (error: unknown) {
-    const apiError = error as ApiError
-    state.error = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Erstellen der URL"
-  } finally {
-    state.loading = false
-  }
+// Handle form submission
+function handleSubmit() {
+  if (!validateForm()) return
+  
+  emit('changed', {
+    shortCode: formData.shortCode,
+    originalUrl: formData.originalUrl,
+    title: formData.title
+  })
 }
 
-const resetForm = () => {
-  state.originalUrl = ""
-  state.shortCode = ""
-  state.error = ""
-  // Keep success message visible for a moment
-  setTimeout(() => {
-    state.success = false
-    state.successMessage = ""
-  }, 3000)
+function handleCancel() {
+  emit('cancel')
 }
-
-// Expose functions for testing
-defineExpose({
-  handleSubmit,
-  state,
-  isFormValid
-})
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
-    <h2 class="text-xl font-bold text-gray-800 mb-6">URL verkürzen</h2>
-    
-    <form class="space-y-4" @submit.prevent="handleSubmit">
-      <!-- URL Input -->
-      <div>
-        <label for="originalUrl" class="block text-sm font-medium text-gray-700 mb-1">
-          URL *
-        </label>
+  <div class="url-form">
+    <!-- Edit mode: Show current short URL -->
+    <div v-if="isEditMode && shortUrl" class="readonly-field">
+      <label>Kurz-URL</label>
+      <div class="input-with-button">
+        <input :value="shortUrl" readonly class="readonly-input">
+        <BaseButton variant="secondary" size="sm" @click="copyToClipboard(shortUrl)">
+          Kopieren
+        </BaseButton>
+      </div>
+    </div>
+
+    <form @submit.prevent="handleSubmit">
+      <!-- Title field (always first) -->
+      <div class="form-field">
+        <label for="title">Titel (optional)</label>
+        <input
+          id="title"
+          v-model="formData.title"
+          type="text"
+          placeholder="Beschreibender Titel für den Link"
+        >
+      </div>
+
+      <!-- Short code field -->
+      <div class="form-field">
+        <label for="shortCode">{{ isEditMode ? 'Kurz-Code' : 'Kurz-Code (optional)' }}</label>
+        <input
+          id="shortCode"
+          v-model="formData.shortCode"
+          type="text"
+          :placeholder="isEditMode ? 'z.B. mein-link' : 'Automatisch generiert, wenn leer'"
+          :required="isEditMode"
+          pattern="[a-zA-Z0-9_-]+"
+          title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+          :class="{ 'error': validationErrors.shortCode }"
+        >
+        <p v-if="validationErrors.shortCode" class="error-message">
+          {{ validationErrors.shortCode }}
+        </p>
+        <p v-else class="field-hint">
+          Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
+        </p>
+      </div>
+
+      <!-- URL field -->
+      <div class="form-field">
+        <label for="originalUrl">{{ isEditMode ? 'Ziel-URL' : 'URL zum Verkürzen' }}</label>
         <input
           id="originalUrl"
-          v-model="state.originalUrl"
+          v-model="formData.originalUrl"
           type="url"
           required
           placeholder="https://example.com"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500': state.originalUrl && !isValidUrl(state.originalUrl) }"
+          :class="{ 'error': validationErrors.originalUrl }"
         >
-        <p v-if="state.originalUrl && !isValidUrl(state.originalUrl)" class="text-xs text-red-600 mt-1">
-          Gültige URL erforderlich
+        <p v-if="validationErrors.originalUrl" class="error-message">
+          {{ validationErrors.originalUrl }}
         </p>
       </div>
 
-      <!-- Short Code Input -->
-      <div>
-        <label for="shortCode" class="block text-sm font-medium text-gray-700 mb-1">
-          Kurz-Code (optional)
-        </label>
-        <input
-          id="shortCode"
-          v-model="state.shortCode"
-          type="text"
-          placeholder="z.B. mein-link"
-          pattern="[a-zA-Z0-9-_]+"
-          title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
-          class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          :class="{ 'border-red-500': state.shortCode && !isValidShortCode(state.shortCode) }"
-        >
-        <p class="text-xs text-gray-500 mt-1">
-          Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
-        </p>
-        <p v-if="state.shortCode && !isValidShortCode(state.shortCode)" class="text-xs text-red-600 mt-1">
-          Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
-        </p>
-      </div>
-
-      <!-- Error Message -->
-      <div v-if="state.error" class="bg-red-50 border border-red-200 rounded-md p-4">
-        <div class="flex">
-          <svg class="h-5 w-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">Fehler</h3>
-            <p class="mt-1 text-sm text-red-700">{{ state.error }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Success Message -->
-      <div v-if="state.success" class="bg-green-50 border border-green-200 rounded-md p-4">
-        <div class="flex">
-          <svg class="h-5 w-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fill-rule="evenodd"
-              d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-              clip-rule="evenodd"
-            />
-          </svg>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-green-800">URL erfolgreich verkürzt</h3>
-            <p class="mt-1 text-sm text-green-700">{{ state.successMessage }}</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Submit Button -->
-      <div class="pt-4">
-        <button
+      <!-- Buttons -->
+      <div class="form-actions">
+        <BaseButton
+          variant="primary"
           type="submit"
-          :disabled="!isFormValid || state.loading"
-          class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          :disabled="!isFormValid"
         >
-          {{ state.loading ? "Wird erstellt..." : "URL verkürzen" }}
-        </button>
+          {{ isEditMode ? 'Speichern' : 'URL verkürzen' }}
+        </BaseButton>
+        
+        <BaseButton
+          v-if="isEditMode"
+          variant="secondary"
+          type="button"
+          @click="handleCancel"
+        >
+          Abbrechen
+        </BaseButton>
       </div>
     </form>
   </div>
 </template>
+
+<style scoped>
+.url-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.readonly-field {
+  margin-bottom: 1rem;
+}
+
+.readonly-field label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.input-with-button {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.readonly-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #f9fafb;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-field label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.form-field input {
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+}
+
+.form-field input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-field input.error {
+  border-color: #ef4444;
+}
+
+.form-field input.error:focus {
+  border-color: #ef4444;
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.error-message {
+  font-size: 0.75rem;
+  color: #ef4444;
+  margin: 0;
+}
+
+.field-hint {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.form-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+</style>
