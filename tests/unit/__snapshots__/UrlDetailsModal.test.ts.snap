@@ -8,7 +8,7 @@ exports[`UrlDetailsModal Component > should match snapshot 1`] = `
       <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
       <!--v-if-->
       <!--v-if-->
-      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" loading="false"></urleditform>
+      <urleditform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" title="Example Website" loading="false"></urleditform>
     </div>
   </div>
 </dialog>"

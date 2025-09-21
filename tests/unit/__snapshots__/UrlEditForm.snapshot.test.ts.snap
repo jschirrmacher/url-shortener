@@ -1,0 +1,22 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UrlEditForm Snapshots > should match snapshot with all props 1`] = `
+"<div data-v-978eddd6="" class="url-edit-form">
+  <div data-v-978eddd6="" class="readonly-field"><label data-v-978eddd6="">Kurz-URL</label>
+    <div data-v-978eddd6="" class="input-with-button"><input data-v-978eddd6="" readonly="" class="readonly-input" value="http://localhost:3000/abc123">
+      <base-button-stub data-v-978eddd6="" variant="secondary" size="sm"></base-button-stub>
+    </div>
+  </div>
+  <form data-v-978eddd6="" class="edit-form">
+    <div data-v-978eddd6="" class="form-field"><label data-v-978eddd6="" for="newTitle">Titel (optional)</label><input data-v-978eddd6="" id="newTitle" type="text" placeholder="Beschreibender Titel für den Link"></div>
+    <div data-v-978eddd6="" class="form-field"><label data-v-978eddd6="" for="newShortCode">Kurz-Code</label><input data-v-978eddd6="" id="newShortCode" type="text" required="" placeholder="z.B. mein-link" pattern="[a-zA-Z0-9-_]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt">
+      <p data-v-978eddd6="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
+    </div>
+    <div data-v-978eddd6="" class="form-field"><label data-v-978eddd6="" for="newUrl">Ziel-URL</label><input data-v-978eddd6="" id="newUrl" type="url" required="" placeholder="https://example.com"></div>
+    <div data-v-978eddd6="" class="form-actions">
+      <base-button-stub data-v-978eddd6="" variant="secondary" type="button"></base-button-stub>
+      <base-button-stub data-v-978eddd6="" data-testid="save-button" variant="primary" type="submit" disabled="false" loading="false"></base-button-stub>
+    </div>
+  </form>
+</div>"
+`;

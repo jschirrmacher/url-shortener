@@ -6,6 +6,7 @@ interface Props {
   shortCode: string
   shortUrl?: string
   originalUrl?: string
+  title?: string
   isOpen: boolean
 }
 
@@ -59,7 +60,7 @@ async function downloadQrCode(format: 'png' | 'svg') {
 }
 
 // Update URL
-async function updateUrl(data: { shortCode: string; originalUrl: string }) {
+async function updateUrl(data: { shortCode: string; originalUrl: string; title: string }) {
   if (!props.shortCode || !data.originalUrl.trim()) return
 
   try {
@@ -67,8 +68,12 @@ async function updateUrl(data: { shortCode: string; originalUrl: string }) {
     updateError.value = ""
     updateSuccess.value = false
 
-    const body: { originalUrl: string; newShortCode?: string } = { 
+    const body: { originalUrl: string; title?: string; newShortCode?: string } = { 
       originalUrl: data.originalUrl.trim() 
+    }
+    
+    if (data.title !== undefined) {
+      body.title = data.title.trim()
     }
     
     if (data.shortCode && data.shortCode !== props.shortCode) {
@@ -198,6 +203,7 @@ watch(
           :short-url="shortUrl || ''"
           :short-code="shortCode"
           :original-url="originalUrl || ''"
+          :title="title"
           :loading="updateLoading"
           @submit="updateUrl"
           @cancel="closeModal"
