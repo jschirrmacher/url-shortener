@@ -5,10 +5,12 @@ interface Props {
   url: UrlRecord
   shortUrl: string
   showOwner?: boolean
+  showMetadata?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
-  showOwner: false
+  showOwner: false,
+  showMetadata: true
 })
 
 const { copyToClipboard } = useClipboard()
@@ -32,7 +34,6 @@ function formatDate(dateString: string) {
   <div class="url-info">
     <div class="url-header">
       <h3>{{ url.title || "Unbenannte URL" }}</h3>
-      <span class="short-code-badge">{{ url.shortCode }}</span>
     </div>
     
     <div class="url-details">
@@ -85,7 +86,7 @@ function formatDate(dateString: string) {
         <span class="owner-name">{{ url.createdBy }}</span>
       </div>
       
-      <div class="metadata">
+      <div v-if="showMetadata" class="metadata">
         Erstellt: {{ formatDate(url.createdAt) }}
         <span v-if="!showOwner && url.createdBy">von {{ url.createdBy }}</span>
         <span v-if="url.totalClicks !== undefined">• {{ url.totalClicks }} Klicks</span>
@@ -117,27 +118,25 @@ function formatDate(dateString: string) {
   white-space: nowrap;
 }
 
-.short-code-badge {
-  display: inline-flex;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  background-color: #fed7aa;
-  color: #9a3412;
-  border-radius: 9999px;
-  flex-shrink: 0;
-}
-
 .url-details {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.75rem;
 }
 
 .url-row {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+@media (min-width: 480px) and (max-width: 899px) {
+  .url-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
 }
 
 .label {

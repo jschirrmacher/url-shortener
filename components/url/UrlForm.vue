@@ -63,7 +63,7 @@ function validateForm(): boolean {
   if (!formData.originalUrl.trim()) {
     validationErrors.originalUrl = "URL ist erforderlich"
   }
-  
+
   // Return true if no validation errors exist
   return !validationErrors.originalUrl && !validationErrors.shortCode
 }
@@ -95,7 +95,7 @@ const isFormValid = computed(() => {
 // Handle form submission
 function handleSubmit() {
   if (!validateForm()) return
-  
+
   emit('changed', {
     shortCode: formData.shortCode,
     originalUrl: formData.originalUrl,
@@ -122,70 +122,47 @@ function handleCancel() {
     </div>
 
     <form @submit.prevent="handleSubmit">
-      <!-- Title field (always first) -->
-      <div class="form-field">
-        <label for="title">Titel (optional)</label>
-        <input
-          id="title"
-          v-model="formData.title"
-          type="text"
-          placeholder="Beschreibender Titel für den Link"
-        >
-      </div>
-
-      <!-- Short code field -->
-      <div class="form-field">
-        <label for="shortCode">{{ isEditMode ? 'Kurz-Code' : 'Kurz-Code (optional)' }}</label>
-        <input
-          id="shortCode"
-          v-model="formData.shortCode"
-          type="text"
-          :placeholder="isEditMode ? 'z.B. mein-link' : 'Automatisch generiert, wenn leer'"
-          :required="isEditMode"
-          pattern="[a-zA-Z0-9_-]+"
-          title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
-          :class="{ 'error': validationErrors.shortCode }"
-        >
-        <p v-if="validationErrors.shortCode" class="error-message">
-          {{ validationErrors.shortCode }}
-        </p>
-        <p v-else class="field-hint">
-          Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
-        </p>
-      </div>
-
-      <!-- URL field -->
+      <!-- URL field (first and most important) -->
       <div class="form-field">
         <label for="originalUrl">{{ isEditMode ? 'Ziel-URL' : 'URL zum Verkürzen' }}</label>
-        <input
-          id="originalUrl"
-          v-model="formData.originalUrl"
-          type="url"
-          required
-          placeholder="https://example.com"
-          :class="{ 'error': validationErrors.originalUrl }"
-        >
+        <input id="originalUrl" v-model="formData.originalUrl" type="url" required placeholder="https://example.com"
+          :class="{ 'error': validationErrors.originalUrl }">
         <p v-if="validationErrors.originalUrl" class="error-message">
           {{ validationErrors.originalUrl }}
         </p>
       </div>
 
+      <!-- Optional fields in responsive layout -->
+      <div class="optional-fields">
+        <!-- Short code field (smaller) -->
+        <div class="form-field shortcode-field">
+          <label for="shortCode">{{ isEditMode ? 'Kurz-Code' : 'Kurz-Code (optional)' }}</label>
+          <input id="shortCode" v-model="formData.shortCode" type="text"
+            :placeholder="isEditMode ? 'z.B. mein-link' : 'Auto-generiert'" :required="isEditMode"
+            pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+            :class="{ 'error': validationErrors.shortCode }">
+          <p v-if="validationErrors.shortCode" class="error-message">
+            {{ validationErrors.shortCode }}
+          </p>
+          <p v-else class="field-hint">
+            Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
+          </p>
+        </div>
+
+        <!-- Title field (responsive beside shortCode on wide screens) -->
+        <div class="form-field title-field">
+          <label for="title">Titel (optional)</label>
+          <input id="title" v-model="formData.title" type="text" placeholder="Beschreibender Titel für den Link">
+        </div>
+      </div>
+
       <!-- Buttons -->
       <div class="form-actions">
-        <BaseButton
-          variant="primary"
-          type="submit"
-          :disabled="!isFormValid"
-        >
+        <BaseButton variant="primary" type="submit" :disabled="!isFormValid">
           {{ isEditMode ? 'Speichern' : 'URL verkürzen' }}
         </BaseButton>
-        
-        <BaseButton
-          v-if="isEditMode"
-          variant="secondary"
-          type="button"
-          @click="handleCancel"
-        >
+
+        <BaseButton v-if="isEditMode" variant="secondary" type="button" @click="handleCancel">
           Abbrechen
         </BaseButton>
       </div>
@@ -231,12 +208,14 @@ function handleCancel() {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .form-field label {
   font-size: 0.875rem;
   font-weight: 500;
   color: #374151;
+  padding-left: 0.25rem;
 }
 
 .form-field input {
@@ -271,6 +250,30 @@ function handleCancel() {
   font-size: 0.75rem;
   color: #6b7280;
   margin: 0;
+  padding-left: 0.25rem;
+}
+
+.optional-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .optional-fields {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .shortcode-field {
+    flex: 0 0 200px;
+    /* Fixed width for short code */
+  }
+
+  .title-field {
+    flex: 1;
+    /* Take remaining space */
+  }
 }
 
 .form-actions {

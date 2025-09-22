@@ -80,6 +80,16 @@ const createError = ref("")
 const createSuccess = ref(false)
 const createSuccessMessage = ref("")
 
+// Auto-hide success message after 5 seconds
+watch(createSuccess, (newValue) => {
+  if (newValue) {
+    setTimeout(() => {
+      createSuccess.value = false
+      createSuccessMessage.value = ""
+    }, 5000)
+  }
+})
+
 // Event Handlers
 async function handleUrlChanged(data: { shortCode: string; originalUrl: string; title: string }): Promise<void> {
   createLoading.value = true
@@ -125,38 +135,7 @@ const handleOwnerChange = async (shortCode: string, newOwner: string): Promise<v
 </script>
 
 <template>
-  <div class="max-w-6xl mx-auto py-12 px-4">
-    <!-- Page Header -->
-    <div class="mb-8">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-800">Dashboard</h1>
-          <ClientOnly>
-            <p class="text-gray-600 mt-2">{{ isAdmin ? 'Admin-Ansicht - Alle URLs verwalten' : 'Verwalten Sie Ihre Kurz-URLs' }}</p>
-            <template #fallback>
-              <p class="text-gray-600 mt-2">Verwalten Sie Ihre Kurz-URLs</p>
-            </template>
-          </ClientOnly>
-        </div>
-        
-        <!-- Admin Filter -->
-        <ClientOnly>
-          <div v-if="isAdmin" class="admin-filter">
-            <label for="user-filter" class="filter-label">Benutzer filtern:</label>
-            <select id="user-filter" v-model="selectedUser" class="filter-select">
-              <option value="all">Alle Benutzer</option>
-              <option 
-                v-for="userItem in allUsers" 
-                :key="userItem.username"
-                :value="userItem.username"
-              >
-                {{ userItem.username }}
-              </option>
-            </select>
-          </div>
-        </ClientOnly>
-      </div>
-    </div>
+  <div class="max-w-6xl mx-auto py-4 px-4">
     <div class="space-y-6">
       <!-- Success message -->
       <AlertMessage
@@ -184,40 +163,17 @@ const handleOwnerChange = async (shortCode: string, newOwner: string): Promise<v
         :error="urlsError"
         :is-admin="isAdmin"
         :all-users="allUsers"
+        :selected-user="selectedUser"
         @refresh="handleUrlsRefresh"
         @updated="handleUrlsRefresh"
         @change-owner="handleOwnerChange"
+        @user-changed="selectedUser = $event"
       />
     </div>
   </div>
 </template>
 
 <style scoped>
-.admin-filter {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.filter-label {
-  font-size: 0.875rem;
-  font-weight: 500;
-  color: #374151;
-  white-space: nowrap;
-}
-
-.filter-select {
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  background-color: white;
-  min-width: 150px;
-}
-
-.filter-select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
-}
+/* Page styles */
 </style>
+

@@ -8,17 +8,20 @@ interface Props {
   error: string | null
   isAdmin?: boolean
   allUsers?: User[]
+  selectedUser?: string
 }
 
 interface Emits {
   refresh: []
   updated: [url: UrlRecord]
   changeOwner: [shortCode: string, newOwner: string]
+  userChanged: [username: string]
 }
 
 const props = withDefaults(defineProps<Props>(), {
   isAdmin: false,
-  allUsers: () => []
+  allUsers: () => [],
+  selectedUser: "all"
 })
 const emit = defineEmits<Emits>()
 
@@ -89,7 +92,14 @@ async function deleteUrl(shortCode: string) {
 
 <template>
   <div class="url-list-container">
-    <UrlListHeader :loading="loading" @refresh="emit('refresh')" />
+    <UrlListHeader 
+      :loading="loading" 
+      :is-admin="isAdmin"
+      :all-users="allUsers"
+      :selected-user="selectedUser"
+      @refresh="emit('refresh')" 
+      @user-changed="emit('userChanged', $event)"
+    />
     
     <!-- Error Messages -->
     <div v-if="error" class="error-message">❌ {{ error }}</div>

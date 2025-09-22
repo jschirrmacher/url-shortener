@@ -11,6 +11,17 @@ const { user } = useAuth()
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
             <NuxtLink to="/" class="text-xl font-bold text-gray-800 hover:text-blue-600">🔗 URL-Shortener</NuxtLink>
+            <BaseButton 
+              v-if="$route.path !== '/'" 
+              variant="ghost"
+              size="sm"
+              @click="$router.back()"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              Zurück
+            </BaseButton>
           </div>
 
           <!-- Right side content -->

@@ -32,7 +32,7 @@ defineEmits<Emits>()
           d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 100 4m0-4v2m0-6V4"
         />
       </svg>
-      Details
+      <span class="button-text">Details</span>
     </BaseButton>
     
     <BaseButton 
@@ -51,7 +51,7 @@ defineEmits<Emits>()
           d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
         />
       </svg>
-      Statistiken
+      <span class="button-text">Statistiken</span>
     </BaseButton>
     
     <BaseButton 
@@ -70,7 +70,7 @@ defineEmits<Emits>()
           d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
         />
       </svg>
-      Löschen
+      <span class="button-text">Löschen</span>
     </BaseButton>
   </div>
 </template>
@@ -78,8 +78,14 @@ defineEmits<Emits>()
 <style scoped>
 .url-actions {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 0.5rem;
+}
+
+@media (min-width: 900px) {
+  .url-actions {
+    flex-direction: column;
+  }
 }
 
 .action-button {
@@ -94,5 +100,20 @@ defineEmits<Emits>()
   width: 1rem;
   height: 1rem;
   flex-shrink: 0;
+}
+
+.button-text {
+  display: inline;
+}
+
+@media (max-width: 479px) {
+  .button-text {
+    display: none;
+  }
+  
+  .action-button {
+    min-width: auto;
+    padding: 0.5rem;
+  }
 }
 </style>
