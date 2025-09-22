@@ -28,6 +28,16 @@ function getShortUrl(shortCode: string) {
   return `${baseUrl}/${shortCode}`
 }
 
+function formatDate(dateString: string) {
+  return new Date(dateString).toLocaleDateString("de-DE", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+}
+
 function handleOwnerChange(event: Event) {
   const target = event.target as HTMLSelectElement
   const newOwner = target.value
@@ -40,32 +50,48 @@ function handleOwnerChange(event: Event) {
 <template>
   <article class="url-item" :data-testid="`url-item-${url.shortCode}`">
     <div class="url-content">
-      <UrlItemInfo :url="url" :short-url="getShortUrl(url.shortCode)" />
-      
-      <!-- Admin Owner Display/Change -->
-      <div v-if="isAdmin && allUsers.length > 0" class="admin-owner-section">
-        <label class="owner-label">Eigentümer:</label>
-        <select 
-          class="owner-select"
-          :value="url.createdBy"
-          @change="handleOwnerChange($event)"
-        >
-          <option 
-            v-for="user in allUsers" 
-            :key="user.username"
-            :value="user.username"
-          >
-            {{ user.username }}
-          </option>
-        </select>
+      <!-- Column 1: URL Info (without metadata) -->
+      <div class="url-info-column">
+        <UrlItemInfo :url="url" :short-url="getShortUrl(url.shortCode)" :show-metadata="false" />
       </div>
       
-      <UrlItemActions 
-        v-if="showActions"
-        :url="url"
-        @open-details="emit('openDetails', $event)"
-        @delete="emit('delete', $event)"
-      />
+      <!-- Column 2: Owner + Metadata -->
+      <div class="meta-column">
+        <!-- Owner (Admin only) -->
+        <div v-if="isAdmin && allUsers.length > 0" class="owner-section">
+          <label class="owner-label">Eigentümer</label>
+          <select 
+            class="owner-select"
+            :value="url.createdBy"
+            @change="handleOwnerChange($event)"
+          >
+            <option 
+              v-for="user in allUsers" 
+              :key="user.username"
+              :value="user.username"
+            >
+              {{ user.username }}
+            </option>
+          </select>
+        </div>
+        
+        <!-- Metadata -->
+        <div class="metadata-section">
+          <label class="metadata-label">Erstellt</label>
+          <div class="metadata-content">
+            {{ formatDate(url.createdAt) }}
+          </div>
+        </div>
+      </div>
+      
+      <!-- Column 3: Actions -->
+      <div v-if="showActions" class="actions-column">
+        <UrlItemActions 
+          :url="url"
+          @open-details="emit('openDetails', $event)"
+          @delete="emit('delete', $event)"
+        />
+      </div>
     </div>
   </article>
 </template>
@@ -87,33 +113,64 @@ function handleOwnerChange(event: Event) {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  align-items: flex-start;
 }
 
-.admin-owner-section {
+@media (min-width: 900px) {
+  .url-content {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 2rem;
+    align-items: start;
+  }
+}
+
+.url-info-column {
+  flex: 1;
+}
+
+.meta-column {
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  background-color: #f3f4f6;
-  border-radius: 0.375rem;
-  border: 1px solid #e5e7eb;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 150px;
 }
 
-.owner-label {
+@media (min-width: 480px) and (max-width: 899px) {
+  .meta-column {
+    flex-direction: row;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+}
+
+.owner-section,
+.metadata-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+@media (min-width: 480px) and (max-width: 899px) {
+  .owner-section,
+  .metadata-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+.owner-label,
+.metadata-label {
   font-size: 0.875rem;
-  font-weight: 500;
   color: #374151;
-  white-space: nowrap;
 }
 
 .owner-select {
-  padding: 0.25rem 0.5rem;
+  padding: 0.5rem;
   border: 1px solid #d1d5db;
-  border-radius: 0.25rem;
+  border-radius: 0.375rem;
   font-size: 0.875rem;
   background-color: white;
-  min-width: 120px;
 }
 
 .owner-select:focus {
@@ -121,37 +178,28 @@ function handleOwnerChange(event: Event) {
   border-color: #2563eb;
   box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
-</style>
 
-<style scoped>
-.url-item {
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  transition: box-shadow 150ms;
+.metadata-content {
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 
-.url-item:hover {
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+.created-by {
+  font-size: 0.75rem;
+  color: #9ca3af;
 }
 
-.url-content {
+.actions-column {
   display: flex;
-  gap: 1rem;
+  flex-direction: row;
+  gap: 0.5rem;
+  justify-content: flex-end;
 }
 
-@media (max-width: 767px) {
-  .url-content {
+@media (min-width: 900px) {
+  .actions-column {
     flex-direction: column;
-    gap: 0.75rem;
-  }
-}
-
-@media (min-width: 768px) {
-  .url-content {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
+    justify-content: center;
   }
 }
 </style>

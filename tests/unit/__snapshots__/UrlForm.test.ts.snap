@@ -5,13 +5,16 @@ exports[`UrlForm Component > should match snapshot in create mode 1`] = `
   <!-- Edit mode: Show current short URL -->
   <!--v-if-->
   <form data-v-6bb9e226="">
-    <!-- Title field (always first) -->
-    <div data-v-6bb9e226="" class="form-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div><!-- Short code field -->
-    <div data-v-6bb9e226="" class="form-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code (optional)</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="Automatisch generiert, wenn leer" pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
-      <p data-v-6bb9e226="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
-    </div><!-- URL field -->
+    <!-- URL field (first and most important) -->
     <div data-v-6bb9e226="" class="form-field"><label data-v-6bb9e226="" for="originalUrl">URL zum Verkürzen</label><input data-v-6bb9e226="" id="originalUrl" type="url" required="" placeholder="https://example.com" class="">
       <!--v-if-->
+    </div><!-- Optional fields in responsive layout -->
+    <div data-v-6bb9e226="" class="optional-fields">
+      <!-- Short code field (smaller) -->
+      <div data-v-6bb9e226="" class="form-field shortcode-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code (optional)</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="Auto-generiert" pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
+        <p data-v-6bb9e226="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
+      </div><!-- Title field (responsive beside shortCode on wide screens) -->
+      <div data-v-6bb9e226="" class="form-field title-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div>
     </div><!-- Buttons -->
     <div data-v-6bb9e226="" class="form-actions">
       <base-button-stub data-v-6bb9e226="" variant="primary" type="submit" disabled="true"></base-button-stub>
@@ -30,13 +33,16 @@ exports[`UrlForm Component > should match snapshot in edit mode 1`] = `
     </div>
   </div>
   <form data-v-6bb9e226="">
-    <!-- Title field (always first) -->
-    <div data-v-6bb9e226="" class="form-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div><!-- Short code field -->
-    <div data-v-6bb9e226="" class="form-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="z.B. mein-link" required="" pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
-      <p data-v-6bb9e226="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
-    </div><!-- URL field -->
+    <!-- URL field (first and most important) -->
     <div data-v-6bb9e226="" class="form-field"><label data-v-6bb9e226="" for="originalUrl">Ziel-URL</label><input data-v-6bb9e226="" id="originalUrl" type="url" required="" placeholder="https://example.com" class="">
       <!--v-if-->
+    </div><!-- Optional fields in responsive layout -->
+    <div data-v-6bb9e226="" class="optional-fields">
+      <!-- Short code field (smaller) -->
+      <div data-v-6bb9e226="" class="form-field shortcode-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="z.B. mein-link" required="" pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
+        <p data-v-6bb9e226="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
+      </div><!-- Title field (responsive beside shortCode on wide screens) -->
+      <div data-v-6bb9e226="" class="form-field title-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div>
     </div><!-- Buttons -->
     <div data-v-6bb9e226="" class="form-actions">
       <base-button-stub data-v-6bb9e226="" variant="primary" type="submit" disabled="false"></base-button-stub>
