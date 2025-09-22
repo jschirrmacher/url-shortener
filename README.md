@@ -7,7 +7,8 @@ Ein URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit Nuxt3 und
 - **URL-Verkürzung**: Automatische oder benutzerdefinierte Short Codes
 - **Analytics ohne UTM**: Intelligente Quellenidentifikation
 - **CSV-Speicher**: Platzsparende Datenhaltung ohne Datenbank
-- **Responsive UI**: Mobile-First Design mit Tailwind CSS
+- **Responsive UI**: Mobile-First Design
+- **Benutzerverwaltung**: Login-System mit Admin-Funktionen
 - **TypeScript**: Vollständige Typisierung für bessere Entwicklererfahrung
 
 ## Technologie-Stack
@@ -15,8 +16,9 @@ Ein URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit Nuxt3 und
 - **Framework**: Nuxt3 (Full-Stack TypeScript)
 - **Frontend**: Vue.js 3 mit Composition API
 - **Backend**: Nuxt3 Server API
-- **Styling**: Tailwind CSS via @nuxt/ui
+- **Styling**: CSS mit scoped styles
 - **Datenspeicher**: CSV-Dateien
+- **Testing**: Vitest mit happy-dom
 - **Node.js**: Version 22+
 - **Code-Formatierung**: Prettier
 
@@ -40,10 +42,13 @@ Ein URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit Nuxt3 und
 
 ```bash
 # Dependencies installieren
-npm install
+npm run setup # (kein `npm install`, das würde Install-Skripte nicht ausführen)
 
 # Entwicklungsserver starten
 npm run dev
+
+# Tests ausführen
+npm run test
 
 # Code formatieren (vor Commit!)
 npm run format
@@ -63,17 +68,28 @@ npm run build
 │   ├── urls.post.ts     # URL-Erstellung
 │   ├── urls.get.ts      # URL-Liste
 │   ├── [shortCode].get.ts # Weiterleitung
-│   └── urls/[shortCode]/stats.get.ts # Statistiken
+│   ├── urls/[shortCode]/stats.get.ts # Statistiken
+│   ├── auth/            # Authentifizierung
+│   └── admin/           # Admin-Funktionen
 ├── pages/               # Frontend Pages
-│   ├── index.vue        # Hauptseite
+│   ├── index.vue        # Dashboard
+│   ├── login.vue        # Login-Seite
+│   ├── profile.vue      # Benutzerprofil
+│   ├── admin.vue        # Admin-Panel
 │   └── stats/[shortCode].vue # Statistiken
+├── components/          # Vue-Komponenten
+│   ├── url/             # URL-bezogene Komponenten
+│   ├── auth/            # Auth-Komponenten
+│   └── base/            # Basis-Komponenten
 ├── utils/               # Utility Services
 │   ├── csvService.ts    # CSV-Datenverwaltung
-│   └── urlService.ts    # URL-Logik
+│   └── apiAuth.ts       # API-Authentifizierung
 ├── types/               # TypeScript Definitionen
+├── tests/               # Test-Dateien
 └── data/                # CSV-Dateien (automatisch erstellt)
     ├── urls.csv         # URL-Mappings
-    └── clicks.csv       # Klick-Tracking
+    ├── clicks.csv       # Klick-Tracking
+    └── users.csv        # Benutzerdaten
 ```
 
 ## CSV-Datenstruktur
@@ -81,8 +97,8 @@ npm run build
 ### urls.csv
 
 ```csv
-shortCode,originalUrl,createdAt,createdBy
-abc123,https://example.com,2024-01-01T12:00:00.000Z,anonymous
+shortCode,originalUrl,createdAt,createdBy,title
+abc123,https://example.com,2024-01-01T12:00:00.000Z,user1,Example Site
 ```
 
 ### clicks.csv
@@ -92,39 +108,43 @@ shortCode,timestamp,ip,userAgent,referrer,sourceType
 abc123,2024-01-01T12:00:00.000Z,192.168.1.1,Mozilla/5.0...,https://google.com,website
 ```
 
-## API-Endpunkte
+### users.csv
 
-### POST /api/urls
-
-Erstellt eine neue Kurz-URL
-
-```json
-{
-  "originalUrl": "https://example.com",
-  "customCode": "optional-code"
-}
+```csv
+username,passwordHash,isAdmin,active,createdAt
+admin,hash123,true,true,2024-01-01T12:00:00.000Z
 ```
 
-### GET /api/urls
+## API-Endpunkte
 
-Listet alle erstellten URLs mit Klick-Statistiken
+### Authentifizierung
+- `POST /api/auth/login` - Benutzer-Login
+- `POST /api/auth/logout` - Benutzer-Logout
+- `POST /api/auth/change-password` - Passwort ändern
 
-### GET /api/urls/[shortCode]/stats
+### URLs
+- `POST /api/urls` - Neue Kurz-URL erstellen
+- `GET /api/urls` - URL-Liste abrufen
+- `GET /api/urls/[shortCode]/stats` - URL-Statistiken
+- `GET /api/[shortCode]` - Weiterleitung zur Original-URL
 
-Detaillierte Statistiken für eine spezifische URL
+### Admin
+- `GET /api/admin/users` - Benutzerliste
+- `POST /api/admin/users/[username]/reset-password` - Passwort zurücksetzen
+- `POST /api/admin/users/[username]/deactivate` - Benutzer deaktivieren
 
-### GET /api/[shortCode]
+## Testing
 
-Weiterleitung zur Original-URL (mit Tracking)
+```bash
+# Tests ausführen
+npm run test
 
-## Entwicklung
+# Tests mit Coverage
+npm run test:coverage
 
-Das Projekt folgt den Entwicklungsrichtlinien in `.amazonq/rules/`:
-
-- TypeScript strict mode
-- Vue 3 Composition API
-- Nuxt3 Auto-Imports
-- CSV-basierte Datenhaltung
+# Tests im Watch-Modus
+npm run test:watch
+```
 
 ## Deployment
 
