@@ -19,6 +19,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "setup-admin": "tsx ./scripts/setupAdmin.js",
+    "generate-demo-data": "tsx ./scripts/generateDemoData.ts",
     "update": "npx -y npm-check-updates -du",
     "setup": "npm install && allow-scripts",
     "setup:ci": "npm ci && allow-scripts"
