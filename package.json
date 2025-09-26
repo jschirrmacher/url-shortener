@@ -31,7 +31,7 @@
     "qrcode": "1.5.4"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "3.3.6",
+    "@lavamoat/allow-scripts": "3.4.0",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint": "1.9.0",
     "@nuxt/eslint-config": "1.9.0",
@@ -47,7 +47,7 @@
     "eslint-plugin-vue": "10.5.0",
     "happy-dom": "18.0.1",
     "husky": "9.1.7",
-    "lint-staged": "16.2.0",
+    "lint-staged": "16.2.1",
     "nuxt": "^4.1.2",
     "prettier": "3.6.2",
     "typescript": "^5.9.2",
