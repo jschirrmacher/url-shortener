@@ -4,6 +4,20 @@
 import { describe, it, expect, vi, beforeEach } from "vitest"
 import { mount } from "@vue/test-utils"
 import StatsPage from "~/pages/stats/[shortCode].vue"
+import { mockStats, mockLoading, mockLoadingMore, mockError } from "../setup"
+
+// Mock the store
+vi.mock('~/stores/stats', () => ({
+  useStatsStore: () => ({
+    stats: mockStats,
+    loading: mockLoading,
+    loadingMore: mockLoadingMore,
+    error: mockError,
+    loadStats: vi.fn(),
+    loadPrevStats: vi.fn(),
+    loadNextStats: vi.fn()
+  })
+}))
 
 // Mock components
 const MockUrlItem = {
@@ -14,20 +28,17 @@ const MockUrlItem = {
 
 const MockStatsOverview = {
   name: 'StatsOverview',
-  template: '<div data-testid="stats-overview">Stats Overview</div>',
-  props: ['stats']
+  template: '<div data-testid="stats-overview">Stats Overview</div>'
 }
 
 const MockSourceBreakdown = {
   name: 'SourceBreakdown',
-  template: '<div data-testid="source-breakdown">Source Breakdown</div>',
-  props: ['stats']
+  template: '<div data-testid="source-breakdown">Source Breakdown</div>'
 }
 
 const MockRecentClicks = {
   name: 'RecentClicks',
-  template: '<div data-testid="recent-clicks">Recent Clicks</div>',
-  props: ['stats']
+  template: '<div data-testid="recent-clicks">Recent Clicks</div>'
 }
 
 const MockBaseButton = {
@@ -37,38 +48,18 @@ const MockBaseButton = {
 }
 
 // Mock composables
-vi.mock('#app', () => ({
-  useRoute: () => ({
-    params: { shortCode: 'abc123' }
-  }),
-  useRouter: () => ({
-    push: vi.fn()
-  }),
-  useRuntimeConfig: () => ({
-    public: {
-      baseUrl: 'http://localhost:3000'
-    }
-  })
-}))
-
-// Mock Nuxt composables
 vi.stubGlobal('useRoute', () => ({
   params: { shortCode: 'abc123' }
-}))
-
-vi.stubGlobal('useRouter', () => ({
-  push: vi.fn()
 }))
 
 vi.stubGlobal('useAuthPageStandard', () => ({
   user: { value: { username: 'testuser' } }
 }))
 
-// Mock $fetch
-vi.stubGlobal('$fetch', vi.fn())
+vi.stubGlobal('onMounted', vi.fn())
 
 describe("Stats Page Snapshot", () => {
-  const mockStats = {
+  const mockStatsData = {
     url: {
       shortCode: "abc123",
       originalUrl: "https://example.com",
@@ -78,14 +69,24 @@ describe("Stats Page Snapshot", () => {
     },
     totalClicks: 42,
     uniqueVisitors: 15,
+    dailyStats: [
+      { date: '2024-01-01', clicks: 10, uniqueVisitors: 8 },
+      { date: '2024-01-02', clicks: 15, uniqueVisitors: 12 }
+    ],
     sourceBreakdown: {
       direct: 20,
       referral: 22
     },
     topReferrers: [
-      { referrer: "google.com", clicks: 15 },
-      { referrer: "facebook.com", clicks: 7 }
-    ]
+      { referrer: "google.com", count: 15 },
+      { referrer: "facebook.com", count: 7 }
+    ],
+    hasMore: false,
+    _links: {
+      self: { href: '/api/urls/abc123/stats' },
+      first: { href: '/api/urls/abc123/stats' },
+      url: { href: '/abc123' }
+    }
   }
 
   beforeEach(() => {
@@ -93,6 +94,10 @@ describe("Stats Page Snapshot", () => {
   })
 
   it("should match snapshot with stats data", () => {
+    mockStats.value = mockStatsData
+    mockLoading.value = false
+    mockError.value = ""
+
     const wrapper = mount(StatsPage, {
       global: {
         components: {
@@ -101,18 +106,6 @@ describe("Stats Page Snapshot", () => {
           SourceBreakdown: MockSourceBreakdown,
           RecentClicks: MockRecentClicks,
           BaseButton: MockBaseButton
-        },
-        mocks: {
-          $router: {
-            push: vi.fn()
-          }
-        }
-      },
-      data() {
-        return {
-          loading: false,
-          error: "",
-          stats: mockStats
         }
       }
     })
@@ -121,6 +114,10 @@ describe("Stats Page Snapshot", () => {
   })
 
   it("should match snapshot in loading state", () => {
+    mockStats.value = null
+    mockLoading.value = true
+    mockError.value = ""
+
     const wrapper = mount(StatsPage, {
       global: {
         components: {
@@ -129,18 +126,6 @@ describe("Stats Page Snapshot", () => {
           SourceBreakdown: MockSourceBreakdown,
           RecentClicks: MockRecentClicks,
           BaseButton: MockBaseButton
-        },
-        mocks: {
-          $router: {
-            push: vi.fn()
-          }
-        }
-      },
-      data() {
-        return {
-          loading: true,
-          error: "",
-          stats: null
         }
       }
     })

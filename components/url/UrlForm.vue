@@ -125,8 +125,14 @@ function handleCancel() {
       <!-- URL field (first and most important) -->
       <div class="form-field">
         <label for="originalUrl">{{ isEditMode ? 'Ziel-URL' : 'URL zum Verkürzen' }}</label>
-        <input id="originalUrl" v-model="formData.originalUrl" type="url" required placeholder="https://example.com"
-          :class="{ 'error': validationErrors.originalUrl }">
+        <input
+          id="originalUrl"
+          v-model="formData.originalUrl"
+          type="url"
+          required
+          placeholder="https://example.com"
+          :class="{ 'error': validationErrors.originalUrl }"
+        >
         <p v-if="validationErrors.originalUrl" class="error-message">
           {{ validationErrors.originalUrl }}
         </p>
@@ -137,10 +143,16 @@ function handleCancel() {
         <!-- Short code field (smaller) -->
         <div class="form-field shortcode-field">
           <label for="shortCode">{{ isEditMode ? 'Kurz-Code' : 'Kurz-Code (optional)' }}</label>
-          <input id="shortCode" v-model="formData.shortCode" type="text"
-            :placeholder="isEditMode ? 'z.B. mein-link' : 'Auto-generiert'" :required="isEditMode"
-            pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
-            :class="{ 'error': validationErrors.shortCode }">
+          <input
+            id="shortCode"
+            v-model="formData.shortCode"
+            type="text"
+            :placeholder="isEditMode ? 'z.B. mein-link' : 'Auto-generiert'"
+            :required="isEditMode"
+            pattern="[a-zA-Z0-9_-]+"
+            title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+            :class="{ 'error': validationErrors.shortCode }"
+          >
           <p v-if="validationErrors.shortCode" class="error-message">
             {{ validationErrors.shortCode }}
           </p>

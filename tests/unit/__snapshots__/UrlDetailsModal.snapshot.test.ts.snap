@@ -3,12 +3,12 @@
 exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 1`] = `
 "<dialog data-v-dd4104c0="" class="modal-dialog">
   <div data-v-dd4104c0="" class="modal-content">
-    <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
+    <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
       <!--v-if-->
       <!--v-if-->
-      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com"></urlform>
+      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com"></url-form-stub>
     </div>
   </div>
 </dialog>"
@@ -17,12 +17,12 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 
 exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`] = `
 "<dialog data-v-dd4104c0="" class="modal-dialog">
   <div data-v-dd4104c0="" class="modal-content">
-    <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
+    <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
       <!--v-if-->
       <!--v-if-->
-      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com"></urlform>
+      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com"></url-form-stub>
     </div>
   </div>
 </dialog>"
@@ -31,12 +31,12 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`
 exports[`URL Components Snapshots > UrlDetailsModal > should render with different shortCode formats 1`] = `
 "<dialog data-v-dd4104c0="" class="modal-dialog">
   <div data-v-dd4104c0="" class="modal-content">
-    <modalheader data-v-dd4104c0="" title="URL Details: ABC-123_test"></modalheader>
+    <modal-header-stub data-v-dd4104c0="" title="URL Details: ABC-123_test"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="ABC-123_test" qr-code-url=""></qrcodesection>
+      <qr-code-section-stub data-v-dd4104c0="" short-code="ABC-123_test" qr-code-url=""></qr-code-section-stub>
       <!--v-if-->
       <!--v-if-->
-      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/ABC-123_test" short-code="ABC-123_test" original-url="https://example.com"></urlform>
+      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/ABC-123_test" short-code="ABC-123_test" original-url="https://example.com"></url-form-stub>
     </div>
   </div>
 </dialog>"
@@ -45,12 +45,12 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with differe
 exports[`URL Components Snapshots > UrlDetailsModal > should render with long URLs 1`] = `
 "<dialog data-v-dd4104c0="" class="modal-dialog">
   <div data-v-dd4104c0="" class="modal-content">
-    <modalheader data-v-dd4104c0="" title="URL Details: abc123"></modalheader>
+    <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qrcodesection>
+      <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
       <!--v-if-->
       <!--v-if-->
-      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/long123" short-code="abc123" original-url="https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments"></urlform>
+      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/long123" short-code="abc123" original-url="https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments"></url-form-stub>
     </div>
   </div>
 </dialog>"
@@ -59,12 +59,12 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with long UR
 exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal props 1`] = `
 "<dialog data-v-dd4104c0="" class="modal-dialog">
   <div data-v-dd4104c0="" class="modal-content">
-    <modalheader data-v-dd4104c0="" title="URL Details: min"></modalheader>
+    <modal-header-stub data-v-dd4104c0="" title="URL Details: min"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="min" qr-code-url=""></qrcodesection>
+      <qr-code-section-stub data-v-dd4104c0="" short-code="min" qr-code-url=""></qr-code-section-stub>
       <!--v-if-->
       <!--v-if-->
-      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/min" short-code="min" original-url="https://a.co"></urlform>
+      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/min" short-code="min" original-url="https://a.co"></url-form-stub>
     </div>
   </div>
 </dialog>"
@@ -73,12 +73,12 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal
 exports[`URL Components Snapshots > UrlDetailsModal > should render with special characters in URLs 1`] = `
 "<dialog data-v-dd4104c0="" class="modal-dialog">
   <div data-v-dd4104c0="" class="modal-content">
-    <modalheader data-v-dd4104c0="" title="URL Details: special123"></modalheader>
+    <modal-header-stub data-v-dd4104c0="" title="URL Details: special123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
-      <qrcodesection data-v-dd4104c0="" short-code="special123" qr-code-url=""></qrcodesection>
+      <qr-code-section-stub data-v-dd4104c0="" short-code="special123" qr-code-url=""></qr-code-section-stub>
       <!--v-if-->
       <!--v-if-->
-      <urlform data-v-dd4104c0="" short-url="http://localhost:3000/special123" short-code="special123" original-url="https://example.com/path?param=value&amp;other=test#section"></urlform>
+      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/special123" short-code="special123" original-url="https://example.com/path?param=value&amp;other=test#section"></url-form-stub>
     </div>
   </div>
 </dialog>"

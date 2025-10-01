@@ -90,8 +90,8 @@ function closeModal(): void {
         </p>
       </div>
       <div class="px-6 py-4">
-        <AlertMessage v-if="success" type="success" :message="success" class="mb-4" />
-        <AlertMessage v-if="error" type="error" :message="error" class="mb-4" />
+        <AlertMessage v-if="success" type="success" title="Erfolg" :message="success" class="mb-4" />
+        <AlertMessage v-if="error" type="error" title="Fehler" :message="error" class="mb-4" />
         <form class="space-y-4" @submit.prevent="resetPassword">
           <div>
             <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">Neues Passwort</label>

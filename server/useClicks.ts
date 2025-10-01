@@ -1,21 +1,5 @@
 import useCsvService from "~/server/csvService"
-import type { ClickRecord, SourceType } from "~/types/index"
-
-interface ClickData {
-  shortCode: string
-  ip: string
-  userAgent: string
-  referrer: string
-  sourceType: SourceType
-}
-
-interface DailyStats {
-  date: string
-  shortCode: string
-  clicks: number
-  uniqueIps: number
-  [key: string]: string | number | boolean
-}
+import type { ClickRecord, SourceType, UrlStats, ClickData, DailyStats, DailyStatsEntry } from "~/types/index"
 
 const CLICKS_FILE = "./data/clicks.csv"
 const STATS_FILE = "./data/stats.csv"
@@ -50,7 +34,47 @@ async function getClicks(shortCode?: string) {
   return allClicks
 }
 
-async function getClickStats(shortCode: string) {
+// Fill missing days up to today with 0 values
+function fillMissingDaysToToday(dailyStats: DailyStatsEntry[]): DailyStatsEntry[] {
+  if (dailyStats.length === 0) {
+    // If no data, create entry for today
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    return [{
+      date: today.toISOString().split('T')[0]!,
+      clicks: 0,
+      uniqueVisitors: 0
+    }]
+  }
+
+  const result: DailyStatsEntry[] = []
+
+  // Get newest date from data (first item since sorted newest first)
+  const newestDataDate = new Date(dailyStats[0]!.date)
+  
+  // Get today's date
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  // Fill from newest data date to today (if newer than data)
+  const currentDate = new Date(newestDataDate)
+  currentDate.setDate(currentDate.getDate() + 1) // Start from day after newest data
+
+  while (currentDate <= today) {
+    const dateStr = currentDate.toISOString().split('T')[0]!
+    result.push({
+      date: dateStr,
+      clicks: 0,
+      uniqueVisitors: 0
+    })
+    currentDate.setDate(currentDate.getDate() + 1)
+  }
+
+  // Combine existing data with filled days, sort newest first
+  return [...result, ...dailyStats].sort((a, b) => b.date.localeCompare(a.date))
+}
+
+async function getClickStats(shortCode: string, options?: { offset?: number; limit?: number }): Promise<Omit<UrlStats, 'url'>> {
   const clicks = await getClicks(shortCode)
 
   if (clicks.length === 0) {
@@ -60,34 +84,51 @@ async function getClickStats(shortCode: string) {
       dailyStats: [],
       topReferrers: [],
       sourceBreakdown: {},
+      hasMore: false,
+      _links: {
+        self: { href: '' }, // Will be set by API handler
+        first: { href: '' },
+        url: { href: '' }
+      }
     }
   }
 
-  // Calculate unique visitors
+  // Calculate unique visitors (from all clicks)
   const uniqueIps = new Set(clicks.map((click) => click.ip))
 
   // Group by date for daily stats
-  const dailyClicksMap = new Map<string, { clicks: number; uniqueIps: Set<string> }>()
-
-  clicks.forEach((click) => {
+  const dailyClicksMap = clicks.reduce((map, click) => {
     const date = click.timestamp.split("T")[0]
-    if (!dailyClicksMap.has(date)) {
-      dailyClicksMap.set(date, { clicks: 0, uniqueIps: new Set() })
+    if (!date) return map
+    
+    if (!map.has(date)) {
+      map.set(date, { clicks: 0, uniqueIps: new Set() })
     }
-    const dayData = dailyClicksMap.get(date)!
+    const dayData = map.get(date)!
     dayData.clicks++
     dayData.uniqueIps.add(click.ip)
-  })
+    return map
+  }, new Map<string, { clicks: number; uniqueIps: Set<string> }>())
 
-  const dailyStats = Array.from(dailyClicksMap.entries())
+  // Sort daily stats by date (newest first)
+  const allDailyStats = Array.from(dailyClicksMap.entries())
     .map(([date, data]) => ({
       date,
       clicks: data.clicks,
       uniqueVisitors: data.uniqueIps.size,
     }))
-    .sort((a, b) => a.date.localeCompare(b.date))
+    .sort((a, b) => b.date.localeCompare(a.date))
 
-  // Top referrers
+  // Fill missing days up to today
+  const filledDailyStats = fillMissingDaysToToday(allDailyStats)
+
+  // Apply pagination to daily stats
+  const offset = options?.offset || 0
+  const limit = options?.limit || 30
+  const paginatedDailyStats = filledDailyStats.slice(offset, offset + limit)
+  const hasMore = offset + limit < filledDailyStats.length
+
+  // Top referrers (from all clicks)
   const referrerMap = new Map<string, number>()
   clicks.forEach((click) => {
     const referrer = click.referrer || "Direct"
@@ -99,7 +140,7 @@ async function getClickStats(shortCode: string) {
     .sort((a, b) => b.count - a.count)
     .slice(0, 10)
 
-  // Source breakdown
+  // Source breakdown (from all clicks)
   const sourceMap = new Map<string, number>()
   clicks.forEach((click) => {
     sourceMap.set(click.sourceType, (sourceMap.get(click.sourceType) || 0) + 1)
@@ -110,14 +151,22 @@ async function getClickStats(shortCode: string) {
   return {
     totalClicks: clicks.length,
     uniqueVisitors: uniqueIps.size,
-    dailyStats,
+    dailyStats: paginatedDailyStats,
     topReferrers,
     sourceBreakdown,
+    hasMore,
+    _links: {
+      self: { href: '' }, // Will be set by API handler
+      first: { href: '' },
+      url: { href: '' }
+    }
   }
 }
 
 async function updateDailyStats(shortCode: string, _ip: string) {
   const today = new Date().toISOString().split("T")[0]
+  if (!today) return
+  
   const { readCsv, writeCsv, appendToCsv } = useCsvService()
   const dailyStats = (await readCsv(STATS_FILE)) as unknown as DailyStats[]
 

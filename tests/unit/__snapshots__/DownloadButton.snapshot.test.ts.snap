@@ -1,25 +1,9 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
-exports[`DownloadButton > renders PNG button correctly 1`] = `
-"<basebutton variant="secondary" size="sm" disabled="false" title="Als PNG herunterladen"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-  </svg> PNG</basebutton>"
-`;
+exports[`DownloadButton > renders PNG button correctly 1`] = `"<base-button-stub variant="secondary" size="sm" disabled="false" title="Als PNG herunterladen"></base-button-stub>"`;
 
-exports[`DownloadButton > renders SVG button correctly 1`] = `
-"<basebutton variant="secondary" size="sm" disabled="false" title="Als SVG herunterladen"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-  </svg> SVG</basebutton>"
-`;
+exports[`DownloadButton > renders SVG button correctly 1`] = `"<base-button-stub variant="secondary" size="sm" disabled="false" title="Als SVG herunterladen"></base-button-stub>"`;
 
-exports[`DownloadButton > renders disabled PNG button correctly 1`] = `
-"<basebutton variant="secondary" size="sm" disabled="true" title="Als PNG herunterladen"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-  </svg> PNG</basebutton>"
-`;
+exports[`DownloadButton > renders disabled PNG button correctly 1`] = `"<base-button-stub variant="secondary" size="sm" disabled="true" title="Als PNG herunterladen"></base-button-stub>"`;
 
-exports[`DownloadButton > renders disabled SVG button correctly 1`] = `
-"<basebutton variant="secondary" size="sm" disabled="true" title="Als SVG herunterladen"><svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-  </svg> SVG</basebutton>"
-`;
+exports[`DownloadButton > renders disabled SVG button correctly 1`] = `"<base-button-stub variant="secondary" size="sm" disabled="true" title="Als SVG herunterladen"></base-button-stub>"`;

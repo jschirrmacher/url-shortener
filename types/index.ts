@@ -26,6 +26,24 @@ export interface ClickRecord {
   [key: string]: string // Index-Signatur für CSV-Kompatibilität
 }
 
+export interface ClickData {
+  shortCode: string
+  ip: string
+  userAgent: string
+  referrer: string
+  sourceType: SourceType
+}
+
+export interface DailyStats {
+  date: string
+  shortCode: string
+  clicks: number
+  uniqueIps: number
+  [key: string]: string | number | boolean
+}
+
+export type DailyStatsEntry = { date: string; clicks: number; uniqueVisitors: number }
+
 export type SourceType = "website" | "direct" | "qr-code"
 
 export interface CreateUrlResult {
@@ -49,6 +67,14 @@ export interface UrlStats {
     count: number
   }>
   sourceBreakdown: Record<string, number>
+  hasMore: boolean
+  _links: {
+    self: { href: string }
+    next?: { href: string }
+    prev?: { href: string }
+    first: { href: string }
+    url: { href: string }
+  }
 }
 
 export interface UpdateUrlRequest {

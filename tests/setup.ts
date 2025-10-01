@@ -1,53 +1,33 @@
-// Test setup file for Vitest
-import { vi, afterEach } from "vitest"
+import { vi } from 'vitest'
+import { ref } from 'vue'
+import type { UrlStats } from '~/types/index'
+import { config } from '@vue/test-utils'
 
-// Global cleanup after each test
-afterEach(async () => {
-  // Only cleanup if we're in a test environment with test data
-  if (process.env.NODE_ENV === "test" || process.env.DATA_DIR?.includes("test-data")) {
-    try {
-      // Simple cleanup without actual API call in unit tests
-      console.log("Test cleanup completed")
-    } catch {
-      // Ignore cleanup errors
-    }
-  }
-})
-
-// Mock console methods to reduce noise in tests
-global.console = {
-  ...console,
-  // Keep error and warn for debugging
-  error: vi.fn(),
-  warn: vi.fn(),
-  // Mock info and log
-  info: vi.fn(),
-  log: vi.fn(),
+// Global component stubs to avoid warnings
+config.global.stubs = {
+  BaseButton: true,
+  ModalHeader: true,
+  QrCodeSection: true,
+  AlertMessage: true,
+  UrlForm: true,
+  StackedBar: true
 }
 
-// Store original process.cwd before mocking
-const originalCwd = process.cwd
+// Global mock for useStatsStore
+const mockStats = ref<UrlStats | null>(null)
+const mockLoading = ref(false)
+const mockLoadingMore = ref(false)
+const mockError = ref('')
 
-// Mock process for development checks and Node.js functions
-global.process = {
-  ...process,
-  dev: false,
-  env: { NODE_ENV: "test" },
-  cwd: originalCwd,
-}
+vi.stubGlobal('useStatsStore', () => ({
+  stats: mockStats,
+  loading: mockLoading,
+  loadingMore: mockLoadingMore,
+  error: mockError,
+  loadStats: vi.fn(),
+  loadPrevStats: vi.fn(),
+  loadNextStats: vi.fn()
+}))
 
-// Only mock Nuxt globals in DOM environment (for snapshot tests)
-if (typeof window !== "undefined") {
-  // Mock Nuxt auto-imports
-  ;(global as any).useRuntimeConfig = vi.fn(() => ({
-    public: { baseUrl: "http://localhost:3000" },
-  }))
-
-  // Mock navigator.clipboard
-  Object.defineProperty(navigator, "clipboard", {
-    value: {
-      writeText: vi.fn().mockResolvedValue(undefined),
-    },
-    writable: true,
-  })
-}
+// Export for test access
+export { mockStats, mockLoading, mockLoadingMore, mockError }

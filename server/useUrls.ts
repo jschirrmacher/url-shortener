@@ -116,14 +116,14 @@ async function recordUrlAccess(shortCode: string, ip: string, userAgent: string,
   })
 }
 
-async function getUrlStats(shortCode: string) {
+async function getUrlStats(shortCode: string, options?: { offset?: number; limit?: number }) {
   const url = await getUrlByShortCode(shortCode)
   if (!url) {
     return null
   }
 
   const { getClickStats } = useClicks()
-  const clickStats = await getClickStats(shortCode)
+  const clickStats = await getClickStats(shortCode, options)
 
   return {
     url,
@@ -175,10 +175,15 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string,
 
   await writeCsv(URLS_FILE, urls as UrlRecord[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
 
+  const updatedUrl = urls[urlIndex]
+  if (!updatedUrl) {
+    throw new Error("URL konnte nicht aktualisiert werden")
+  }
+
   return {
     success: true,
     message: "URL erfolgreich aktualisiert",
-    url: urls[urlIndex],
+    url: updatedUrl,
   }
 }
 

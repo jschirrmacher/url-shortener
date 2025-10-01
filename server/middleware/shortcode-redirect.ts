@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const shortCodeMatch = path.match(/^\/([a-z0-9]{6})$/i)
-  if (!shortCodeMatch) return
+  if (!shortCodeMatch || !shortCodeMatch[1]) return
 
   const shortCode = shortCodeMatch[1]
 
