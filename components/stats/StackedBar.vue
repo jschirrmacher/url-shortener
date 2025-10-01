@@ -21,20 +21,22 @@ defineProps<Props>()
       :style="{ height: clicks === 0 ? '2px' : `${percentage}%` }"
       :title="`${day}: ${clicks} Klicks gesamt, ${uniqueVisitors} unique Besucher`"
     >
-      <template
-        v-for="source in sources"
-        :key="source.id"
-      >
-        <div
-          class="segment"
-          :style="{
-            height: `${(source.count / clicks) * 100}%`,
-            backgroundColor: source.color
-          }"
-          :title="`${source.label}: ${source.count}`"
-        />
+      <template v-if="clicks > 0">
+        <template
+          v-for="source in sources"
+          :key="source.id"
+        >
+          <div
+            class="segment"
+            :style="{
+              height: `${(source.count / clicks) * 100}%`,
+              backgroundColor: source.color
+            }"
+            :title="`${source.label}: ${source.count}`"
+          />
+        </template>
+        <span class="value">{{ clicks }}</span>
       </template>
-      <span v-if="clicks > 0" class="value">{{ clicks }}</span>
     </div>
     <div class="label-space">
       <div class="label">{{ day }}</div>
@@ -49,24 +51,24 @@ defineProps<Props>()
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
-  flex: 1;
   height: 100%;
-  min-width: 0;
+  width: var(--bar-width, calc((100% - (30 - 1) * 2px) / 30));
+  min-width: var(--bar-width, calc((100% - (30 - 1) * 2px) / 30));
+  max-width: var(--bar-width, calc((100% - (30 - 1) * 2px) / 30));
+  flex-shrink: 0;
   position: relative;
   overflow: visible;
 }
 
 .stack {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   width: 100%;
-  max-width: 20px;
   position: relative;
   transition: all 0.3s ease;
   cursor: pointer;
   border-radius: 0.25rem 0.25rem 0 0;
   overflow: visible;
-  margin-bottom: 0;
 }
 
 .stack:hover {

@@ -1,12 +1,5 @@
 <script setup lang="ts">
-import type { UrlStats } from "~/types/index"
-
-// Props
-interface Props {
-  stats: UrlStats
-}
-
-const props = defineProps<Props>()
+const statsStore = useStatsStore()
 
 // Helper Methods
 const getSourceIcon = (source: string): string => {
@@ -44,17 +37,17 @@ const getTotalClicks = (data: Record<string, number>): number => {
 }
 
 const sortedSources = computed(() => {
-  return Object.entries(props.stats.sourceBreakdown)
+  return Object.entries(statsStore.stats?.sourceBreakdown || {})
     .sort(([, a], [, b]) => b - a)
     .slice(0, 10) // Top 10
 })
 
 const sortedReferrers = computed(() => {
-  return props.stats.topReferrers.slice(0, 10) // Top 10
+  return (statsStore.stats?.topReferrers ?? []).slice(0, 10) // Top 10
 })
 
-const totalSourceClicks = computed(() => getTotalClicks(props.stats.sourceBreakdown))
-const totalReferrerClicks = computed(() => props.stats.totalClicks)
+const totalSourceClicks = computed(() => getTotalClicks(statsStore.stats?.sourceBreakdown || {}))
+const totalReferrerClicks = computed(() => statsStore.stats?.totalClicks || 0)
 </script>
 
 <template>

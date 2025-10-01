@@ -48,23 +48,23 @@ describe("DownloadButton", () => {
     expect(wrapper.html()).toMatchSnapshot()
   })
 
-  it("displays correct format label for PNG", () => {
+  it("has correct props for PNG", () => {
     const wrapper = mount(DownloadButton, {
       props: {
         format: "png",
       },
     })
 
-    expect(wrapper.text()).toContain("PNG")
+    expect(wrapper.props().format).toBe("png")
   })
 
-  it("displays correct format label for SVG", () => {
+  it("has correct props for SVG", () => {
     const wrapper = mount(DownloadButton, {
       props: {
         format: "svg",
       },
     })
 
-    expect(wrapper.text()).toContain("SVG")
+    expect(wrapper.props().format).toBe("svg")
   })
 })

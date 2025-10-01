@@ -44,12 +44,13 @@ export default defineEventHandler(async (event) => {
     return { success: true, message: "Owner changed successfully" }
   } catch (error) {
     console.error("Owner change error:", error)
-    if (error.statusCode) {
+    if (error && typeof error === 'object' && 'statusCode' in error) {
       throw error
     }
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     throw createError({
       statusCode: 500,
-      statusMessage: "Failed to change owner: " + error.message
+      statusMessage: "Failed to change owner: " + errorMessage
     })
   }
 })

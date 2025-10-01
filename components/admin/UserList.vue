@@ -106,7 +106,7 @@ function handlePasswordResetSuccess(): void {
       <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto" />
       <p class="text-gray-600 mt-2">Benutzer werden geladen...</p>
     </div>
-    <AlertMessage v-else-if="error" type="error" :message="error" class="m-6" />
+    <AlertMessage v-else-if="error" type="error" title="Fehler" :message="error" class="m-6" />
     <div v-else-if="users.length > 0" class="overflow-x-auto">
       <table class="min-w-full divide-y divide-gray-200">
         <thead class="bg-gray-50">

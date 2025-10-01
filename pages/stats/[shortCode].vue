@@ -1,36 +1,14 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
-import type { UrlStats } from "~/types/index"
-
 const route = useRoute()
 const shortCode = route.params.shortCode as string
 
 const { user: _user } = useAuthPageStandard(`Statistiken - ${shortCode}`)
 
-const loading = ref<boolean>(true)
-const error = ref<string>("")
-const stats = ref<UrlStats | null>(null)
+const statsStore = useStatsStore()
 
-onMounted(async (): Promise<void> => {
-  // Load stats after auth
-  await loadStats()
+onMounted(async () => {
+  await statsStore.loadStats(shortCode)
 })
-
-// Load Stats
-const loadStats = async (): Promise<void> => {
-  try {
-    loading.value = true
-    error.value = ""
-
-    const response = await $fetch<UrlStats>(`/api/urls/${shortCode}/stats`)
-    stats.value = response
-  } catch (err: unknown) {
-    const apiError = err as { data?: { message?: string }; message?: string }
-    error.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der Statistiken"
-  } finally {
-    loading.value = false
-  }
-}
 </script>
 
 <template>
@@ -42,47 +20,43 @@ const loadStats = async (): Promise<void> => {
           <h1 class="text-3xl font-bold text-gray-800">Statistiken</h1>
           <p class="text-gray-600 mt-2">Detaillierte Analyse für {{ shortCode }}</p>
         </div>
-        <BaseButton variant="secondary" @click="$router.push('/')">
-          <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-          </svg>
-          Zurück
-        </BaseButton>
       </div>
     </div>
-    <!-- Loading State -->
-    <div v-if="loading" class="text-center py-12">
+
+    <div v-if="statsStore.loading" class="text-center py-12">
       <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600" />
       <p class="mt-4 text-gray-600">Lade Statistiken...</p>
     </div>
-    <!-- Error State -->
-    <div v-else-if="error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-      ❌ {{ error }}
-      <BaseButton variant="danger" size="sm" @click="loadStats">Erneut versuchen</BaseButton>
+
+    <div v-else-if="statsStore.error" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+      ❌ {{ statsStore.error }}
+      <BaseButton
+        variant="danger"
+        size="sm"
+        @click="statsStore.loadStats(shortCode)"
+      >
+        Erneut versuchen
+      </BaseButton>
     </div>
-    <!-- Stats Content -->
-    <div v-else-if="stats" class="space-y-6">
-      <!-- URL Info -->
-      <UrlItem 
+
+    <div v-else-if="statsStore.stats" class="space-y-6">
+      <UrlItem
         :url="{
           shortCode: shortCode,
-          originalUrl: stats.url?.originalUrl || '',
-          title: stats.url?.title || 'Unbenannte URL',
-          createdAt: stats.url?.createdAt || new Date().toISOString(),
-          createdBy: stats.url?.createdBy || '',
-          totalClicks: stats.totalClicks
+          originalUrl: statsStore.stats.url?.originalUrl || '',
+          title: statsStore.stats.url?.title || 'Unbenannte URL',
+          createdAt: statsStore.stats.url?.createdAt || new Date().toISOString(),
+          createdBy: statsStore.stats.url?.createdBy || '',
+          totalClicks: statsStore.stats.totalClicks,
         }"
         :show-actions="false"
       />
-      
-      <!-- Stats Overview -->
-      <StatsOverview :stats="stats" />
-      <!-- Source Breakdown -->
-      <SourceBreakdown :stats="stats" />
-      <!-- Recent Clicks -->
-      <RecentClicks :stats="stats" />
+
+      <StatsOverview />
+      <SourceBreakdown />
+      <RecentClicks />
     </div>
-    <!-- No Data State -->
+
     <div v-else class="text-center py-12">
       <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path

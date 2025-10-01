@@ -6,7 +6,7 @@ export default defineNuxtConfig({
 
   // CSS Framework - natives CSS
   css: ["~/assets/css/main.css"],
-  modules: ["@nuxt/eslint"],
+  modules: ["@nuxt/eslint", "@pinia/nuxt"],
 
   // Server-side Rendering
   ssr: true,
