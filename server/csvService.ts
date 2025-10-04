@@ -5,6 +5,17 @@ interface CsvRecord {
   [key: string]: string | number | boolean
 }
 
+function parseCsvLine(line: string) {
+  return [...line.matchAll(/(?<=^|,)("(?:[^"]|"")*"|[^,]*)/g)].map(([field]) =>
+    field.match(/^".*"$/) ? field.slice(1, -1).replace(/""/g, '"').replace(/\\n/g, "\n") : field.trim(),
+  )
+}
+
+function formatValue(value: string | number | boolean | undefined | null) {
+  const str = String(value ?? "")
+  return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str
+}
+
 export default function useCsvService(customDataDir?: string) {
   const dataDir = customDataDir ?? "./data"
   let initialized = false
@@ -15,7 +26,7 @@ export default function useCsvService(customDataDir?: string) {
     try {
       await fs.mkdir(dataDir, { recursive: true })
       initialized = true
-    } catch (error: unknown) {
+    } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
       throw new Error(`Failed to initialize CSV service: ${errorMessage}`)
     }
@@ -23,12 +34,10 @@ export default function useCsvService(customDataDir?: string) {
 
   const ensureFileExists = async (filePath: string, headers: string[]) => {
     await ensureInitialized()
-
     try {
       await fs.access(filePath)
     } catch {
-      const headerRow = headers.join(",") + "\n"
-      await fs.writeFile(filePath, headerRow, "utf8")
+      await fs.writeFile(filePath, headers.join(",") + "\n", "utf8")
     }
   }
 
@@ -41,17 +50,12 @@ export default function useCsvService(customDataDir?: string) {
 
       if (lines.length <= 1) return []
 
-      const headers = lines[0]!.split(",")
+      const headers = parseCsvLine(lines[0]!)
       return lines.slice(1).map((line) => {
-        const values = line.split(",")
-        const record: CsvRecord = {}
-        headers.forEach((header, index) => {
-          record[header] = values[index] || ""
-        })
-        return record as T
+        const values = parseCsvLine(line)
+        return Object.fromEntries(headers.map((header, index) => [header, values[index] ?? ""])) as T
       })
     } catch {
-      // Return empty array on read error - graceful degradation
       return []
     }
   }
@@ -59,41 +63,30 @@ export default function useCsvService(customDataDir?: string) {
   const writeCsv = async (filePath: string, data: CsvRecord[], headers: string[]) => {
     await ensureInitialized()
 
-    const headerRow = headers.join(",")
-    const dataRows = data.map((record) => headers.map((header) => record[header] || "").join(","))
-
-    const content = [headerRow, ...dataRows].join("\n") + "\n"
+    const content =
+      [
+        headers.map(formatValue).join(","),
+        ...data.map((record) => headers.map((header) => formatValue(record[header])).join(",")),
+      ].join("\n") + "\n"
 
     await fs.writeFile(filePath, content, "utf8")
   }
 
   const appendToCsv = async (filePath: string, record: CsvRecord, headers: string[]) => {
     await ensureInitialized()
-
-    // Ensure file exists with headers
     await ensureFileExists(filePath, headers)
 
-    const values = headers.map((header) => {
-      const value = record[header]
-      if (typeof value === "string" && (value.includes(",") || value.includes('"') || value.includes("\n"))) {
-        return `"${value.replace(/"/g, '""')}"`
-      }
-      return String(value || "")
-    })
-
-    const line = values.join(",") + "\n"
+    const line = headers.map((header) => formatValue(record[header])).join(",") + "\n"
 
     try {
       await fs.appendFile(filePath, line, "utf8")
-    } catch (error: unknown) {
-      // Re-throw with more context for better error handling upstream
+    } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Unknown error"
       throw new Error(`Failed to append to CSV file ${filePath}: ${errorMessage}`)
     }
   }
 
   const getDataDir = () => dataDir
-
   const getFilePath = (filename: string) => path.join(dataDir, filename)
 
   return {
@@ -104,6 +97,7 @@ export default function useCsvService(customDataDir?: string) {
     appendToCsv,
     getDataDir,
     getFilePath,
+    parseCsvLine,
   }
 }
 
