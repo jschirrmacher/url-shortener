@@ -1,6 +1,7 @@
 import useCsvService from "~/server/csvService"
 import useClickDataService from "~/server/clickDataService"
 import type { SourceType, ClickData, DailyStats, DailyStatsEntry } from "~/types/index"
+import { formatLocalDate } from "~/utils/dateUtils"
 
 const STATS_FILE = "./data/stats.csv"
 
@@ -11,46 +12,41 @@ async function recordClickWithStats(clickData: ClickData) {
   await updateDailyStats(clickData.shortCode, clickData.ip)
 }
 
-// Fill missing days up to today with 0 values
+// Fill all missing days from first data point to today
 function fillMissingDaysToToday(dailyStats: DailyStatsEntry[]): DailyStatsEntry[] {
+  const today = new Date()
+  const todayStr = formatLocalDate(today)
+  
   if (dailyStats.length === 0) {
-    // If no data, create entry for today
-    const today = new Date()
-    today.setHours(0, 0, 0, 0)
-    return [
-      {
-        date: today.toISOString().split("T")[0]!,
-        clicks: 0,
-        uniqueVisitors: 0,
-      },
-    ]
+    return [{
+      date: todayStr,
+      clicks: 0,
+      uniqueVisitors: 0,
+    }]
   }
 
   const result: DailyStatsEntry[] = []
+  const dataMap = new Map(dailyStats.map((stat) => [stat.date, stat]))
 
-  // Get newest date from data (first item since sorted newest first)
-  const newestDataDate = new Date(dailyStats[0]!.date)
-
-  // Get today's date
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-
-  // Fill from newest data date to today (if newer than data)
-  const currentDate = new Date(newestDataDate)
-  currentDate.setDate(currentDate.getDate() + 1) // Start from day after newest data
-
-  while (currentDate <= today) {
-    const dateStr = currentDate.toISOString().split("T")[0]!
-    result.push({
-      date: dateStr,
-      clicks: 0,
-      uniqueVisitors: 0,
-    })
+  // Get date range from oldest data to today
+  const oldestDate = new Date(dailyStats[dailyStats.length - 1]!.date + 'T00:00:00')
+  const todayDate = new Date(todayStr + 'T00:00:00')
+  
+  const currentDate = new Date(oldestDate)
+  while (currentDate <= todayDate) {
+    const dateStr = formatLocalDate(currentDate)
+    
+    result.push(
+      dataMap.get(dateStr) || {
+        date: dateStr,
+        clicks: 0,
+        uniqueVisitors: 0,
+      },
+    )
     currentDate.setDate(currentDate.getDate() + 1)
   }
 
-  // Combine existing data with filled days, sort newest first
-  return [...result, ...dailyStats].sort((a, b) => b.date.localeCompare(a.date))
+  return result.reverse() // newest first
 }
 
 type PaginationOptions = {
@@ -60,22 +56,6 @@ type PaginationOptions = {
 
 async function getClickStats(shortCode: string, options?: PaginationOptions) {
   const clicks = await getClicks(shortCode)
-
-  if (clicks.length === 0) {
-    return {
-      totalClicks: 0,
-      uniqueVisitors: 0,
-      dailyStats: [],
-      topReferrers: [],
-      sourceBreakdown: {},
-      hasMore: false,
-      _links: {
-        self: { href: "" }, // Will be set by API handler
-        first: { href: "" },
-        url: { href: "" },
-      },
-    }
-  }
 
   // Calculate unique visitors (from all clicks)
   const uniqueIps = new Set(clicks.map((click) => click.ip))
