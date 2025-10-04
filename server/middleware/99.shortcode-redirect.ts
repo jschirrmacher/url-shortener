@@ -12,7 +12,8 @@ export default defineEventHandler(async (event) => {
     return
   }
 
-  const shortCodeMatch = path.match(/^\/([a-z0-9]{6})$/i)
+  // Only handle single-level paths that could be short codes
+  const shortCodeMatch = path.match(/^\/(\w+)$/)
   if (!shortCodeMatch || !shortCodeMatch[1]) return
 
   const shortCode = shortCodeMatch[1]

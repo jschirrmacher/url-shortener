@@ -104,10 +104,10 @@ async function getAllUrls() {
 }
 
 async function recordUrlAccess(shortCode: string, ip: string, userAgent: string, referrer: string) {
-  const { determineSourceType, recordClick } = useClicks()
+  const { determineSourceType, recordClickWithStats } = useClicks()
   const sourceType = determineSourceType(referrer, userAgent)
 
-  await recordClick({
+  await recordClickWithStats({
     shortCode,
     ip,
     userAgent,
