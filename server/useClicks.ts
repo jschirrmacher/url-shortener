@@ -43,12 +43,7 @@ function fillMissingDaysToToday(dailyStats: DailyStatsEntry[]): DailyStatsEntry[
   return result.reverse() // newest first
 }
 
-type PaginationOptions = {
-  offset?: number
-  limit?: number
-}
-
-async function getClickStats(shortCode: string, options?: PaginationOptions) {
+async function getClickStats(shortCode: string) {
   const clicks = await getClicks(shortCode)
 
   // Calculate unique visitors (from all clicks)
@@ -77,15 +72,6 @@ async function getClickStats(shortCode: string, options?: PaginationOptions) {
     }))
     .sort((a, b) => b.date.localeCompare(a.date))
 
-  // Fill missing days up to today
-  const filledDailyStats = fillMissingDaysToToday(allDailyStats)
-
-  // Apply pagination to daily stats
-  const offset = options?.offset || 0
-  const limit = options?.limit || 30
-  const paginatedDailyStats = filledDailyStats.slice(offset, offset + limit)
-  const hasMore = offset + limit < filledDailyStats.length
-
   // Top referrers (from all clicks)
   const referrerMap = new Map<string, number>()
   clicks.forEach((click) => {
@@ -109,15 +95,9 @@ async function getClickStats(shortCode: string, options?: PaginationOptions) {
   return {
     totalClicks: clicks.length,
     uniqueVisitors: uniqueIps.size,
-    dailyStats: paginatedDailyStats,
+    dailyStats: fillMissingDaysToToday(allDailyStats),
     topReferrers,
     sourceBreakdown,
-    hasMore,
-    _links: {
-      self: { href: "" }, // Will be set by API handler
-      first: { href: "" },
-      url: { href: "" },
-    },
   }
 }
 

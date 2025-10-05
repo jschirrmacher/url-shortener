@@ -67,8 +67,7 @@ export interface UrlStats {
     count: number
   }>
   sourceBreakdown: Record<string, number>
-  hasMore: boolean
-  _links: {
+  _links?: {
     self: { href: string }
     next?: { href: string }
     prev?: { href: string }

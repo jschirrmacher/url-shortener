@@ -110,11 +110,17 @@ async function getUrlStats(shortCode: string, options?: { offset?: number; limit
   }
 
   const { getClickStats } = useClicks()
-  const clickStats = await getClickStats(shortCode, options)
+  const clickStats = await getClickStats(shortCode)
+
+  // Apply pagination to daily stats
+  const offset = options?.offset || 0
+  const limit = options?.limit || 30
+  const paginatedDailyStats = clickStats.dailyStats.slice(offset, offset + limit)
 
   return {
     url,
     ...clickStats,
+    dailyStats: paginatedDailyStats,
   }
 }
 
