@@ -40,7 +40,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Add next link if there are more pages
-    if (stats.hasMore) {
+    if (stats.dailyStats.length === limit) {
       links.next = { href: `${baseUrl}?page=${page + 1}&limit=${limit}` }
     }
 
@@ -53,7 +53,7 @@ export default defineEventHandler(async (event) => {
       ...stats,
       _links: links
     }
-  } catch (error: unknown) {
+  } catch (error) {
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error
     }
