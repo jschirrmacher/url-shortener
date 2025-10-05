@@ -3,18 +3,6 @@ import type { ClickRecord, ClickData } from "~/types/index"
 import { createReadStream } from "fs"
 import { createInterface } from "readline"
 
-// Determine source type based on referrer and user agent
-function determineSourceType(referrer: string, userAgent: string): string {
-  if (!referrer) {
-    // Kein Referrer - prüfe User-Agent für Mobile/Desktop
-    const isMobile = /Mobile|Android|iPhone|iPad/i.test(userAgent)
-    return isMobile ? "qr-code" : "direct"
-  }
-
-  // Hat Referrer - ist Website-Traffic
-  return "website"
-}
-
 type ClickCsvRecord = {
   shortCode: string
   timestamp: string
@@ -129,15 +117,13 @@ async function recordClick(clickData: ClickData) {
   await loadClicks()
   await loadUserAgents()
 
-  const sourceType = determineSourceType(clickData.referrer, clickData.userAgent)
-
   const clickRecord = {
     shortCode: clickData.shortCode,
     timestamp: new Date().toISOString(),
     ip: clickData.ip,
     userAgentId: Number(userAgentMap[clickData.userAgent] ?? (await saveNewUserAgent(clickData.userAgent))),
     referrer: clickData.referrer,
-    sourceType,
+    sourceType: clickData.sourceType
   }
 
   await appendToCsv(CLICKS_FILE, clickRecord, CLICKS_FIELDS)
