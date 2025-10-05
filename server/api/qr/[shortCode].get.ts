@@ -49,7 +49,7 @@ export default defineEventHandler(async (event) => {
       baseUrl = `${protocol}://${host}`
     }
 
-    const fullUrl = `${baseUrl}/${shortCode}`
+    const fullUrl = `${baseUrl}/${shortCode}?qr`
 
     // Generate QR code
     let qrCodeData: string | Buffer

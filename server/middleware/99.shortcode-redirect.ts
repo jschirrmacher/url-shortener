@@ -26,12 +26,13 @@ export default defineEventHandler(async (event) => {
     const urlData = await getUrlByShortCode(shortCode)
 
     if (urlData) {
-      try {
+      try {        
         await recordClick({
           shortCode,
           ip: getClientIP(event),
           userAgent: getUserAgent(event),
           referrer: getReferrer(event),
+          sourceType: url.searchParams.has('qr') ? 'qr-code' : 'direct',
         })
       } catch {
         // Click-Tracking-Fehler sollen Redirect nicht blockieren
