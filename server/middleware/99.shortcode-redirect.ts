@@ -1,4 +1,5 @@
 import useUrls from "~/server/useUrls"
+import useClickDataService from "~/server/clickDataService"
 import { getClientIP, getUserAgent, getReferrer } from "~/utils/apiAuth"
 
 export default defineEventHandler(async (event) => {
@@ -19,13 +20,19 @@ export default defineEventHandler(async (event) => {
   const shortCode = shortCodeMatch[1]
 
   try {
-    const { getUrlByShortCode, recordUrlAccess } = useUrls()
+    const { getUrlByShortCode } = useUrls()
+    const { recordClick } = useClickDataService()
 
     const urlData = await getUrlByShortCode(shortCode)
 
     if (urlData) {
       try {
-        await recordUrlAccess(shortCode, getClientIP(event), getUserAgent(event), getReferrer(event))
+        await recordClick({
+          shortCode,
+          ip: getClientIP(event),
+          userAgent: getUserAgent(event),
+          referrer: getReferrer(event),
+        })
       } catch {
         // Click-Tracking-Fehler sollen Redirect nicht blockieren
       }

@@ -103,19 +103,6 @@ async function getAllUrls() {
   return (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
 }
 
-async function recordUrlAccess(shortCode: string, ip: string, userAgent: string, referrer: string) {
-  const { determineSourceType, recordClickWithStats } = useClicks()
-  const sourceType = determineSourceType(referrer, userAgent)
-
-  await recordClickWithStats({
-    shortCode,
-    ip,
-    userAgent,
-    referrer,
-    sourceType,
-  })
-}
-
 async function getUrlStats(shortCode: string, options?: { offset?: number; limit?: number }) {
   const url = await getUrlByShortCode(shortCode)
   if (!url) {
@@ -231,13 +218,10 @@ export default function useUrls() {
   return {
     createShortUrl,
     getUrlByShortCode,
-    getUserUrls,
     getUrlsWithStats,
     getAllUrls,
-    recordUrlAccess,
     getUrlStats,
     updateUrl,
     deleteUrl,
-    generateUniqueShortCode,
   }
 }
