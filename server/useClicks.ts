@@ -1,41 +1,35 @@
-import useCsvService from "~/server/csvService"
 import useClickDataService from "~/server/clickDataService"
-import type { SourceType, ClickData, DailyStats, DailyStatsEntry } from "~/types/index"
+import type { DailyStatsEntry } from "~/types/index"
 import { formatLocalDate } from "~/utils/dateUtils"
 
-const STATS_FILE = "./data/stats.csv"
-
-const { getClicks, recordClick, updateShortCode } = useClickDataService()
-
-async function recordClickWithStats(clickData: ClickData) {
-  await recordClick(clickData)
-  await updateDailyStats(clickData.shortCode, clickData.ip)
-}
+const { getClicks, updateShortCode } = useClickDataService()
 
 // Fill all missing days from first data point to today
 function fillMissingDaysToToday(dailyStats: DailyStatsEntry[]): DailyStatsEntry[] {
   const today = new Date()
   const todayStr = formatLocalDate(today)
-  
+
   if (dailyStats.length === 0) {
-    return [{
-      date: todayStr,
-      clicks: 0,
-      uniqueVisitors: 0,
-    }]
+    return [
+      {
+        date: todayStr,
+        clicks: 0,
+        uniqueVisitors: 0,
+      },
+    ]
   }
 
   const result: DailyStatsEntry[] = []
   const dataMap = new Map(dailyStats.map((stat) => [stat.date, stat]))
 
   // Get date range from oldest data to today
-  const oldestDate = new Date(dailyStats[dailyStats.length - 1]!.date + 'T00:00:00')
-  const todayDate = new Date(todayStr + 'T00:00:00')
-  
+  const oldestDate = new Date(dailyStats[dailyStats.length - 1]!.date + "T00:00:00")
+  const todayDate = new Date(todayStr + "T00:00:00")
+
   const currentDate = new Date(oldestDate)
   while (currentDate <= todayDate) {
     const dateStr = formatLocalDate(currentDate)
-    
+
     result.push(
       dataMap.get(dateStr) || {
         date: dateStr,
@@ -127,102 +121,14 @@ async function getClickStats(shortCode: string, options?: PaginationOptions) {
   }
 }
 
-const clickFields = ["date", "shortCode", "clicks", "uniqueIps"]
-async function updateDailyStats(shortCode: string, _ip: string) {
-  const today = new Date().toISOString().split("T")[0]
-  if (!today) return
-
-  const { readCsv, writeCsv, appendToCsv } = useCsvService()
-  const dailyStats = (await readCsv(STATS_FILE)) as DailyStats[]
-
-  const existingStat = dailyStats.find((stat) => stat.date === today && stat.shortCode === shortCode)
-
-  if (existingStat) {
-    // Update existing stat
-    const todayClicks = await getClicksForDate(shortCode, today)
-    const uniqueIpsToday = new Set(todayClicks.map((click) => click.ip))
-
-    const updatedStats = dailyStats.map((stat) => {
-      if (stat.date === today && stat.shortCode === shortCode) {
-        return {
-          ...stat,
-          clicks: todayClicks.length,
-          uniqueIps: uniqueIpsToday.size,
-        }
-      }
-      return stat
-    })
-
-    await writeCsv(STATS_FILE, updatedStats as DailyStats[], clickFields)
-  } else {
-    // Create new stat
-    const newStat = {
-      date: today,
-      shortCode,
-      clicks: 1,
-      uniqueIps: 1,
-    }
-
-    await appendToCsv(STATS_FILE, newStat, clickFields)
-  }
-}
-
-async function getClicksForDate(shortCode: string, date: string) {
-  const allClicks = await getClicks(shortCode)
-  return allClicks.filter((click) => click.timestamp.startsWith(date))
-}
-
-async function getDailyStats(shortCode?: string) {
-  const { readCsv } = useCsvService()
-  const allStats = (await readCsv(STATS_FILE)) as unknown as DailyStats[]
-
-  if (shortCode) {
-    return allStats.filter((stat) => stat.shortCode === shortCode)
-  }
-
-  return allStats
-}
-
-function determineSourceType(referrer: string, userAgent: string): SourceType {
-  if (!referrer) {
-    // Kein Referrer - prüfe User-Agent für Mobile/Desktop
-    const isMobile = /Mobile|Android|iPhone|iPad/i.test(userAgent)
-    return isMobile ? "qr-code" : "direct"
-  }
-
-  // Hat Referrer - ist Website-Traffic
-  return "website"
-}
-
 async function updateShortCodeInClicks(oldShortCode: string, newShortCode: string) {
-  const { readCsv, writeCsv } = useCsvService()
-
   // Update clicks via clickDataService
   await updateShortCode(oldShortCode, newShortCode)
-
-  // Update stats.csv
-  const stats = (await readCsv(STATS_FILE)) as unknown as DailyStats[]
-  const updatedStats = stats.map((stat) => {
-    if (stat.shortCode === oldShortCode) {
-      return { ...stat, shortCode: newShortCode }
-    }
-    return stat
-  })
-
-  if (updatedStats.length > 0) {
-    await writeCsv(STATS_FILE, updatedStats as DailyStats[], clickFields)
-  }
 }
 
 export default function useClicks() {
   return {
-    recordClickWithStats,
-    getClicks,
     getClickStats,
-    updateDailyStats,
-    getClicksForDate,
-    getDailyStats,
-    determineSourceType,
     updateShortCodeInClicks,
   }
 }

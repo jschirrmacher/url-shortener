@@ -31,7 +31,6 @@ export interface ClickData {
   ip: string
   userAgent: string
   referrer: string
-  sourceType: SourceType
 }
 
 export interface DailyStats {
