@@ -2,7 +2,7 @@ import useClickDataService from "~/server/clickDataService"
 import type { DailyStatsEntry } from "~/types/index"
 import { formatLocalDate } from "~/utils/dateUtils"
 
-const { getClicks, updateShortCode } = useClickDataService()
+const { getClicks } = useClickDataService()
 
 // Fill all missing days from first data point to today
 function fillMissingDaysToToday(dailyStats: DailyStatsEntry[]): DailyStatsEntry[] {
@@ -101,14 +101,8 @@ async function getClickStats(shortCode: string) {
   }
 }
 
-async function updateShortCodeInClicks(oldShortCode: string, newShortCode: string) {
-  // Update clicks via clickDataService
-  await updateShortCode(oldShortCode, newShortCode)
-}
-
 export default function useClicks() {
   return {
     getClickStats,
-    updateShortCodeInClicks,
   }
 }

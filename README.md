@@ -24,11 +24,11 @@ Ein URL-Shortener mit erweiterten Analytics-Funktionen, entwickelt mit Nuxt3 und
 
 ## Analytics-Features
 
-### Quellenidentifikation (ohne UTM-Parameter)
+### Quellenidentifikation
 
 - **Website-Traffic**: Erkennung über Referrer-Header
-- **E-Mail/Direktaufruf**: Kein Referrer + Desktop User-Agent
-- **QR-Code**: Kein Referrer + Mobile User-Agent
+- **Direkter Aufruf**: Kein Referrer (E-Mail, Browser-Eingabe, etc.)
+- **QR-Code**: URLs mit `?qr` Parameter für eindeutige Identifikation
 
 ### Tracking-Daten
 
