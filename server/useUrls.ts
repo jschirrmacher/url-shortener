@@ -1,5 +1,6 @@
 import useCsvService from "~/server/csvService"
 import useClicks from "~/server/useClicks"
+import useClickDataService from "~/server/clickDataService"
 import type { UrlRecord } from "~/types/index"
 
 interface CreateUrlData {
@@ -10,6 +11,10 @@ interface CreateUrlData {
 }
 
 const URLS_FILE = "./data/urls.csv"
+
+const { readCsv, writeCsv, appendToCsv } = useCsvService()
+const { getClickStats } = useClicks()
+const { updateShortCode } = useClickDataService()
 
 async function createShortUrl(data: CreateUrlData) {
   const { originalUrl, customCode, title, createdBy } = data
@@ -43,7 +48,6 @@ async function createShortUrl(data: CreateUrlData) {
     createdBy,
   }
 
-  const { appendToCsv } = useCsvService()
   await appendToCsv(URLS_FILE, urlRecord, ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
 
   const config = useRuntimeConfig()
@@ -58,13 +62,11 @@ async function createShortUrl(data: CreateUrlData) {
 }
 
 async function getUrlByShortCode(shortCode: string) {
-  const { readCsv } = useCsvService()
   const urls = (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
   return urls.find((u) => u.shortCode === shortCode) || null
 }
 
 async function getUserUrls(username: string) {
-  const { readCsv } = useCsvService()
   const urls = (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
 
   const userUrls = urls
@@ -80,8 +82,6 @@ async function getUserUrls(username: string) {
 
 async function getUrlsWithStats(username?: string) {
   const urls = username ? await getUserUrls(username) : await getAllUrls()
-
-  const { getClickStats } = useClicks()
 
   // Füge Click-Statistiken hinzu
   const urlsWithStats = await Promise.all(
@@ -99,7 +99,6 @@ async function getUrlsWithStats(username?: string) {
 }
 
 async function getAllUrls() {
-  const { readCsv } = useCsvService()
   return (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
 }
 
@@ -109,7 +108,6 @@ async function getUrlStats(shortCode: string, options?: { offset?: number; limit
     return null
   }
 
-  const { getClickStats } = useClicks()
   const clickStats = await getClickStats(shortCode)
 
   // Apply pagination to daily stats
@@ -132,7 +130,6 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string,
     throw new Error("Ungültige URL")
   }
 
-  const { readCsv, writeCsv } = useCsvService()
   const urls = (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
   const urlIndex = urls.findIndex((url) => url.shortCode === shortCode)
 
@@ -156,8 +153,7 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string,
     urls[urlIndex]!.shortCode = newShortCode
 
     // Update shortCode in clicks data
-    const { updateShortCodeInClicks } = useClicks()
-    await updateShortCodeInClicks(shortCode, newShortCode)
+    await updateShortCode(shortCode, newShortCode)
   }
 
   // Update URL and title
@@ -181,7 +177,6 @@ async function updateUrl(shortCode: string, originalUrl: string, title?: string,
 }
 
 async function deleteUrl(shortCode: string) {
-  const { readCsv, writeCsv } = useCsvService()
   const urls = (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
   const filteredUrls = urls.filter((url) => url.shortCode !== shortCode)
 
