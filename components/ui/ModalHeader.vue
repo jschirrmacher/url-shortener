@@ -33,31 +33,33 @@ defineEmits<Emits>()
   align-items: center;
   justify-content: space-between;
   padding: 1rem 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--modal-border-color, #e5e7eb);
 }
 
 .modal-header h2 {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--modal-title-color, #111827);
   margin: 0;
 }
 
 .close-button {
-  background: transparent;
+  background: transparent !important;
   border: none;
-  color: #9ca3af;
+  color: var(--modal-close-color, #9ca3af);
   cursor: pointer;
   padding: 0;
   transition: color 150ms;
 }
 
 .close-button:hover {
-  color: #4b5563;
+  color: var(--modal-close-hover-color, #4b5563);
+  background: transparent !important;
 }
 
 .close-button:focus {
   outline: none;
+  background: transparent !important;
 }
 
 .close-icon {

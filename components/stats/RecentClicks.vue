@@ -226,11 +226,8 @@ function getSourceLabel(source: string): string {
 
 <style scoped>
 .recent-clicks-chart {
-  background-color: #ffffff;
   border-radius: 0.5rem;
-  box-shadow:
-    0 4px 6px -1px rgb(0 0 0 / 0.1),
-    0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   padding: 1.5rem;
 }
 
@@ -244,7 +241,6 @@ function getSourceLabel(source: string): string {
 .chart-title {
   font-size: 1.125rem;
   font-weight: 600;
-  color: #374151;
   margin: 0;
 }
 
@@ -260,7 +256,6 @@ function getSourceLabel(source: string): string {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  color: #374151;
 }
 
 .legend-color {
@@ -272,14 +267,13 @@ function getSourceLabel(source: string): string {
 .no-data {
   text-align: center;
   padding: 2rem;
-  color: #6b7280;
 }
 
 .chart-wrapper {
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 200px; /* Nur die Höhe der Balken */
+  height: 200px;
 }
 
 .nav-button {
@@ -287,20 +281,22 @@ function getSourceLabel(source: string): string {
   align-items: center;
   justify-content: center;
   width: 24px;
-  height: 200px; /* Höhe der Balken ohne Datum-Labels */
-  border: 1px solid #d1d5db;
+  height: 200px;
+  border: 1px solid;
   border-radius: 6px;
-  background: white;
-  color: #6b7280;
   cursor: pointer;
   transition: all 0.2s;
   flex-shrink: 0;
+  background: var(--nav-button-bg, #ffffff);
+  border-color: var(--nav-button-border, #d1d5db);
+  color: var(--nav-button-color, #6b7280);
 }
 
 .nav-button:hover:not(:disabled) {
-  background: #f9fafb;
-  border-color: #9ca3af;
-  color: #374151;
+  transform: translateY(-1px);
+  background: var(--nav-button-hover-bg, #f9fafb);
+  border-color: var(--nav-button-hover-border, #9ca3af);
+  color: var(--nav-button-hover-color, #374151);
 }
 
 .nav-button:disabled {
@@ -330,7 +326,7 @@ function getSourceLabel(source: string): string {
   gap: 2px;
   width: 100%;
   opacity: 1;
-  --bar-width: calc((100% - 58px) / 30); /* 30 bars with 2px gaps */
+  --bar-width: calc((100% - 58px) / 30);
 }
 
 .previous-bars {

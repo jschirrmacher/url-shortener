@@ -168,11 +168,11 @@ watch(
 <template>
   <dialog
     ref="dialog"
-    class="modal-dialog"
+    class="modal-dialog shadow-xl"
     @click="handleBackdropClick"
     @keydown="handleKeydown"
   >
-    <div class="modal-content">
+    <div class="modal-content container-primary">
       <ModalHeader 
         :title="`URL Details: ${shortCode}`"
         @close="closeModal"
@@ -216,7 +216,6 @@ watch(
 .modal-dialog {
   border: none;
   border-radius: 0.5rem;
-  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
   padding: 0;
   max-width: 32rem;
   width: 100%;
@@ -228,7 +227,6 @@ watch(
 }
 
 .modal-content {
-  background-color: #ffffff;
   border-radius: 0.5rem;
   max-height: 90vh;
   overflow: hidden;

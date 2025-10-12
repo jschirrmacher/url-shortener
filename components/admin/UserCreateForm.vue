@@ -81,7 +81,7 @@ const createUser = async (): Promise<void> => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
+  <div class="container-primary rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-4">Neuen Benutzer erstellen</h2>
 
     <form class="space-y-4" @submit.prevent="createUser">
