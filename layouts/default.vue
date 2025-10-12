@@ -11,7 +11,7 @@ const { user } = useAuth()
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
             <NuxtLink to="/" class="flex items-center hover:opacity-80 transition-opacity">
-              <img src="/url-shortener-logo.png" alt="URL-Shortener" class="h-12 w-auto">
+              <Logo class="h-12 w-auto" />
             </NuxtLink>
             <BaseButton 
               v-if="$route.path !== '/'" 
