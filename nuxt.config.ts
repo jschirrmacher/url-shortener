@@ -6,6 +6,15 @@ export default defineNuxtConfig({
 
   // CSS Framework - natives CSS
   css: ["~/assets/css/main.css"],
+
+  // App Head Konfiguration
+  app: {
+    head: {
+      link: [
+        { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+      ]
+    }
+  },
   modules: ["@nuxt/eslint", "@pinia/nuxt"],
 
   // Server-side Rendering
