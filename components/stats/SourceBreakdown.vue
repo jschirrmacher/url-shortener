@@ -53,7 +53,7 @@ const totalReferrerClicks = computed(() => statsStore.stats?.totalClicks || 0)
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
     <!-- Traffic Sources -->
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="container-primary rounded-lg shadow-md p-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Traffic-Quellen</h3>
       <div v-if="sortedSources.length > 0" class="space-y-3">
         <div
@@ -74,7 +74,7 @@ const totalReferrerClicks = computed(() => statsStore.stats?.totalClicks || 0)
       <div v-else class="text-center py-8 text-gray-500">Keine Traffic-Quellen verfügbar</div>
     </div>
     <!-- Top Referrers -->
-    <div class="bg-white rounded-lg shadow-md p-6">
+    <div class="container-primary rounded-lg shadow-md p-6">
       <h3 class="text-lg font-semibold text-gray-800 mb-4">Top Referrer</h3>
       <div v-if="sortedReferrers.length > 0" class="space-y-3">
         <div

@@ -1,9 +1,34 @@
 <script setup lang="ts">
-// Auth
+type Theme = 'light' | 'dark' | 'system'
+
 const { user, logout } = useAuth()
 
-// Reactive Data
 const isOpen = ref<boolean>(false)
+const theme = ref<Theme>('system')
+
+const applyTheme = (newTheme: Theme) => {
+  theme.value = newTheme
+  localStorage.setItem('theme', newTheme)
+  
+  if (newTheme === 'system') {
+    document.documentElement.classList.remove('light', 'dark')
+  } else {
+    document.documentElement.classList.remove('light', 'dark')
+    document.documentElement.classList.add(newTheme)
+  }
+}
+
+onMounted(() => {
+  const savedTheme = localStorage.getItem('theme') as Theme ?? 'system'
+  applyTheme(savedTheme)
+  
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement
+    if (!target.closest(".user-menu")) {
+      closeDropdown()
+    }
+  })
+})
 
 // Menu Structure
 interface MenuItem {
@@ -63,16 +88,6 @@ const handleItemClick = async (item: MenuItem): Promise<void> => {
     closeDropdown()
   }
 }
-
-// Close dropdown when clicking outside
-onMounted(() => {
-  document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement
-    if (!target.closest(".user-menu")) {
-      closeDropdown()
-    }
-  })
-})
 </script>
 
 <template>
@@ -104,8 +119,36 @@ onMounted(() => {
     </BaseButton>
 
     <!-- Dropdown Menu -->
-    <div v-show="isOpen" class="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+    <div v-show="isOpen" class="absolute right-0 mt-2 w-56 container-primary border border-gray-200 rounded-lg shadow-lg z-50">
       <div class="py-2">
+        <!-- Theme Selector -->
+        <div class="px-4 py-2 border-b border-gray-100">
+          <div class="text-xs font-medium text-gray-500 mb-2">Theme</div>
+          <div class="flex gap-1">
+            <button
+              :class="['theme-btn', 'btn-secondary', theme === 'light' ? 'active' : '']"
+              title="Light Mode"
+              @click="applyTheme('light')"
+            >
+              ☀️
+            </button>
+            <button
+              :class="['theme-btn', 'btn-secondary', theme === 'dark' ? 'active' : '']"
+              title="Dark Mode"
+              @click="applyTheme('dark')"
+            >
+              🌙
+            </button>
+            <button
+              :class="['theme-btn', 'btn-secondary', theme === 'system' ? 'active' : '']"
+              title="System"
+              @click="applyTheme('system')"
+            >
+              💻
+            </button>
+          </div>
+        </div>
+        
         <div class="py-1">
           <template v-for="(item, index) in menuItems" :key="index">
             <!-- Divider -->
@@ -161,5 +204,37 @@ onMounted(() => {
 
 .menu-item-icon {
   margin-right: 0.75rem;
+}
+
+.theme-btn {
+  width: 2rem;
+  height: 2rem;
+  border-width: 1px;
+}
+
+.theme-btn.active {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: white !important;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .menu-item {
+    color: #e5e7eb;
+  }
+  
+  .menu-item:hover {
+    background-color: #374151;
+  }
+}
+
+/* Manuelle Dark-Mode-Klasse */
+.dark .menu-item {
+  color: #e5e7eb !important;
+}
+
+.dark .menu-item:hover {
+  background-color: #374151 !important;
 }
 </style>

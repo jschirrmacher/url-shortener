@@ -20,7 +20,6 @@ function createMockStats(dailyStats: any[], sourceBreakdown: Record<string, numb
     dailyStats,
     topReferrers: [],
     sourceBreakdown,
-    hasMore: false,
     _links: {
       self: { href: "/api/urls/test123/stats" },
       first: { href: "/api/urls/test123/stats" },

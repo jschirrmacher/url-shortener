@@ -93,8 +93,8 @@ defineProps<Props>()
   transform: translateX(-50%);
   font-size: 0.625rem;
   font-weight: 500;
-  color: #374151;
-  background: rgba(255, 255, 255, 0.9);
+  color: var(--chart-text-color, #374151);
+  background: transparent;
   padding: 0.125rem 0.25rem;
   border-radius: 0.25rem;
   transition: opacity 0.3s ease;
@@ -115,18 +115,23 @@ defineProps<Props>()
 .label {
   margin-top: 0.25rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--chart-text-color, #374151);
   text-align: center;
   line-height: 1;
   height: 0.75rem;
 }
 
 .month {
-  color: #6b7280;
+  color: var(--chart-subtext-color, #6b7280);
   text-align: center;
   line-height: 1;
   height: 0.625rem;
   margin-top: 0.125rem;
+}
+
+.empty {
+  background-color: var(--chart-empty-color, #f3f4f6);
+  border-radius: 0.125rem;
 }
 
 @media (max-width: 768px) {

@@ -58,7 +58,7 @@ const icons = {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
+  <div class="container-primary rounded-lg shadow-md p-6">
     <div class="flex items-center">
       <div :class="[colorClasses[color].bg, 'flex-shrink-0 rounded-md p-3']">
         <svg :class="[colorClasses[color].icon, 'h-6 w-6']" fill="none" stroke="currentColor" viewBox="0 0 24 24">

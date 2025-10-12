@@ -29,7 +29,7 @@ const getRoleBadgeColor = (role: string): string => {
 </script>
 
 <template>
-  <div class="bg-white rounded-lg shadow-md p-6">
+  <div class="container-primary rounded-lg shadow-md p-6">
     <h2 class="text-xl font-bold text-gray-800 mb-6">Profil-Informationen</h2>
     <div v-if="user" class="space-y-4">
       <!-- User Avatar & Name -->
@@ -80,9 +80,10 @@ const getRoleBadgeColor = (role: string): string => {
       <div class="border-t border-gray-200 pt-4">
         <h4 class="text-sm font-medium text-gray-500 mb-3">Schnellzugriff</h4>
         <div class="flex flex-wrap gap-2">
-          <NuxtLink
-            to="/"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+          <BaseButton
+            variant="secondary"
+            size="sm"
+            @click="$router.push('/')"
           >
             <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -93,11 +94,12 @@ const getRoleBadgeColor = (role: string): string => {
               />
             </svg>
             Meine URLs
-          </NuxtLink>
-          <NuxtLink
+          </BaseButton>
+          <BaseButton
             v-if="user.role === 'admin'"
-            to="/admin"
-            class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+            variant="secondary"
+            size="sm"
+            @click="$router.push('/admin')"
           >
             <svg class="h-4 w-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
@@ -108,7 +110,7 @@ const getRoleBadgeColor = (role: string): string => {
               />
             </svg>
             Administration
-          </NuxtLink>
+          </BaseButton>
         </div>
       </div>
     </div>

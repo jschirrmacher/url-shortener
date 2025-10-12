@@ -40,7 +40,7 @@ const inputId =
 
 const inputClasses = computed(() => [
   "w-full px-4 py-3 border rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-  props.error ? "border-red-300 bg-red-50" : "border-gray-300 bg-white hover:border-gray-400",
+  props.error ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-gray-400",
   props.disabled ? "opacity-50 cursor-not-allowed" : "",
 ])
 

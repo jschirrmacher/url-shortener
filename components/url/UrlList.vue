@@ -145,7 +145,6 @@ async function deleteUrl(shortCode: string) {
 
 <style scoped>
 .url-list-container {
-  background-color: #ffffff;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
   padding: 1.5rem;
@@ -164,5 +163,18 @@ async function deleteUrl(shortCode: string) {
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
+}
+
+/* Dark Mode */
+@media (prefers-color-scheme: dark) {
+  .url-list-container {
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  }
+  
+  .error-message {
+    background-color: #7f1d1d;
+    border-color: #dc2626;
+    color: #fca5a5;
+  }
 }
 </style>

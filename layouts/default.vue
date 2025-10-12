@@ -1,17 +1,50 @@
 <script setup lang="ts">
 // Auth für globales Layout
 const { user } = useAuth()
+
+const currentTheme = ref<'light' | 'dark'>('light')
+
+onMounted(() => {
+  const updateTheme = () => {
+    const classList = document.documentElement.classList
+    if (classList.contains('dark')) {
+      currentTheme.value = 'dark'
+    } else if (classList.contains('light')) {
+      currentTheme.value = 'light'
+    } else {
+      currentTheme.value = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+    }
+  }
+  
+  updateTheme()
+  
+  // Observer für Klassen-Änderungen
+  const observer = new MutationObserver(updateTheme)
+  observer.observe(document.documentElement, { 
+    attributes: true, 
+    attributeFilter: ['class'] 
+  })
+  
+  // Media Query Listener
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  mediaQuery.addEventListener('change', updateTheme)
+  
+  onUnmounted(() => {
+    observer.disconnect()
+    mediaQuery.removeEventListener('change', updateTheme)
+  })
+})
 </script>
 
 <template>
   <div class="min-h-screen bg-gray-100">
     <!-- Global Header -->
-    <header class="bg-white shadow-sm border-b border-gray-200">
+    <header class="container-primary shadow-sm border-b border-gray-200">
       <div class="max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
             <NuxtLink to="/" class="flex items-center hover:opacity-80 transition-opacity">
-              <Logo class="h-12 w-auto" />
+              <Logo :theme="currentTheme" class="h-12 w-auto" />
             </NuxtLink>
             <BaseButton 
               v-if="$route.path !== '/'" 

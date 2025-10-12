@@ -1,8 +1,8 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 1`] = `
-"<dialog data-v-dd4104c0="" class="modal-dialog">
-  <div data-v-dd4104c0="" class="modal-content">
+"<dialog data-v-dd4104c0="" class="modal-dialog shadow-xl">
+  <div data-v-dd4104c0="" class="modal-content container-primary">
     <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
@@ -15,8 +15,8 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when closed 
 `;
 
 exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`] = `
-"<dialog data-v-dd4104c0="" class="modal-dialog">
-  <div data-v-dd4104c0="" class="modal-content">
+"<dialog data-v-dd4104c0="" class="modal-dialog shadow-xl">
+  <div data-v-dd4104c0="" class="modal-content container-primary">
     <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
@@ -29,8 +29,8 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render when open 1`
 `;
 
 exports[`URL Components Snapshots > UrlDetailsModal > should render with different shortCode formats 1`] = `
-"<dialog data-v-dd4104c0="" class="modal-dialog">
-  <div data-v-dd4104c0="" class="modal-content">
+"<dialog data-v-dd4104c0="" class="modal-dialog shadow-xl">
+  <div data-v-dd4104c0="" class="modal-content container-primary">
     <modal-header-stub data-v-dd4104c0="" title="URL Details: ABC-123_test"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="ABC-123_test" qr-code-url=""></qr-code-section-stub>
@@ -43,8 +43,8 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with differe
 `;
 
 exports[`URL Components Snapshots > UrlDetailsModal > should render with long URLs 1`] = `
-"<dialog data-v-dd4104c0="" class="modal-dialog">
-  <div data-v-dd4104c0="" class="modal-content">
+"<dialog data-v-dd4104c0="" class="modal-dialog shadow-xl">
+  <div data-v-dd4104c0="" class="modal-content container-primary">
     <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
@@ -57,8 +57,8 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with long UR
 `;
 
 exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal props 1`] = `
-"<dialog data-v-dd4104c0="" class="modal-dialog">
-  <div data-v-dd4104c0="" class="modal-content">
+"<dialog data-v-dd4104c0="" class="modal-dialog shadow-xl">
+  <div data-v-dd4104c0="" class="modal-content container-primary">
     <modal-header-stub data-v-dd4104c0="" title="URL Details: min"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="min" qr-code-url=""></qr-code-section-stub>
@@ -71,8 +71,8 @@ exports[`URL Components Snapshots > UrlDetailsModal > should render with minimal
 `;
 
 exports[`URL Components Snapshots > UrlDetailsModal > should render with special characters in URLs 1`] = `
-"<dialog data-v-dd4104c0="" class="modal-dialog">
-  <div data-v-dd4104c0="" class="modal-content">
+"<dialog data-v-dd4104c0="" class="modal-dialog shadow-xl">
+  <div data-v-dd4104c0="" class="modal-content container-primary">
     <modal-header-stub data-v-dd4104c0="" title="URL Details: special123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="special123" qr-code-url=""></qr-code-section-stub>

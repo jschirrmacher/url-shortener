@@ -95,7 +95,7 @@ function handlePasswordResetSuccess(): void {
 </script>
 
 <template>
-  <div class="bg-white shadow rounded-lg">
+  <div class="container-primary shadow rounded-lg">
     <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
       <h2 class="text-lg font-semibold text-gray-800">Benutzer-Verwaltung</h2>
       <BaseButton variant="primary" size="sm" :loading="loading" @click="emit('refresh')">
@@ -118,7 +118,7 @@ function handlePasswordResetSuccess(): void {
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aktionen</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="container-primary divide-y divide-gray-200">
           <tr v-for="user in users" :key="user.username">
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ user.username }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

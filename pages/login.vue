@@ -44,7 +44,7 @@ const login = async (): Promise<void> => {
 <template>
   <div class="min-h-screen bg-gray-100 flex items-center justify-center">
     <div class="max-w-md w-full mx-4">
-      <div class="bg-white rounded-lg shadow-md p-8">
+      <div class="container-primary rounded-lg shadow-md p-8">
         <div class="text-center mb-8">
           <h1 class="text-3xl font-bold text-gray-800">URL-Shortener</h1>
           <p class="text-gray-600 mt-2">Bitte melden Sie sich an</p>
