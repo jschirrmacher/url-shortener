@@ -76,7 +76,8 @@
       "$root$": true,
       "@nuxt/eslint-config>eslint-plugin-import-x>unrs-resolver": true,
       "nuxt>@parcel/watcher": true,
-      "nuxt>esbuild": true
+      "nuxt>esbuild": true,
+      "nuxt>@nuxt/vite-builder>esbuild": true
     }
   }
 }
