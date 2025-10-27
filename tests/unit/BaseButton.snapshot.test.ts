@@ -23,14 +23,6 @@ describe("BaseButton", () => {
       expect(wrapper.html()).toMatchSnapshot()
     })
 
-    it("renders success variant correctly", () => {
-      const wrapper = mount(BaseButton, {
-        props: { variant: "success" },
-        slots: { default: "Success Button" },
-      })
-      expect(wrapper.html()).toMatchSnapshot()
-    })
-
     it("renders danger variant correctly", () => {
       const wrapper = mount(BaseButton, {
         props: { variant: "danger" },

@@ -39,13 +39,13 @@ const inputId =
     .replace(/-+/g, "-")}`
 
 const inputClasses = computed(() => [
-  "w-full px-4 py-3 border rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-  props.error ? "border-red-300 bg-red-50" : "border-gray-300 hover:border-gray-400",
-  props.disabled ? "opacity-50 cursor-not-allowed" : "",
+  "form-input",
+  props.error ? "form-input-error" : "form-input-normal",
+  props.disabled ? "form-input-disabled" : "",
 ])
 
 // Methods
-const updateValue = (event: Event): void => {
+function updateValue(event: Event) {
   const target = event.target as HTMLInputElement
   emit("update:modelValue", target.value)
 }
@@ -90,3 +90,39 @@ const updateValue = (event: Event): void => {
     </p>
   </div>
 </template>
+
+<style scoped>
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--input-border);
+  border-radius: 0.375rem;
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  transition: all 0.15s ease-in-out;
+}
+
+.form-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--input-focus-border);
+  border-color: var(--input-focus-border);
+}
+
+.form-input-normal:hover {
+  border-color: var(--border-primary);
+}
+
+.form-input-error {
+  border-color: #f87171;
+  background-color: #fef2f2;
+}
+
+.form-input-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.form-input::placeholder {
+  color: var(--text-secondary);
+}
+</style>

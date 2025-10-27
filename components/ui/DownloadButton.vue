@@ -19,7 +19,7 @@ const emit = defineEmits<Emits>()
 const formatLabel = computed(() => props.format.toUpperCase())
 const tooltipText = computed(() => `Als ${formatLabel.value} herunterladen`)
 
-const handleClick = () => {
+function handleClick() {
   emit("click")
 }
 </script>

@@ -1,27 +1,9 @@
 <script setup lang="ts">
-type Theme = 'light' | 'dark' | 'system'
-
 const { user, logout } = useAuth()
 
 const isOpen = ref<boolean>(false)
-const theme = ref<Theme>('system')
-
-const applyTheme = (newTheme: Theme) => {
-  theme.value = newTheme
-  localStorage.setItem('theme', newTheme)
-  
-  if (newTheme === 'system') {
-    document.documentElement.classList.remove('light', 'dark')
-  } else {
-    document.documentElement.classList.remove('light', 'dark')
-    document.documentElement.classList.add(newTheme)
-  }
-}
 
 onMounted(() => {
-  const savedTheme = localStorage.getItem('theme') as Theme ?? 'system'
-  applyTheme(savedTheme)
-  
   document.addEventListener("click", (event) => {
     const target = event.target as HTMLElement
     if (!target.closest(".user-menu")) {
@@ -64,15 +46,15 @@ const menuItems = computed<MenuItem[]>(() => [
 ])
 
 // Methods
-const toggleDropdown = (): void => {
+function toggleDropdown() {
   isOpen.value = !isOpen.value
 }
 
-const closeDropdown = (): void => {
+function closeDropdown() {
   isOpen.value = false
 }
 
-const handleLogout = async (): Promise<void> => {
+async function handleLogout() {
   try {
     closeDropdown()
     await logout()
@@ -81,7 +63,7 @@ const handleLogout = async (): Promise<void> => {
   }
 }
 
-const handleItemClick = async (item: MenuItem): Promise<void> => {
+async function handleItemClick(item: MenuItem) {
   if (item.action) {
     await item.action()
   } else {
@@ -95,11 +77,7 @@ const handleItemClick = async (item: MenuItem): Promise<void> => {
     <!-- Dropdown Button -->
     <BaseButton variant="secondary" @click="toggleDropdown">
       <!-- User Avatar -->
-      <div
-        class="w-8 h-8 bg-orange-500 rounded-full flex items-center justify-center text-white text-sm font-bold mr-2"
-      >
-        {{ user.username.charAt(0).toUpperCase() }}
-      </div>
+      <UserAvatar :username="user.username" class="mr-2" />
 
       <!-- User Info -->
       <div class="flex flex-col items-start mr-2">
@@ -119,48 +97,20 @@ const handleItemClick = async (item: MenuItem): Promise<void> => {
     </BaseButton>
 
     <!-- Dropdown Menu -->
-    <div v-show="isOpen" class="absolute right-0 mt-2 w-56 container-primary border border-gray-200 rounded-lg shadow-lg z-50">
+    <div
+      v-show="isOpen"
+      class="dropdown-menu"
+    >
       <div class="py-2">
-        <!-- Theme Selector -->
-        <div class="px-4 py-2 border-b border-gray-100">
-          <div class="text-xs font-medium text-gray-500 mb-2">Theme</div>
-          <div class="flex gap-1">
-            <button
-              :class="['theme-btn', 'btn-secondary', theme === 'light' ? 'active' : '']"
-              title="Light Mode"
-              @click="applyTheme('light')"
-            >
-              ☀️
-            </button>
-            <button
-              :class="['theme-btn', 'btn-secondary', theme === 'dark' ? 'active' : '']"
-              title="Dark Mode"
-              @click="applyTheme('dark')"
-            >
-              🌙
-            </button>
-            <button
-              :class="['theme-btn', 'btn-secondary', theme === 'system' ? 'active' : '']"
-              title="System"
-              @click="applyTheme('system')"
-            >
-              💻
-            </button>
-          </div>
-        </div>
-        
+        <ThemeSelector />
+
         <div class="py-1">
           <template v-for="(item, index) in menuItems" :key="index">
             <!-- Divider -->
             <div v-if="item.divider && (item.condition ?? true)" class="border-t border-gray-100 my-1" />
-            
+
             <!-- Menu Item -->
-            <NuxtLink
-              v-else-if="item.condition ?? true"
-              :to="item.to"
-              class="menu-item"
-              @click="handleItemClick(item)"
-            >
+            <NuxtLink v-else-if="item.condition ?? true" :to="item.to" class="menu-item" @click="handleItemClick(item)">
               <span class="menu-item-icon">{{ item.icon }}</span>
               {{ item.label }}
             </NuxtLink>
@@ -175,6 +125,20 @@ const handleItemClick = async (item: MenuItem): Promise<void> => {
 /* Ensure dropdown appears above other elements */
 .user-menu {
   z-index: 1000;
+}
+
+/* Dropdown Menu Styling */
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.5rem;
+  width: 14rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
 }
 
 /* Smooth transitions */
@@ -193,48 +157,16 @@ const handleItemClick = async (item: MenuItem): Promise<void> => {
   align-items: center;
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--text-primary);
   text-decoration: none;
   transition: background-color 0.15s ease-in-out;
 }
 
 .menu-item:hover {
-  background-color: #f3f4f6;
+  background-color: var(--bg-tertiary);
 }
 
 .menu-item-icon {
   margin-right: 0.75rem;
-}
-
-.theme-btn {
-  width: 2rem;
-  height: 2rem;
-  border-width: 1px;
-}
-
-.theme-btn.active {
-  background-color: #2563eb !important;
-  border-color: #2563eb !important;
-  color: white !important;
-}
-
-/* Dark Mode */
-@media (prefers-color-scheme: dark) {
-  .menu-item {
-    color: #e5e7eb;
-  }
-  
-  .menu-item:hover {
-    background-color: #374151;
-  }
-}
-
-/* Manuelle Dark-Mode-Klasse */
-.dark .menu-item {
-  color: #e5e7eb !important;
-}
-
-.dark .menu-item:hover {
-  background-color: #374151 !important;
 }
 </style>

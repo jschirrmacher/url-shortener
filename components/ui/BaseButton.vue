@@ -2,7 +2,7 @@
 import { computed } from "vue"
 
 interface Props {
-  variant?: "primary" | "secondary" | "success" | "danger" | "ghost"
+  variant?: "primary" | "secondary" | "danger" | "ghost"
   size?: "sm" | "md" | "lg"
   disabled?: boolean
   loading?: boolean
@@ -28,35 +28,8 @@ const emit = defineEmits<Emits>()
 const baseClasses =
   "inline-flex items-center justify-center font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
 
-const variantClasses = computed(() => {
-  switch (props.variant) {
-    case "primary":
-      return "text-white bg-blue-600 border border-transparent hover:bg-blue-700 focus:ring-blue-500"
-    case "secondary":
-      return "text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500"
-    case "success":
-      return "text-white bg-green-600 border border-transparent hover:bg-green-700 focus:ring-green-500"
-    case "danger":
-      return "text-white bg-red-600 border border-transparent hover:bg-red-700 focus:ring-red-500"
-    case "ghost":
-      return "text-gray-700 bg-transparent border border-transparent hover:bg-gray-100 focus:ring-blue-500"
-    default:
-      return "text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500"
-  }
-})
-
-const sizeClasses = computed(() => {
-  switch (props.size) {
-    case "sm":
-      return "px-3 py-1 text-sm"
-    case "md":
-      return "px-4 py-2 text-sm"
-    case "lg":
-      return "px-6 py-3 text-base"
-    default:
-      return "px-4 py-2 text-sm"
-  }
-})
+const variantClasses = computed(() => `btn-${props.variant ?? 'secondary'}`)
+const sizeClasses = computed(() => `btn-${props.size ?? 'md'}`)
 
 const widthClasses = computed(() => {
   return props.fullWidth ? "w-full" : ""
@@ -68,7 +41,7 @@ const buttonClasses = computed(() => {
 
 const isDisabled = computed(() => props.disabled || props.loading)
 
-const handleClick = (event: MouseEvent) => {
+function handleClick(event: MouseEvent) {
   if (!isDisabled.value) {
     emit("click", event)
   }
@@ -90,3 +63,112 @@ const handleClick = (event: MouseEvent) => {
     <slot />
   </button>
 </template>
+
+<style scoped>
+/* Base Button Styles */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  outline: none;
+  transition-property: color, background-color, border-color;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+  border-width: 1px;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--ring-color, #3b82f6);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Variant Styles */
+.btn-primary {
+  background-color: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  --ring-color: #3b82f6;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+}
+
+.btn-secondary {
+  background-color: var(--button-secondary-bg);
+  border-color: var(--button-secondary-border);
+  color: var(--button-secondary-text);
+  --ring-color: #3b82f6;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--button-secondary-hover-bg);
+  border-color: var(--button-secondary-hover-border);
+}
+
+.btn-danger {
+  background-color: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #ffffff !important;
+  --ring-color: #ef4444;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background-color: #b91c1c !important;
+  border-color: #b91c1c !important;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--text-primary);
+  --ring-color: #3b82f6;
+}
+
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--bg-tertiary);
+}
+
+/* Size Styles */
+.btn-sm {
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.btn-md {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+.btn-lg {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
+/* Loading Spinner */
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.opacity-25 { opacity: 0.25; }
+.opacity-75 { opacity: 0.75; }
+</style>

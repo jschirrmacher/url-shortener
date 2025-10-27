@@ -43,7 +43,7 @@ onMounted(() => {
       <div class="max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
-            <NuxtLink to="/" class="flex items-center hover:opacity-80 transition-opacity">
+            <NuxtLink to="/" class="logo-link">
               <Logo :theme="currentTheme" class="h-12 w-auto" />
             </NuxtLink>
             <BaseButton 
@@ -67,7 +67,7 @@ onMounted(() => {
               <UserMenu v-if="user" />
 
               <!-- Login Button (für nicht-eingeloggte Benutzer) -->
-              <NuxtLink v-else to="/login" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+              <NuxtLink v-else to="/login" class="login-button">
                 Anmelden
               </NuxtLink>
 
@@ -90,4 +90,26 @@ onMounted(() => {
 
 <style scoped>
 /* Layout-spezifische Styles */
+.logo-link {
+  display: flex;
+  align-items: center;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
+}
+
+.login-button {
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.375rem;
+  text-decoration: none;
+  transition: background-color 0.15s ease-in-out;
+}
+
+.login-button:hover {
+  background-color: #1d4ed8;
+}
 </style>

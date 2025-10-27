@@ -20,7 +20,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 defineEmits<Emits>()
 
-const getTitle = () => {
+function getTitle() {
   if (!props.isAdmin) return "Meine URLs"
   if (props.selectedUser === "all") return "Alle URLs"
   return `URLs von ${props.selectedUser}`
