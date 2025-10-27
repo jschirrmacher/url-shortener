@@ -1,29 +1,5 @@
 <script setup lang="ts">
-type Theme = "light" | "dark" | "system"
-
-const theme = ref<Theme>("system")
-
-function setThemeClass() {
-  document.documentElement.classList.remove("dark")
-
-  const shouldBeDark =
-    theme.value === "dark" || (theme.value === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)
-
-  if (shouldBeDark) {
-    document.documentElement.classList.add("dark")
-  }
-}
-
-function applyTheme(newTheme: Theme) {
-  theme.value = newTheme
-  localStorage.setItem("theme", newTheme)
-  setThemeClass()
-}
-
-onMounted(() => {
-  applyTheme((localStorage.getItem("theme") as Theme) ?? "system")
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", setThemeClass)
-})
+const { theme, applyTheme } = useTheme()
 </script>
 
 <template>

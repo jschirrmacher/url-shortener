@@ -1,50 +1,17 @@
 <script setup lang="ts">
 // Auth für globales Layout
 const { user } = useAuth()
-
-const currentTheme = ref<'light' | 'dark'>('light')
-
-onMounted(() => {
-  const updateTheme = () => {
-    const classList = document.documentElement.classList
-    if (classList.contains('dark')) {
-      currentTheme.value = 'dark'
-    } else if (classList.contains('light')) {
-      currentTheme.value = 'light'
-    } else {
-      currentTheme.value = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-    }
-  }
-  
-  updateTheme()
-  
-  // Observer für Klassen-Änderungen
-  const observer = new MutationObserver(updateTheme)
-  observer.observe(document.documentElement, { 
-    attributes: true, 
-    attributeFilter: ['class'] 
-  })
-  
-  // Media Query Listener
-  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-  mediaQuery.addEventListener('change', updateTheme)
-  
-  onUnmounted(() => {
-    observer.disconnect()
-    mediaQuery.removeEventListener('change', updateTheme)
-  })
-})
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="layout-container">
     <!-- Global Header -->
-    <header class="container-primary shadow-sm border-b border-gray-200">
+    <header class="layout-header">
       <div class="max-w-6xl mx-auto px-4 py-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center space-x-4">
             <NuxtLink to="/" class="logo-link">
-              <Logo :theme="currentTheme" class="h-12 w-auto" />
+              <Logo class="h-12 w-auto" />
             </NuxtLink>
             <BaseButton 
               v-if="$route.path !== '/'" 
@@ -90,6 +57,18 @@ onMounted(() => {
 
 <style scoped>
 /* Layout-spezifische Styles */
+.layout-container {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+}
+
+.layout-header {
+  padding: 0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid var(--border-primary);
+  background-color: var(--bg-primary);
+}
+
 .logo-link {
   display: flex;
   align-items: center;

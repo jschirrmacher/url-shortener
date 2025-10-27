@@ -1,17 +1,11 @@
 <script setup lang="ts">
-interface Props {
-  theme?: 'light' | 'dark'
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  theme: 'light'
-})
+const { isDark } = useTheme()
 
 const colors = computed(() => {
-  return props.theme === 'dark' ? {
+  return isDark.value ? {
     chain: '#60a5fa',
-    text: '#f9fafb',
-    subtext: '#d1d5db'
+    text: '#ffffff',
+    subtext: '#e5e7eb'
   } : {
     chain: '#2563eb',
     text: '#1f2937',
