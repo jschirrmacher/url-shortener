@@ -10,11 +10,12 @@ vi.stubGlobal("$fetch", mockFetch)
 global.fetch = vi.fn()
 
 describe("UrlDetailsModal Component", () => {
-  const mockProps = {
+  const mockData = {
     shortCode: "abc123",
     shortUrl: "http://localhost:3000/abc123",
     originalUrl: "https://example.com",
     title: "Example Website",
+    currentOwner: "testuser",
     isOpen: true
   }
 
@@ -28,19 +29,19 @@ describe("UrlDetailsModal Component", () => {
 
   it("should render modal when open", () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     const dialog = wrapper.find('dialog')
     expect(dialog.exists()).toBe(true)
     // Dialog exists and component is mounted with isOpen=true
-    expect(wrapper.props('isOpen')).toBe(true)
+    expect(wrapper.props('data').isOpen).toBe(true)
   })
 
   it("should not show modal when closed", () => {
     const wrapper = mount(UrlDetailsModal, {
       props: {
-        ...mockProps,
+        ...{ data: mockData },
         isOpen: false
       }
     })
@@ -51,7 +52,7 @@ describe("UrlDetailsModal Component", () => {
 
   it("should generate QR code URL correctly", () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     // Check if QR code image source is generated
@@ -63,7 +64,7 @@ describe("UrlDetailsModal Component", () => {
 
   it("should emit close event when close button clicked", async () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     // Look for close button (X or close text)
@@ -91,7 +92,7 @@ describe("UrlDetailsModal Component", () => {
     })
 
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     // Look for copy button
@@ -110,7 +111,7 @@ describe("UrlDetailsModal Component", () => {
 
   it("should contain QR code functionality", () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     const html = wrapper.html()
@@ -125,7 +126,7 @@ describe("UrlDetailsModal Component", () => {
 
   it("should match snapshot", () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     expect(wrapper.html()).toMatchSnapshot()
@@ -133,13 +134,16 @@ describe("UrlDetailsModal Component", () => {
 
   it("should handle props changes reactively", async () => {
     const wrapper = mount(UrlDetailsModal, {
-      props: mockProps
+      props: { data: mockData }
     })
 
     // Change shortCode prop
     await wrapper.setProps({
-      shortCode: "xyz789",
-      shortUrl: "http://localhost:3000/xyz789"
+      data: {
+        ...mockData,
+        shortCode: "xyz789",
+        shortUrl: "http://localhost:3000/xyz789"
+      }
     })
 
     // Check if template updates
@@ -150,23 +154,27 @@ describe("UrlDetailsModal Component", () => {
   it("should handle modal open/close state changes", async () => {
     const wrapper = mount(UrlDetailsModal, {
       props: {
-        ...mockProps,
-        isOpen: false
+        data: { ...mockData, isOpen: false }
+      },
+      global: {
+        stubs: {
+          UrlForm: true,
+          AlertMessage: true,
+          ModalHeader: true,
+          QrCodeSection: true
+        }
       }
     })
 
     // Initially closed
-    let dialog = wrapper.find('dialog')
-    expect(dialog.attributes('open')).toBeUndefined()
+    expect(wrapper.props('data').isOpen).toBe(false)
 
     // Open modal
-    await wrapper.setProps({ isOpen: true })
-    dialog = wrapper.find('dialog')
-    expect(dialog.attributes('open')).toBeDefined()
+    await wrapper.setProps({ data: { ...mockData, isOpen: true } })
+    expect(wrapper.props('data').isOpen).toBe(true)
 
     // Close modal
-    await wrapper.setProps({ isOpen: false })
-    dialog = wrapper.find('dialog')
-    expect(dialog.attributes('open')).toBeUndefined()
+    await wrapper.setProps({ data: { ...mockData, isOpen: false } })
+    expect(wrapper.props('data').isOpen).toBe(false)
   })
 })

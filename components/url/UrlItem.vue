@@ -4,20 +4,15 @@ import type { UrlRecord } from "~/types/index"
 interface Props {
   url: UrlRecord
   showActions?: boolean
-  isAdmin?: boolean
-  allUsers?: User[]
 }
 
 interface Emits {
   openDetails: [url: UrlRecord]
   delete: [shortCode: string]
-  changeOwner: [shortCode: string, newOwner: string]
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  showActions: true,
-  isAdmin: false,
-  allUsers: () => []
+withDefaults(defineProps<Props>(), {
+  showActions: true
 })
 
 const emit = defineEmits<Emits>()
@@ -37,14 +32,6 @@ function formatDate(dateString: string) {
     minute: "2-digit",
   })
 }
-
-function handleOwnerChange(event: Event) {
-  const target = event.target as HTMLSelectElement
-  const newOwner = target.value
-  if (newOwner !== props.url.createdBy) {
-    emit('changeOwner', props.url.shortCode, newOwner)
-  }
-}
 </script>
 
 <template>
@@ -55,24 +42,20 @@ function handleOwnerChange(event: Event) {
         <UrlItemInfo :url="url" :short-url="getShortUrl(url.shortCode)" :show-metadata="false" />
       </div>
       
-      <!-- Column 2: Owner + Metadata -->
+      <!-- Column 2: Stats + Metadata -->
       <div class="meta-column">
-        <!-- Owner (Admin only) -->
-        <div v-if="isAdmin && allUsers.length > 0" class="owner-section">
-          <label class="owner-label">Eigentümer</label>
-          <select 
-            class="owner-select"
-            :value="url.createdBy"
-            @change="handleOwnerChange($event)"
-          >
-            <option 
-              v-for="user in allUsers" 
-              :key="user.username"
-              :value="user.username"
-            >
-              {{ user.username }}
-            </option>
-          </select>
+        <!-- Stats -->
+        <div class="stats-section">
+          <div class="stats-grid">
+            <div class="stat-item">
+              <span class="stat-value">{{ url.totalClicks ?? 0 }}</span>
+              <span class="stat-label">Klicks</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-value">{{ url.uniqueVisitors ?? 0 }}</span>
+              <span class="stat-label">Besucher</span>
+            </div>
+          </div>
         </div>
         
         <!-- Metadata -->
@@ -142,6 +125,37 @@ function handleOwnerChange(event: Event) {
   }
 }
 
+.stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stats-grid {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .owner-section,
 .metadata-section {
   display: flex;
@@ -162,20 +176,6 @@ function handleOwnerChange(event: Event) {
 .metadata-label {
   font-size: 0.875rem;
   color: #374151;
-}
-
-.owner-select {
-  padding: 0.5rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  font-size: 0.875rem;
-  background-color: white;
-}
-
-.owner-select:focus {
-  outline: none;
-  border-color: #2563eb;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .metadata-content {

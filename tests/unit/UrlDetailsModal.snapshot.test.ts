@@ -1,29 +1,37 @@
-/**
- * @vitest-environment happy-dom
- */
-import { describe, it, expect, vi, beforeEach } from "vitest"
+import { describe, it, expect, vi } from "vitest"
 import { mount } from "@vue/test-utils"
 import UrlDetailsModal from "~/components/url/UrlDetailsModal.vue"
 
+// Mock $fetch
+vi.stubGlobal("$fetch", vi.fn())
+
+// Mock fetch for QR code
+global.fetch = vi.fn()
+
 describe("URL Components Snapshots", () => {
   describe("UrlDetailsModal", () => {
-    beforeEach(() => {
-      // Mock global functions
-      global.$fetch = vi.fn().mockResolvedValue({
-        success: true,
-      }) as any
-    })
-
-    const defaultProps = {
+    const baseData = {
       shortCode: "abc123",
       shortUrl: "http://localhost:3000/abc123",
       originalUrl: "https://example.com",
-      isOpen: false,
+      title: "Example Website",
+      currentOwner: "testuser",
+      isOpen: false
     }
 
     it("should render when closed", () => {
       const wrapper = mount(UrlDetailsModal, {
-        props: defaultProps,
+        props: {
+          data: { ...baseData, isOpen: false }
+        },
+        global: {
+          stubs: {
+            UrlForm: true,
+            AlertMessage: true,
+            ModalHeader: true,
+            QrCodeSection: true
+          }
+        }
       })
 
       expect(wrapper.html()).toMatchSnapshot()
@@ -32,9 +40,16 @@ describe("URL Components Snapshots", () => {
     it("should render when open", () => {
       const wrapper = mount(UrlDetailsModal, {
         props: {
-          ...defaultProps,
-          isOpen: true,
+          data: { ...baseData, isOpen: true }
         },
+        global: {
+          stubs: {
+            UrlForm: true,
+            AlertMessage: true,
+            ModalHeader: true,
+            QrCodeSection: true
+          }
+        }
       })
 
       expect(wrapper.html()).toMatchSnapshot()
@@ -43,11 +58,22 @@ describe("URL Components Snapshots", () => {
     it("should render with long URLs", () => {
       const wrapper = mount(UrlDetailsModal, {
         props: {
-          ...defaultProps,
-          shortUrl: "http://localhost:3000/long123",
-          originalUrl: "https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments",
-          isOpen: true,
+          data: {
+            ...baseData,
+            shortCode: "long123",
+            shortUrl: "http://localhost:3000/long123",
+            originalUrl: "https://very-long-example-url-that-should-be-displayed-properly.com/with/many/path/segments",
+            isOpen: false
+          }
         },
+        global: {
+          stubs: {
+            UrlForm: true,
+            AlertMessage: true,
+            ModalHeader: true,
+            QrCodeSection: true
+          }
+        }
       })
 
       expect(wrapper.html()).toMatchSnapshot()
@@ -56,12 +82,22 @@ describe("URL Components Snapshots", () => {
     it("should render with special characters in URLs", () => {
       const wrapper = mount(UrlDetailsModal, {
         props: {
-          ...defaultProps,
-          shortCode: "special123",
-          shortUrl: "http://localhost:3000/special123",
-          originalUrl: "https://example.com/path?param=value&other=test#section",
-          isOpen: true,
+          data: {
+            ...baseData,
+            shortCode: "special123",
+            shortUrl: "http://localhost:3000/special123",
+            originalUrl: "https://example.com/path?param=value&other=test#section",
+            isOpen: false
+          }
         },
+        global: {
+          stubs: {
+            UrlForm: true,
+            AlertMessage: true,
+            ModalHeader: true,
+            QrCodeSection: true
+          }
+        }
       })
 
       expect(wrapper.html()).toMatchSnapshot()
@@ -70,11 +106,21 @@ describe("URL Components Snapshots", () => {
     it("should render with different shortCode formats", () => {
       const wrapper = mount(UrlDetailsModal, {
         props: {
-          ...defaultProps,
-          shortCode: "ABC-123_test",
-          shortUrl: "http://localhost:3000/ABC-123_test",
-          isOpen: true,
+          data: {
+            ...baseData,
+            shortCode: "ABC-123_test",
+            shortUrl: "http://localhost:3000/ABC-123_test",
+            isOpen: false
+          }
         },
+        global: {
+          stubs: {
+            UrlForm: true,
+            AlertMessage: true,
+            ModalHeader: true,
+            QrCodeSection: true
+          }
+        }
       })
 
       expect(wrapper.html()).toMatchSnapshot()
@@ -83,11 +129,23 @@ describe("URL Components Snapshots", () => {
     it("should render with minimal props", () => {
       const wrapper = mount(UrlDetailsModal, {
         props: {
-          shortCode: "min",
-          shortUrl: "http://localhost:3000/min",
-          originalUrl: "https://a.co",
-          isOpen: true,
+          data: {
+            shortCode: "min",
+            shortUrl: "http://localhost:3000/min",
+            originalUrl: "https://a.co",
+            title: "",
+            currentOwner: "user",
+            isOpen: false
+          }
         },
+        global: {
+          stubs: {
+            UrlForm: true,
+            AlertMessage: true,
+            ModalHeader: true,
+            QrCodeSection: true
+          }
+        }
       })
 
       expect(wrapper.html()).toMatchSnapshot()

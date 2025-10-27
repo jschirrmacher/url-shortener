@@ -1,17 +1,17 @@
 <script setup lang="ts">
-import type { UrlRecord, User } from "~/types/index"
+import type { UrlRecord } from "~/types/index"
 
 const { user } = useAuthPageStandard("URL Shortener - Dashboard")
+const usersStore = useUsersStore()
 
 // Admin check
 const isAdmin = computed(() => user.value?.role === "admin")
 
 // Reactive Data
 const urls = ref<UrlRecord[]>([])
-const allUsers = ref<User[]>([])
-const urlsLoading = ref<boolean>(true)
-const urlsError = ref<string>("")
-const selectedUser = ref<string>("all")
+const urlsLoading = ref(false)
+const urlsError = ref("")
+const selectedUser = ref("all")
 
 // Computed filtered URLs
 const filteredUrls = computed(() => {
@@ -21,56 +21,28 @@ const filteredUrls = computed(() => {
   return urls.value.filter(url => url.createdBy === selectedUser.value)
 })
 
-onMounted(async (): Promise<void> => {
+// Active users for admin dropdown
+const activeUsers = computed(() => usersStore.users.filter(u => u.active))
+
+onMounted(async () => {
   await loadUrls()
   if (isAdmin.value) {
-    await loadUsers()
+    await usersStore.loadUsers()
   }
 })
 
 // Load URLs (all for admin, own for users)
-const loadUrls = async (): Promise<void> => {
+async function loadUrls() {
   try {
     urlsLoading.value = true
     urlsError.value = ""
 
-    const endpoint = isAdmin.value ? "/api/admin/urls" : "/api/urls"
-    const response = await $fetch<UrlRecord[]>(endpoint)
-    urls.value = response
+    urls.value = await $fetch<UrlRecord[]>("/api/urls")
   } catch (err: unknown) {
     const apiError = err as { data?: { message?: string }; message?: string }
     urlsError.value = apiError?.data?.message ?? apiError?.message ?? "Fehler beim Laden der URLs"
   } finally {
     urlsLoading.value = false
-  }
-}
-
-// Load Users (admin only)
-const loadUsers = async (): Promise<void> => {
-  try {
-    const response = await $fetch<User[]>("/api/admin/users")
-    allUsers.value = response.filter(u => u.active)
-  } catch (err) {
-    console.error("Failed to load users:", err)
-  }
-}
-
-// Change URL owner (admin only)
-const changeUrlOwner = async (shortCode: string, newOwner: string): Promise<void> => {
-  try {
-    await $fetch(`/api/admin/urls/${shortCode}/owner`, {
-      method: "PUT",
-      body: { newOwner }
-    })
-    
-    // Update local data
-    const urlIndex = urls.value.findIndex(url => url.shortCode === shortCode)
-    if (urlIndex !== -1) {
-      urls.value[urlIndex]!.createdBy = newOwner
-    }
-  } catch (err) {
-    console.error("Failed to change owner:", err)
-    throw err
   }
 }
 
@@ -91,7 +63,7 @@ watch(createSuccess, (newValue) => {
 })
 
 // Event Handlers
-async function handleUrlChanged(data: { shortCode: string; originalUrl: string; title: string }): Promise<void> {
+async function handleUrlChanged(data: { shortCode: string; originalUrl: string; title: string; owner?: string }) {
   createLoading.value = true
   createError.value = ""
   createSuccess.value = false
@@ -102,7 +74,8 @@ async function handleUrlChanged(data: { shortCode: string; originalUrl: string; 
       body: {
         originalUrl: data.originalUrl,
         customCode: data.shortCode || undefined,
-        title: data.title || undefined
+        title: data.title || undefined,
+        owner: data.owner || undefined
       }
     })
 
@@ -116,20 +89,6 @@ async function handleUrlChanged(data: { shortCode: string; originalUrl: string; 
     createError.value = apiError?.data?.message || apiError?.message || "Fehler beim Erstellen der URL"
   } finally {
     createLoading.value = false
-  }
-}
-
-const handleUrlsRefresh = (): void => {
-  loadUrls()
-}
-
-const handleOwnerChange = async (shortCode: string, newOwner: string): Promise<void> => {
-  try {
-    await changeUrlOwner(shortCode, newOwner)
-  } catch (err) {
-    console.error("Failed to change owner:", err)
-    // Reload to revert changes
-    await loadUrls()
   }
 }
 </script>
@@ -162,11 +121,10 @@ const handleOwnerChange = async (shortCode: string, newOwner: string): Promise<v
         :loading="urlsLoading"
         :error="urlsError"
         :is-admin="isAdmin"
-        :all-users="allUsers"
+        :all-users="activeUsers"
         :selected-user="selectedUser"
-        @refresh="handleUrlsRefresh"
-        @updated="handleUrlsRefresh"
-        @change-owner="handleOwnerChange"
+        @refresh="loadUrls"
+        @updated="loadUrls"
         @user-changed="selectedUser = $event"
       />
     </div>

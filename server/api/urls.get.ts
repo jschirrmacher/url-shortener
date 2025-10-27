@@ -6,11 +6,14 @@ export default defineEventHandler(async (event) => {
     // Authentifiziere Request
     const { user } = await authenticateRequest(event)
 
-    // Hole URLs des Benutzers mit Statistiken
+    // Hole URLs mit Statistiken
     const { getUrlsWithStats } = useUrls()
-    const userUrls = await getUrlsWithStats(user.username)
+    
+    // Admin sieht alle URLs, normale User nur ihre eigenen
+    const username = user.role === 'admin' ? undefined : user.username
+    const urls = await getUrlsWithStats(username)
 
-    return userUrls
+    return urls
   } catch (error: unknown) {
     if (error && typeof error === "object" && "statusCode" in error) {
       throw error

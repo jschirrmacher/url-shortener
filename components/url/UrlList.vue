@@ -37,6 +37,7 @@ const unifiedModal = reactive({
   shortUrl: "",
   originalUrl: "",
   title: "",
+  currentOwner: "",
 })
 
 function getSortedUrls() {
@@ -51,6 +52,7 @@ function openUnifiedModal(url: UrlRecord) {
   unifiedModal.shortUrl = `${baseUrl}/${url.shortCode}`
   unifiedModal.originalUrl = url.originalUrl
   unifiedModal.title = url.title || ""
+  unifiedModal.currentOwner = url.createdBy
   unifiedModal.isOpen = true
 }
 
@@ -60,6 +62,7 @@ function closeUnifiedModal() {
   unifiedModal.shortUrl = ""
   unifiedModal.originalUrl = ""
   unifiedModal.title = ""
+  unifiedModal.currentOwner = ""
 }
 
 function handleUrlUpdated(url: UrlRecord) {
@@ -118,7 +121,7 @@ async function deleteUrl(shortCode: string) {
         :all-users="allUsers"
         @open-details="openUnifiedModal"
         @delete="deleteUrl"
-        @change-owner="(shortCode, newOwner) => $emit('changeOwner', shortCode, newOwner)"
+        @change-owner="(shortCode: string, newOwner: string) => $emit('changeOwner', shortCode, newOwner)"
       />
     </div>
     
@@ -133,13 +136,12 @@ async function deleteUrl(shortCode: string) {
   
   <!-- Details Modal -->
   <UrlDetailsModal
-    :short-code="unifiedModal.shortCode"
-    :short-url="unifiedModal.shortUrl"
-    :original-url="unifiedModal.originalUrl"
-    :title="unifiedModal.title"
-    :is-open="unifiedModal.isOpen"
+    :data="unifiedModal"
+    :is-admin="isAdmin"
+    :all-users="allUsers"
     @close="closeUnifiedModal"
     @updated="handleUrlUpdated"
+    @change-owner="(shortCode: string, newOwner: string) => $emit('changeOwner', shortCode, newOwner)"
   />
 </template>
 

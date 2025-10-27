@@ -4,10 +4,11 @@ interface Props {
   shortCode?: string
   originalUrl?: string
   title?: string
+  owner?: string
 }
 
 interface Emits {
-  (e: "changed", data: { shortCode: string; originalUrl: string; title: string }): void
+  (e: "changed", data: { shortCode: string; originalUrl: string; title: string; owner?: string }): void
   (e: "cancel"): void
 }
 
@@ -15,19 +16,24 @@ const props = withDefaults(defineProps<Props>(), {
   title: '',
   shortCode: '',
   shortUrl: '',
-  originalUrl: ''
+  originalUrl: '',
+  owner: ''
 })
 
 const emit = defineEmits<Emits>()
 
 const { copyToClipboard } = useClipboard()
+const { user: currentUser } = useAuth()
+const usersStore = useUsersStore()
 
 const isEditMode = computed(() => !!props.shortUrl)
+const isAdmin = computed(() => currentUser.value?.role === 'admin')
 
 const formData = reactive({
   originalUrl: "",
   shortCode: "",
-  title: ""
+  title: "",
+  owner: ""
 })
 
 // Initialize form data when component mounts or props change
@@ -35,6 +41,14 @@ watchEffect(() => {
   formData.originalUrl = props.originalUrl || ""
   formData.shortCode = props.shortCode || ""
   formData.title = props.title || ""
+  formData.owner = props.owner || currentUser.value?.username || ""
+})
+
+// Load users for admin
+onMounted(() => {
+  if (isAdmin.value) {
+    usersStore.loadUsers()
+  }
 })
 
 // Validation state
@@ -55,7 +69,8 @@ function isValidUrl(url: string): boolean {
 
 function isValidShortCode(code: string): boolean {
   if (!code) return true
-  return /^[a-zA-Z0-9_-]+$/.test(code)
+  if (code.length < 6) return false
+  return /^[a-zA-Z0-9_\-]+$/v.test(code)
 }
 
 function validateForm(): boolean {
@@ -78,8 +93,14 @@ watch(() => formData.originalUrl, (value) => {
 })
 
 watch(() => formData.shortCode, (value) => {
-  if (value && !isValidShortCode(value)) {
-    validationErrors.shortCode = "Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+  if (value) {
+    if (value.length < 6) {
+      validationErrors.shortCode = "Mindestens 6 Zeichen erforderlich"
+    } else if (!/^[a-zA-Z0-9_\-]+$/v.test(value)) {
+      validationErrors.shortCode = "Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+    } else {
+      validationErrors.shortCode = ""
+    }
   } else {
     validationErrors.shortCode = ""
   }
@@ -99,7 +120,8 @@ function handleSubmit() {
   emit('changed', {
     shortCode: formData.shortCode,
     originalUrl: formData.originalUrl,
-    title: formData.title
+    title: formData.title,
+    owner: formData.owner
   })
 }
 
@@ -149,23 +171,32 @@ function handleCancel() {
             type="text"
             :placeholder="isEditMode ? 'z.B. mein-link' : 'Auto-generiert'"
             :required="isEditMode"
-            pattern="[a-zA-Z0-9_-]+"
-            title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
+            pattern="[a-zA-Z0-9_\-]{6,}"
+            title="Mindestens 6 Zeichen: Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
             :class="{ 'error': validationErrors.shortCode }"
           >
           <p v-if="validationErrors.shortCode" class="error-message">
             {{ validationErrors.shortCode }}
           </p>
-          <p v-else class="field-hint">
-            Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt
-          </p>
         </div>
 
-        <!-- Title field (responsive beside shortCode on wide screens) -->
-        <div class="form-field title-field">
-          <label for="title">Titel (optional)</label>
-          <input id="title" v-model="formData.title" type="text" placeholder="Beschreibender Titel für den Link">
+        <div v-if="isAdmin && usersStore.users.length > 0" class="form-field owner-field" data-testid="owner-field">
+          <label for="owner">Eigentümer</label>
+          <select id="owner" v-model="formData.owner" class="owner-select">
+            <option 
+              v-for="user in usersStore.users" 
+              :key="user.username"
+              :value="user.username"
+            >
+              {{ user.username }}
+            </option>
+          </select>
         </div>
+      </div>
+
+      <div class="form-field title-field">
+        <label for="title">Titel (optional)</label>
+        <input id="title" v-model="formData.title" type="text" placeholder="Beschreibender Titel für den Link">
       </div>
 
       <!-- Buttons -->
@@ -258,11 +289,21 @@ function handleCancel() {
   margin: 0;
 }
 
+@media (prefers-color-scheme: dark) {
+  .error-message {
+    color: #f87171;
+  }
+}
+
 .field-hint {
   font-size: 0.75rem;
   color: #6b7280;
   margin: 0;
   padding-left: 0.25rem;
+}
+
+.field-hint.error-hint {
+  color: #dc2626;
 }
 
 .optional-fields {
@@ -282,9 +323,9 @@ function handleCancel() {
     /* Fixed width for short code */
   }
 
-  .title-field {
-    flex: 1;
-    /* Take remaining space */
+  .owner-field {
+    flex: 0 0 200px;
+    /* Fixed width for owner selection */
   }
 }
 
@@ -292,5 +333,21 @@ function handleCancel() {
   display: flex;
   gap: 0.75rem;
   margin-top: 1rem;
+}
+
+.owner-select {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border-primary);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.owner-select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 </style>

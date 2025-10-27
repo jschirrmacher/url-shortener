@@ -3,11 +3,14 @@ import { ref, watch, nextTick } from "vue"
 import type { UrlRecord, UpdateUrlResponse } from "~/types/index"
 
 interface Props {
-  shortCode: string
-  shortUrl?: string
-  originalUrl?: string
-  title?: string
-  isOpen: boolean
+  data: {
+    shortCode: string
+    shortUrl: string
+    originalUrl: string
+    title: string
+    currentOwner: string
+    isOpen: boolean
+  }
 }
 
 interface Emits {
@@ -31,11 +34,11 @@ const updateSuccess = ref(false)
 
 // Generate QR Code
 async function generateQrCode() {
-  if (!props.shortCode) return
+  if (!props.data.shortCode) return
   
   try {
     // Use the correct API route and get the image directly
-    qrCodeUrl.value = `/api/qr/${props.shortCode}?format=png&size=200`
+    qrCodeUrl.value = `/api/qr/${props.data.shortCode}?format=png&size=200`
   } catch (err) {
     console.error("Failed to generate QR code:", err)
   }
@@ -43,15 +46,15 @@ async function generateQrCode() {
 
 // Download QR Code
 async function downloadQrCode(format: 'png' | 'svg') {
-  if (!props.shortCode) return
+  if (!props.data.shortCode) return
   
   try {
-    const response = await fetch(`/api/qr/${props.shortCode}?format=${format}&download=true`)
+    const response = await fetch(`/api/qr/${props.data.shortCode}?format=${format}&download=true`)
     const blob = await response.blob()
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `qr-${props.shortCode}.${format}`
+    a.download = `qr-${props.data.shortCode}.${format}`
     a.click()
     URL.revokeObjectURL(url)
   } catch (err) {
@@ -60,15 +63,15 @@ async function downloadQrCode(format: 'png' | 'svg') {
 }
 
 // Update URL
-async function updateUrl(data: { shortCode: string; originalUrl: string; title: string }) {
-  if (!props.shortCode || !data.originalUrl.trim()) return
+async function updateUrl(data: { shortCode: string; originalUrl: string; title: string; owner?: string }) {
+  if (!props.data.shortCode || !data.originalUrl.trim()) return
 
   try {
     updateLoading.value = true
     updateError.value = ""
     updateSuccess.value = false
 
-    const body: { originalUrl: string; title?: string; newShortCode?: string } = { 
+    const body: { originalUrl: string; title?: string; newShortCode?: string; owner?: string } = { 
       originalUrl: data.originalUrl.trim() 
     }
     
@@ -76,26 +79,26 @@ async function updateUrl(data: { shortCode: string; originalUrl: string; title: 
       body.title = data.title.trim()
     }
     
-    if (data.shortCode && data.shortCode !== props.shortCode) {
+    if (data.shortCode && data.shortCode !== props.data.shortCode) {
       body.newShortCode = data.shortCode
     }
 
-    const { data: response, error } = await useFetch<UpdateUrlResponse>(`/api/urls/${props.shortCode}`, {
+    if (data.owner) {
+      body.owner = data.owner
+    }
+
+    const response = await $fetch<UpdateUrlResponse>(`/api/urls/${props.data.shortCode}`, {
       method: "PUT",
       body,
     })
 
-    if (error.value) {
-      throw error.value
-    }
-
-    if (response.value?.success && response.value.url) {
+    if (response?.success && response.url) {
       updateSuccess.value = true
       
       const updatedUrl: UrlRecord = {
-        shortCode: response.value.url.shortCode,
-        originalUrl: response.value.url.originalUrl,
-        title: response.value.url.title || "",
+        shortCode: response.url.shortCode,
+        originalUrl: response.url.originalUrl,
+        title: response.url.title || "",
         createdAt: new Date().toISOString(),
         createdBy: "current-user",
       }
@@ -154,7 +157,7 @@ function handleKeydown(event: KeyboardEvent) {
 
 // Watch for isOpen prop changes
 watch(
-  () => props.isOpen,
+  () => props.data.isOpen,
   (isOpen) => {
     if (isOpen) {
       openModal()
@@ -174,13 +177,13 @@ watch(
   >
     <div class="modal-content container-primary">
       <ModalHeader 
-        :title="`URL Details: ${shortCode}`"
+        :title="`URL Details: ${data.shortCode}`"
         @close="closeModal"
       />
 
       <div class="modal-body">
         <QrCodeSection
-          :short-code="shortCode"
+          :short-code="data.shortCode"
           :qr-code-url="qrCodeUrl"
           @download="downloadQrCode"
         />
@@ -200,10 +203,11 @@ watch(
         />
 
         <UrlForm
-          :short-url="shortUrl || ''"
-          :short-code="shortCode"
-          :original-url="originalUrl || ''"
-          :title="title"
+          :short-url="data.shortUrl"
+          :short-code="data.shortCode"
+          :original-url="data.originalUrl"
+          :title="data.title"
+          :owner="data.currentOwner"
           @changed="updateUrl"
           @cancel="closeModal"
         />
@@ -236,9 +240,7 @@ watch(
 
 .modal-body {
   padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
   overflow-y: auto;
+  flex: 1;
 }
 </style>

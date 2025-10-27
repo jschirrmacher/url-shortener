@@ -14,6 +14,7 @@ export type UrlRecord = {
   createdAt: string
   createdBy: string
   totalClicks?: number
+  uniqueVisitors?: number
 }
 
 export interface ClickRecord {
@@ -80,6 +81,7 @@ export interface UpdateUrlRequest {
   originalUrl: string
   title?: string
   newShortCode?: string
+  owner?: string
 }
 
 export interface UpdateUrlResponse {

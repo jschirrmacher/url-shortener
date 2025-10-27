@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const { getUrlByShortCode, updateUrl } = useUrls()
+    const { getUrlByShortCode, updateUrl, updateUrlOwner } = useUrls()
     const existingUrl: UrlRecord | null = await getUrlByShortCode(shortCode)
 
     if (!existingUrl) {
@@ -38,6 +38,11 @@ export default defineEventHandler(async (event) => {
         statusCode: 403,
         message: "Keine Berechtigung zum Bearbeiten dieser URL",
       })
+    }
+
+    // Handle owner change (admin only)
+    if (body.owner && currentUser.role === "admin" && body.owner !== existingUrl.createdBy) {
+      await updateUrlOwner(shortCode, body.owner)
     }
 
     const result: UpdateUrlResponse = await updateUrl(shortCode, body.originalUrl, body.title, body.newShortCode)

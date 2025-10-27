@@ -11,11 +11,12 @@ exports[`UrlForm Component > should match snapshot in create mode 1`] = `
     </div><!-- Optional fields in responsive layout -->
     <div data-v-6bb9e226="" class="optional-fields">
       <!-- Short code field (smaller) -->
-      <div data-v-6bb9e226="" class="form-field shortcode-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code (optional)</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="Auto-generiert" pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
-        <p data-v-6bb9e226="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
-      </div><!-- Title field (responsive beside shortCode on wide screens) -->
-      <div data-v-6bb9e226="" class="form-field title-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div>
-    </div><!-- Buttons -->
+      <div data-v-6bb9e226="" class="form-field shortcode-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code (optional)</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="Auto-generiert" pattern="[a-zA-Z0-9_\\-]{6,}" title="Mindestens 6 Zeichen: Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
+        <!--v-if-->
+      </div>
+      <!--v-if-->
+    </div>
+    <div data-v-6bb9e226="" class="form-field title-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div><!-- Buttons -->
     <div data-v-6bb9e226="" class="form-actions">
       <base-button-stub data-v-6bb9e226="" variant="primary" type="submit" disabled="true"></base-button-stub>
       <!--v-if-->
@@ -39,11 +40,12 @@ exports[`UrlForm Component > should match snapshot in edit mode 1`] = `
     </div><!-- Optional fields in responsive layout -->
     <div data-v-6bb9e226="" class="optional-fields">
       <!-- Short code field (smaller) -->
-      <div data-v-6bb9e226="" class="form-field shortcode-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="z.B. mein-link" required="" pattern="[a-zA-Z0-9_-]+" title="Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
-        <p data-v-6bb9e226="" class="field-hint"> Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt </p>
-      </div><!-- Title field (responsive beside shortCode on wide screens) -->
-      <div data-v-6bb9e226="" class="form-field title-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div>
-    </div><!-- Buttons -->
+      <div data-v-6bb9e226="" class="form-field shortcode-field"><label data-v-6bb9e226="" for="shortCode">Kurz-Code</label><input data-v-6bb9e226="" id="shortCode" type="text" placeholder="z.B. mein-link" required="" pattern="[a-zA-Z0-9_\\-]{6,}" title="Mindestens 6 Zeichen: Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt" class="">
+        <!--v-if-->
+      </div>
+      <!--v-if-->
+    </div>
+    <div data-v-6bb9e226="" class="form-field title-field"><label data-v-6bb9e226="" for="title">Titel (optional)</label><input data-v-6bb9e226="" id="title" type="text" placeholder="Beschreibender Titel für den Link"></div><!-- Buttons -->
     <div data-v-6bb9e226="" class="form-actions">
       <base-button-stub data-v-6bb9e226="" variant="primary" type="submit" disabled="false"></base-button-stub>
       <base-button-stub data-v-6bb9e226="" variant="secondary" type="button"></base-button-stub>

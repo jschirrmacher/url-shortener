@@ -5,6 +5,7 @@ interface CreateUrlRequest {
   originalUrl: string
   customCode?: string
   title?: string
+  owner?: string
 }
 
 export default defineEventHandler(async (event) => {
@@ -24,7 +25,10 @@ export default defineEventHandler(async (event) => {
     // Validiere Request Body
     const body = validateRequestBody<CreateUrlRequest>(await readBody(event), ["originalUrl"])
 
-    const { originalUrl, customCode, title } = body
+    const { originalUrl, customCode, title, owner } = body
+
+    // Determine the actual owner (admin can set owner, others use their own username)
+    const actualOwner = (user.role === 'admin' && owner) ? owner : user.username
 
     // Validiere URL
     if (!validateUrl(originalUrl)) {
@@ -57,7 +61,7 @@ export default defineEventHandler(async (event) => {
       originalUrl,
       customCode,
       title,
-      createdBy: user.username,
+      createdBy: actualOwner,
     })
 
     return result

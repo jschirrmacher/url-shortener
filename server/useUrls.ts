@@ -89,7 +89,7 @@ async function getUrlsWithStats(username?: string) {
       const clickStats = await getClickStats(url.shortCode)
       return {
         ...url,
-        clickCount: clickStats.totalClicks,
+        totalClicks: clickStats.totalClicks,
         uniqueVisitors: clickStats.uniqueVisitors,
       }
     }),
@@ -215,6 +215,18 @@ async function generateUniqueShortCode() {
   throw new Error("Konnte keinen eindeutigen Short Code generieren")
 }
 
+async function updateUrlOwner(shortCode: string, newOwner: string) {
+  const urls = (await readCsv(URLS_FILE)) as unknown as UrlRecord[]
+  const urlIndex = urls.findIndex(url => url.shortCode === shortCode)
+  
+  if (urlIndex === -1) {
+    throw new Error("URL nicht gefunden")
+  }
+  
+  urls[urlIndex]!.createdBy = newOwner
+  await writeCsv(URLS_FILE, urls as UrlRecord[], ["shortCode", "originalUrl", "title", "createdAt", "createdBy"])
+}
+
 export default function useUrls() {
   return {
     createShortUrl,
@@ -224,5 +236,6 @@ export default function useUrls() {
     getUrlStats,
     updateUrl,
     deleteUrl,
+    updateUrlOwner,
   }
 }
