@@ -14,7 +14,7 @@ const { user } = useAuth()
               <Logo class="h-12 w-auto" />
             </NuxtLink>
             <BaseButton 
-              v-if="$route.path !== '/'" 
+              v-if="$route.path !== '/' && $route.path !== '/login'" 
               variant="ghost"
               size="sm"
               @click="$router.back()"
@@ -34,7 +34,7 @@ const { user } = useAuth()
               <UserMenu v-if="user" />
 
               <!-- Login Button (für nicht-eingeloggte Benutzer) -->
-              <NuxtLink v-else to="/login" class="login-button">
+              <NuxtLink v-else-if="$route.path !== '/login'" to="/login" class="login-button">
                 Anmelden
               </NuxtLink>
 
