@@ -72,10 +72,19 @@ async function getClickStats(shortCode: string) {
     }))
     .sort((a, b) => b.date.localeCompare(a.date))
 
-  // Top referrers (from all clicks)
   const referrerMap = new Map<string, number>()
   clicks.forEach((click) => {
-    const referrer = click.referrer || "Direct"
+    let referrer = click.referrer || "Direct"
+    
+    if (referrer !== "Direct") {
+      try {
+        const url = new URL(referrer)
+        referrer = url.hostname
+      } catch {
+        // Keep original if URL parsing fails
+      }
+    }
+    
     referrerMap.set(referrer, (referrerMap.get(referrer) || 0) + 1)
   })
 
