@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { isValidUrl, isValidShortCode, SHORT_CODE_PATTERN, SHORT_CODE_PATTERN_STRING } from '~/utils/validation'
+
 interface Props {
   shortUrl?: string
   shortCode?: string
@@ -9,6 +11,7 @@ interface Props {
 
 interface Emits {
   (e: "changed", data: { shortCode: string; originalUrl: string; title: string; owner?: string }): void
+  (e: "created", data: { shortUrl: string; message: string }): void
   (e: "cancel"): void
 }
 
@@ -36,6 +39,8 @@ const formData = reactive({
   owner: ""
 })
 
+const successData = ref<{ shortUrl: string; message: string } | null>(null)
+
 // Initialize form data when component mounts or props change
 watchEffect(() => {
   formData.originalUrl = props.originalUrl || ""
@@ -58,32 +63,14 @@ const validationErrors = reactive({
 })
 
 // Validation
-function isValidUrl(url: string): boolean {
-  try {
-    new URL(url)
-    return true
-  } catch {
-    return false
-  }
-}
-
-function isValidShortCode(code: string): boolean {
-  if (!code) return true
-  if (code.length < 6) return false
-  return /^[a-zA-Z0-9_\-]+$/v.test(code)
-}
-
-function validateForm(): boolean {
-  // Trigger validation for empty fields
+function validateForm() {
   if (!formData.originalUrl.trim()) {
     validationErrors.originalUrl = "URL ist erforderlich"
   }
 
-  // Return true if no validation errors exist
   return !validationErrors.originalUrl && !validationErrors.shortCode
 }
 
-// Real-time validation
 watch(() => formData.originalUrl, (value) => {
   if (value.trim() && !isValidUrl(value)) {
     validationErrors.originalUrl = "Ungültige URL"
@@ -96,7 +83,7 @@ watch(() => formData.shortCode, (value) => {
   if (value) {
     if (value.length < 6) {
       validationErrors.shortCode = "Mindestens 6 Zeichen erforderlich"
-    } else if (!/^[a-zA-Z0-9_\-]+$/v.test(value)) {
+    } else if (!SHORT_CODE_PATTERN.test(value)) {
       validationErrors.shortCode = "Nur Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
     } else {
       validationErrors.shortCode = ""
@@ -113,7 +100,6 @@ const isFormValid = computed(() => {
   return hasUrl && validUrl && validShortCode
 })
 
-// Handle form submission
 function handleSubmit() {
   if (!validateForm()) return
 
@@ -128,23 +114,52 @@ function handleSubmit() {
 function handleCancel() {
   emit('cancel')
 }
+
+function setCreated(shortUrl: string, message: string) {
+  successData.value = { shortUrl, message }
+
+  formData.originalUrl = ""
+  formData.shortCode = ""
+  formData.title = ""
+  formData.owner = currentUser.value?.username || ""
+}
+
+defineExpose({
+  setCreated
+})
 </script>
 
 <template>
   <div class="url-form">
-    <!-- Edit mode: Show current short URL -->
-    <div v-if="isEditMode && shortUrl" class="readonly-field">
-      <label>Kurz-URL</label>
-      <div class="input-with-button">
-        <input :value="shortUrl" readonly class="readonly-input">
-        <BaseButton variant="secondary" size="sm" @click="copyToClipboard(shortUrl)">
-          Kopieren
-        </BaseButton>
-      </div>
-    </div>
-
     <form @submit.prevent="handleSubmit">
-      <!-- URL field (first and most important) -->
+      <!-- Success message for newly created URLs -->
+      <div v-if="successData" class="success-field">
+        <label>Kurz-URL erstellt</label>
+        <div class="input-with-button">
+          <input :value="successData.shortUrl" readonly class="readonly-input success-input">
+          <button 
+            type="button" 
+            class="copy-button"
+            title="In Zwischenablage kopieren"
+            @click="copyToClipboard(successData.shortUrl)"
+          >
+            📋
+          </button>
+        </div>
+        <p class="success-message">{{ successData.message }}</p>
+      </div>
+
+      <!-- Edit mode: Show current short URL -->
+      <div v-else-if="isEditMode && shortUrl" class="readonly-field">
+        <label>Kurz-URL</label>
+        <div class="input-with-button">
+          <input :value="shortUrl" readonly class="readonly-input">
+          <BaseButton variant="secondary" size="sm" @click="copyToClipboard(shortUrl)">
+            Kopieren
+          </BaseButton>
+        </div>
+      </div>
+
       <div class="form-field">
         <label for="originalUrl">{{ isEditMode ? 'Ziel-URL' : 'URL zum Verkürzen' }}</label>
         <input
@@ -160,9 +175,7 @@ function handleCancel() {
         </p>
       </div>
 
-      <!-- Optional fields in responsive layout -->
       <div class="optional-fields">
-        <!-- Short code field (smaller) -->
         <div class="form-field shortcode-field">
           <label for="shortCode">{{ isEditMode ? 'Kurz-Code' : 'Kurz-Code (optional)' }}</label>
           <input
@@ -171,7 +184,7 @@ function handleCancel() {
             type="text"
             :placeholder="isEditMode ? 'z.B. mein-link' : 'Auto-generiert'"
             :required="isEditMode"
-            pattern="[a-zA-Z0-9_\-]{6,}"
+            :pattern="SHORT_CODE_PATTERN_STRING"
             title="Mindestens 6 Zeichen: Buchstaben, Zahlen, Bindestriche und Unterstriche erlaubt"
             :class="{ 'error': validationErrors.shortCode }"
           >
@@ -199,7 +212,6 @@ function handleCancel() {
         <input id="title" v-model="formData.title" type="text" placeholder="Beschreibender Titel für den Link">
       </div>
 
-      <!-- Buttons -->
       <div class="form-actions">
         <BaseButton variant="primary" type="submit" :disabled="!isFormValid">
           {{ isEditMode ? 'Speichern' : 'URL verkürzen' }}
@@ -220,8 +232,16 @@ function handleCancel() {
   gap: 1rem;
 }
 
-.readonly-field {
-  margin-bottom: 1rem;
+.success-input {
+  background-color: #f0f9ff;
+  border-color: #0ea5e9;
+}
+
+.success-message {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #059669;
+  font-weight: 500;
 }
 
 .readonly-field label {
@@ -251,7 +271,7 @@ function handleCancel() {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .form-field label {
@@ -262,7 +282,7 @@ function handleCancel() {
 }
 
 .form-field input {
-  padding: 0.75rem;
+  padding: 0.5rem 0.75rem;
   border: 1px solid #d1d5db;
   border-radius: 0.375rem;
   font-size: 1rem;
@@ -337,7 +357,7 @@ function handleCancel() {
 
 .owner-select {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border: 1px solid var(--border-primary);
   border-radius: 0.375rem;
   font-size: 0.875rem;

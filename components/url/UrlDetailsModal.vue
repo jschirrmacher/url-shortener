@@ -188,12 +188,13 @@ watch(
           @download="downloadQrCode"
         />
 
-        <AlertMessage
-          v-if="updateError"
-          type="error"
-          title="Fehler beim Aktualisieren"
-          :message="updateError"
-        />
+        <div class="form-section">
+          <AlertMessage
+            v-if="updateError"
+            type="error"
+            title="Fehler beim Aktualisieren"
+            :message="updateError"
+          />
 
         <AlertMessage
           v-if="updateSuccess"
@@ -211,12 +212,17 @@ watch(
           @changed="updateUrl"
           @cancel="closeModal"
         />
+        </div>
       </div>
     </div>
   </dialog>
 </template>
 
 <style scoped>
+.form-section {
+  margin-top: 2rem;
+}
+
 .modal-dialog {
   border: none;
   border-radius: 0.5rem;

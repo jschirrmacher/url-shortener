@@ -49,24 +49,12 @@ async function loadUrls() {
 // URL Creation State
 const createLoading = ref(false)
 const createError = ref("")
-const createSuccess = ref(false)
-const createSuccessMessage = ref("")
-
-// Auto-hide success message after 5 seconds
-watch(createSuccess, (newValue) => {
-  if (newValue) {
-    setTimeout(() => {
-      createSuccess.value = false
-      createSuccessMessage.value = ""
-    }, 5000)
-  }
-})
+const urlFormRef = ref()
 
 // Event Handlers
 async function handleUrlChanged(data: { shortCode: string; originalUrl: string; title: string; owner?: string }) {
   createLoading.value = true
   createError.value = ""
-  createSuccess.value = false
 
   try {
     const response = await $fetch("/api/urls", {
@@ -79,8 +67,7 @@ async function handleUrlChanged(data: { shortCode: string; originalUrl: string; 
       }
     })
 
-    createSuccess.value = true
-    createSuccessMessage.value = `Kurz-URL erstellt: ${response.shortUrl}`
+    urlFormRef.value?.setCreated(response.shortUrl, "URL erfolgreich erstellt!")
     
     // Reload URLs
     await loadUrls()
@@ -96,14 +83,6 @@ async function handleUrlChanged(data: { shortCode: string; originalUrl: string; 
 <template>
   <div class="max-w-6xl mx-auto py-4 px-4">
     <div class="space-y-6">
-      <!-- Success message -->
-      <AlertMessage
-        v-if="createSuccess"
-        type="success"
-        title="URL erfolgreich erstellt"
-        :message="createSuccessMessage"
-      />
-
       <!-- Error message -->
       <AlertMessage
         v-if="createError"
@@ -113,7 +92,7 @@ async function handleUrlChanged(data: { shortCode: string; originalUrl: string; 
       />
 
       <!-- URL Create Form -->
-      <UrlForm @changed="handleUrlChanged" />
+      <UrlForm ref="urlFormRef" @changed="handleUrlChanged" />
       
       <!-- URLs List -->
       <UrlList
