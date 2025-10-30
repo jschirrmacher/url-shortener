@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Auth für globales Layout
 const { user } = useAuth()
+const goBack = inject('goBack') as () => void
 </script>
 
 <template>
@@ -17,7 +18,7 @@ const { user } = useAuth()
               v-if="$route.path !== '/' && $route.path !== '/login'" 
               variant="ghost"
               size="sm"
-              @click="$router.back()"
+              @click="goBack"
             >
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
