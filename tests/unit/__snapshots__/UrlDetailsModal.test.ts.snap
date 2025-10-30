@@ -6,9 +6,11 @@ exports[`UrlDetailsModal Component > should match snapshot 1`] = `
     <modal-header-stub data-v-dd4104c0="" title="URL Details: abc123"></modal-header-stub>
     <div data-v-dd4104c0="" class="modal-body">
       <qr-code-section-stub data-v-dd4104c0="" short-code="abc123" qr-code-url=""></qr-code-section-stub>
-      <!--v-if-->
-      <!--v-if-->
-      <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" title="Example Website" owner="testuser"></url-form-stub>
+      <div data-v-dd4104c0="" class="form-section">
+        <!--v-if-->
+        <!--v-if-->
+        <url-form-stub data-v-dd4104c0="" short-url="http://localhost:3000/abc123" short-code="abc123" original-url="https://example.com" title="Example Website" owner="testuser"></url-form-stub>
+      </div>
     </div>
   </div>
 </dialog>"
