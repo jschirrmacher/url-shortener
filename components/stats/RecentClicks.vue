@@ -10,6 +10,7 @@ const isTransitioning = ref(false)
 const animationDirection = ref<'left' | 'right' | null>(null)
 const previousData = ref<typeof dailyData.value>([])
 const showPrevious = ref(false)
+const selectedSource = ref<string | null>(null)
 
 const isLeftDisabled = computed(() => 
   Boolean(statsStore.loadingMore || !statsStore.stats?._links?.next)
@@ -35,6 +36,11 @@ function handleRightClick() {
   previousData.value = [...dailyData.value] // Use computed dailyData with all fields
   showPrevious.value = true
   statsStore.loadPrevStats()
+}
+
+// Toggle source selection
+function toggleSource(source: string) {
+  selectedSource.value = selectedSource.value === source ? null : source
 }
 
 // Reset animation when loading completes
@@ -67,7 +73,7 @@ function normalizeSourceBreakdown(): Record<string, number> {
 function calculateSources(clicks: number, normalizedBreakdown: Record<string, number>, totalSources: number): Source[] {
   if (clicks === 0) return []
 
-  return Object.entries(normalizedBreakdown)
+  let sources = Object.entries(normalizedBreakdown)
     .map(([id, amount]) => ({
       id,
       count: totalSources > 0 ? Math.round(clicks * (amount / totalSources)) : 0,
@@ -75,6 +81,13 @@ function calculateSources(clicks: number, normalizedBreakdown: Record<string, nu
       label: getSourceLabel(id),
     }))
     .filter((source) => source.count > 0)
+
+  // Filter by selected source if any
+  if (selectedSource.value) {
+    sources = sources.filter(source => source.id === selectedSource.value)
+  }
+
+  return sources
 }
 
 function monthName(date: string) {
@@ -143,10 +156,29 @@ function getSourceLabel(source: string): string {
   <div class="recent-clicks-chart">
     <div class="chart-header">
       <h3 class="chart-title">Tägliche Klicks nach Quelle</h3>
+      <button 
+        v-if="selectedSource"
+        class="reset-filter"
+        title="Filter zurücksetzen"
+        @click="selectedSource = null"
+      >
+        ✕ Alle anzeigen
+      </button>
     </div>
 
     <div class="legend">
-      <div v-for="source in availableSources" :key="source" class="legend-item">
+      <div 
+        v-for="source in availableSources" 
+        :key="source" 
+        :class="[
+          'legend-item',
+          { 
+            'selected': selectedSource === source,
+            'dimmed': selectedSource && selectedSource !== source
+          }
+        ]"
+        @click="toggleSource(source)"
+      >
         <div class="legend-color" :style="{ backgroundColor: getSourceColor(source) }" />
         <span>{{ getSourceLabel(source) }}</span>
       </div>
@@ -244,6 +276,22 @@ function getSourceLabel(source: string): string {
   margin: 0;
 }
 
+.reset-filter {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 0.875rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.reset-filter:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
 .legend {
   display: flex;
   gap: 1rem;
@@ -256,6 +304,27 @@ function getSourceLabel(source: string): string {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  transition: all 0.15s ease-in-out;
+}
+
+.legend-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.legend-item.selected {
+  background-color: #dbeafe;
+  font-weight: 600;
+}
+
+:global(.dark) .legend-item.selected {
+  background-color: #1e3a8a;
+}
+
+.legend-item.dimmed {
+  opacity: 0.4;
 }
 
 .legend-color {
