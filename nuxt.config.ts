@@ -12,6 +12,26 @@ export default defineNuxtConfig({
     head: {
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' }
+      ],
+      script: [
+        {
+          innerHTML: `
+            (function() {
+              try {
+                const savedTheme = localStorage.getItem('theme');
+                const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const isDark = savedTheme === 'dark' || (savedTheme === 'system' && systemDark) || (!savedTheme && systemDark);
+                
+                if (isDark) {
+                  document.documentElement.classList.add('dark');
+                }
+              } catch (e) {
+                // Fallback falls localStorage nicht verfügbar
+              }
+            })();
+          `,
+          type: 'text/javascript'
+        }
       ]
     }
   },

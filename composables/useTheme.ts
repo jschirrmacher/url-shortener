@@ -25,21 +25,16 @@ export function useTheme() {
 
   onMounted(() => {
     theme.value = (localStorage.getItem("theme") as Theme) ?? "system"
-    setThemeClass()
+        isDark.value = document.documentElement.classList.contains("dark")
     
-    // Observer für DOM-Änderungen
-    const observer = new MutationObserver(() => {
-      isDark.value = document.documentElement.classList.contains("dark")
-    })
-    observer.observe(document.documentElement, { 
-      attributes: true, 
-      attributeFilter: ['class'] 
-    })
+    if (theme.value === "system") {
+      setThemeClass()
+    }
     
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", setThemeClass)
     
     onUnmounted(() => {
-      observer.disconnect()
+      window.matchMedia("(prefers-color-scheme: dark)").removeEventListener("change", setThemeClass)
     })
   })
 
