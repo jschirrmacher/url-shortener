@@ -44,7 +44,7 @@ function fillMissingDaysToToday(dailyStats: DailyStatsEntry[]): DailyStatsEntry[
 }
 
 async function getClickStats(shortCode: string) {
-  const clicks = await getClicks(shortCode)
+  const clicks = await getClicks(shortCode, true) // Force reload
 
   // Calculate unique visitors (from all clicks)
   const uniqueIps = new Set(clicks.map((click) => click.ip))

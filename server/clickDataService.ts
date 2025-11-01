@@ -37,7 +37,16 @@ async function loadUserAgents() {
   }
 }
 
-async function loadClicks() {
+function clearCache() {
+  clicksCache.length = 0
+  userAgentCache.length = 0
+  Object.assign(userAgentMap, {})
+}
+
+async function loadClicks(forceReload = false) {
+  if (forceReload) {
+    clearCache()
+  }
   if (clicksCache.length > 0) return
 
   await loadUserAgents()
@@ -90,11 +99,13 @@ async function loadClicks() {
       }))
 
       await writeCsv(CLICKS_FILE, newClicks, CLICKS_FIELDS)
+      clicksCache.length = 0 // Clear before adding
       clicksCache.push(...newClicks)
       console.log(`Migrated ${userAgents.length} unique user agents`)
     } else {
       rl.close()
       const existingClicks = (await readCsv(CLICKS_FILE)) as ClickCsvRecord[]
+      clicksCache.length = 0 // Clear before adding
       clicksCache.push(...existingClicks)
     }
   } catch {
@@ -102,8 +113,8 @@ async function loadClicks() {
   }
 }
 
-async function getClicks(shortCode?: string): Promise<ClickRecord[]> {
-  await loadClicks()
+async function getClicks(shortCode?: string, forceReload = false): Promise<ClickRecord[]> {
+  await loadClicks(forceReload)
 
   const result = clicksCache.map(({ userAgentId, ...click }) => ({
     ...click,
@@ -162,5 +173,6 @@ export default function useClickDataService() {
     getClicks,
     recordClick,
     updateShortCode,
+    clearCache,
   }
 }
