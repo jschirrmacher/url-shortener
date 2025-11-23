@@ -54,7 +54,7 @@
     "nuxt": "^4.2.1",
     "prettier": "3.6.2",
     "typescript": "^5.9.3",
-    "vue-tsc": "3.1.4"
+    "vue-tsc": "3.1.5"
   },
   "engines": {
     "node": ">=22.0.0"
