@@ -75,6 +75,7 @@
     "allowScripts": {
       "$root$": true,
       "@nuxt/eslint-config>eslint-plugin-import-x>unrs-resolver": true,
+      "@nuxt/eslint>@eslint/config-inspector>esbuild": true,
       "nuxt>@parcel/watcher": true,
       "nuxt>esbuild": true,
       "nuxt>@nuxt/vite-builder>esbuild": true
