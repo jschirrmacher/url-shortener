@@ -1,13 +1,10 @@
----
 services:
   url-shortener:
     image: joschi64/url-shortener:main
-    networks:
-      - kong-net
     volumes:
-      # Mount data directory from host to persist CSV files
-      - ./data:/app/data
-    env_file: .env
+      - ${DATA_PATH:-./data}:/app/data
+    env_file:
+      - ${ENV_FILE:-./.env}
     healthcheck:
       test:
         [
@@ -20,7 +17,10 @@ services:
       timeout: 10s
       retries: 3
       start_period: 5s
+    networks:
+      - ${NETWORK_NAME:-default}
 
 networks:
+  default:
   kong-net:
     external: true

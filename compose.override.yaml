@@ -1,0 +1,7 @@
+# Override für lokale Entwicklung
+services:
+  url-shortener:
+    ports:
+      - "3003:3000"
+    volumes:
+      - ./data:/app/data
