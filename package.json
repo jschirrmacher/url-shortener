@@ -36,8 +36,8 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "3.4.3",
     "@nuxt/devtools": "latest",
-    "@nuxt/eslint": "1.13.0",
-    "@nuxt/eslint-config": "1.13.0",
+    "@nuxt/eslint": "1.14.0",
+    "@nuxt/eslint-config": "1.14.0",
     "@nuxt/test-utils": "3.23.0",
     "@prettier/plugin-xml": "3.4.2",
     "@types/jsonwebtoken": "9.0.10",
@@ -51,7 +51,7 @@
     "happy-dom": "20.5.0",
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
-    "nuxt": "^4.3.0",
+    "nuxt": "^4.3.1",
     "prettier": "3.8.1",
     "typescript": "^5.9.3",
     "vue-tsc": "3.2.4"
