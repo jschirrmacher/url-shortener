@@ -1,0 +1,14 @@
+{
+  "name": "url-shortener",
+  "owner": "joachim",
+  "port": 3000,
+  "createdAt": "2026-02-14T13:00:00.000Z",
+  "routes": [
+    {
+      "paths": ["/"],
+      "stripPath": false,
+      "preserveHost": true
+    }
+  ],
+  "plugins": []
+}
