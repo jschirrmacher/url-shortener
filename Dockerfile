@@ -1,5 +1,5 @@
 # Multi-stage build for Nuxt3 URL-Shortener
-FROM node:22-alpine AS base
+FROM node:24-alpine AS base
 
 # Build the application
 FROM base AS builder
