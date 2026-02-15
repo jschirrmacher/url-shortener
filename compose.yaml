@@ -1,6 +1,6 @@
 services:
   url-shortener:
-    image: joschi64/url-shortener:main
+    image: url-shortener:${VERSION:-latest}
     volumes:
       - ${DATA_PATH:-./data}:/app/data
     env_file:
@@ -18,7 +18,7 @@ services:
       retries: 3
       start_period: 5s
     networks:
-      - ${NETWORK_NAME:-default}
+      - kong-net
 
 networks:
   default:
