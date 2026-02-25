@@ -36,8 +36,8 @@
   "devDependencies": {
     "@lavamoat/allow-scripts": "3.4.3",
     "@nuxt/devtools": "latest",
-    "@nuxt/eslint": "1.15.1",
-    "@nuxt/eslint-config": "1.15.1",
+    "@nuxt/eslint": "1.15.2",
+    "@nuxt/eslint-config": "1.15.2",
     "@nuxt/test-utils": "4.0.0",
     "@prettier/plugin-xml": "3.4.2",
     "@types/jsonwebtoken": "9.0.10",
