@@ -34,7 +34,7 @@
     "qrcode": "1.5.4"
   },
   "devDependencies": {
-    "@lavamoat/allow-scripts": "4.0.0",
+    "@lavamoat/allow-scripts": "5.0.0",
     "@nuxt/devtools": "latest",
     "@nuxt/eslint": "1.15.2",
     "@nuxt/eslint-config": "1.15.2",
